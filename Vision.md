@@ -112,13 +112,30 @@ Player starts in weak ship with pre-built modules combinations
 Player can upgrade ship with new bought modules  
 Player can transfer to new ship, salvaging previous for $.  
 
+## In-game battles
+Ships *take turns*, based ton their modules; *combat log* is shown, player can *retreat* and *modificator* can be applied to system afterwards 
+
 ## Game uniqueness
-Each game has its subset of all ship frames available in game world.
-All ship frames consist of designed by developer and by players, who won the game.
-Before each game, client contacts the server for given subset,
-and victor gets access to creating ship frame with his personal parameters (yet limited by ship class for balance reasons) and uploading it to the server
+Each game has its *subset of all ship frames* available in game world.
+All ship frames consist of *designed by developer and by players*, who won the game.
+Before each game, *client contacts the server* for given subset,
+and victor *gets access to creating* ship frame with his personal parameters (yet limited by ship class for balance reasons) and *uploading* it to the server
 
 ## Databases
 One on client for game managing (logging new events, getting parameters for regenerating stock)
-One on server for storing all uploaded ship frames including developer's
+One on server for storing all uploaded ship frames including developer's *and maybe leaderboards*
 Client stores only starter ship
+
+## UI
+All interaction is textual, like in old quest games.
+*Maybe* with meaningless vector images on top, for stations, ships, suns and hyperlane travel
+### Screens:
+- system view
+on docking with trade station:
+- ship slots + inventory overview
+- trade station stock
+- news in galaxy feed (events log in other systems)
+on battle:
+- combat screen
+on game victory: 
+- ship frame creation screen
