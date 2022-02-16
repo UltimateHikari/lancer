@@ -14,8 +14,7 @@ struct RapArtist {
     std::string name;
 };
 
-int main(int, char**) {
-
+void orm_test(){
     auto storage = make_storage(":memory:",
                                 make_table("rap_artists",
                                            make_column("id", &RapArtist::id, primary_key()),
@@ -41,6 +40,9 @@ int main(int, char**) {
     });
 
     cout << "rap artists count = " << storage.count<RapArtist>() << " (no Kanye)" << endl;
+}
 
+int main(int, char**) {
+    orm_test();
     return 0;
 }

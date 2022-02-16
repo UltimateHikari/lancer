@@ -3,7 +3,9 @@
 Game-Proof-Of-Concept inspired by Freelancer, Eve, Elite and other space trade sims..  
 ..and GoF2 which I actually finished
 
-**Relational Database** & interactions with it are *main goal* of project
+**Relational Database** & interactions with it are *main goal* of project  
+
+using [sqlite_orm](https://github.com/fnc12/sqlite_orm) library
 
 ### Structure
 
