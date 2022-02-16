@@ -1,5 +1,5 @@
 --scrapped plural forms in favour of simplicity
-DROP TABLE IF EXISTS manufacturer;
+DROP TABLE IF EXISTS corporation;
 DROP TABLE IF EXISTS commodity_type;
 DROP TABLE IF EXISTS commodity;
 
@@ -21,7 +21,7 @@ DROP TABLE IF EXISTS modificator;
 
 DROP TABLE IF EXISTS bots;
 
-CREATE TABLE manufacturer(
+CREATE TABLE corporation(
     id integer PRIMARY KEY,
     name text
 );
@@ -33,7 +33,7 @@ CREATE TABLE commodity_type(
 
 CREATE TABLE commodity(
     id integer PRIMARY KEY,
-    type_id integer REFERENCES(commodity_type.id),
-    manufacturer_id integer REFERENCES(manufacturer.id),
+    type_id integer REFERENCES commodity_type(id),
+    manufacturer_id integer REFERENCES corporation(id),
     name text
 );
