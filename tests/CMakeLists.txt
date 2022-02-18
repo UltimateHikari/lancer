@@ -7,6 +7,8 @@ add_executable(
 target_link_libraries(
   lancer_test
   gtest_main
+  lancer_lib
+  sqlite_orm::sqlite_orm
 )
 
 include(GoogleTest)

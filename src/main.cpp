@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <cassert>
+#include "lancer.hpp"
 
 using namespace sqlite_orm;
 
@@ -15,46 +16,25 @@ struct RapArtist {
     std::string name;
 };
 
-class Corporation{
-    public:
-        int id;
-        std::string name;
+auto Corporation::get_table(){
+    return  make_table("corporation",
+            make_column("id", &Corporation::id, primary_key()),
+            make_column("name", &Corporation::name));
+}
 
-        static auto get_table(){
-            return  make_table("corporation",
-                    make_column("id", &Corporation::id, primary_key()),
-                    make_column("name", &Corporation::name));
-        }
-};
+auto CommodityType::get_table(){
+    return  make_table("commodity_type",
+            make_column("id", &CommodityType::id, primary_key()),
+            make_column("name", &CommodityType::name));
+}
 
-class CommodityType {
-    public:
-        int id;
-        std::string name;
-
-        static auto get_table(){
-            return  make_table("commodity_type",
-                    make_column("id", &CommodityType::id, primary_key()),
-                    make_column("name", &CommodityType::name));
-        }
-};
-
-class Commodity {
-    public:
-        int id;
-        int type_id;
-        int corp_id;
-        std::string name;
-
-        static auto get_table(){
-            return  make_table("commodity",
-                    make_column("id", &Commodity::id, primary_key()),
-                    make_column("type_id", &Commodity::type_id),
-                    make_column("manufacturer_id", &Commodity::corp_id),
-                    make_column("name", &Commodity::name));
-        }
-};
-
+auto Commodity::get_table(){
+    return  make_table("commodity",
+            make_column("id", &Commodity::id, primary_key()),
+            make_column("type_id", &Commodity::type_id),
+            make_column("manufacturer_id", &Commodity::corp_id),
+            make_column("name", &Commodity::name));
+}
 
 void orm_test(){
     auto storage = make_storage(":memory:",
