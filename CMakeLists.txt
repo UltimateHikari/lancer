@@ -12,3 +12,4 @@ add_subdirectory(dependencies)
 
 ### Main Targets ###
 add_subdirectory(src)
+add_subdirectory(tests)

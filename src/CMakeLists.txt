@@ -1,7 +1,7 @@
-add_executable(Test)
-target_link_libraries(Test PRIVATE sqlite_orm::sqlite_orm)
+add_executable(lancer)
+target_link_libraries(lancer PRIVATE sqlite_orm::sqlite_orm)
 
-target_sources(Test 
+target_sources(lancer 
     PRIVATE 
         main.cpp 
 )
