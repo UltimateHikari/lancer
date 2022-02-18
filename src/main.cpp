@@ -21,9 +21,9 @@ class Corporation{
         std::string name;
 
         static auto get_table(){
-            return make_table("corporation",
-            make_column("id", &Corporation::id, primary_key()),
-            make_column("name", &Corporation::name));
+            return  make_table("corporation",
+                    make_column("id", &Corporation::id, primary_key()),
+                    make_column("name", &Corporation::name));
         }
 };
 
@@ -31,6 +31,12 @@ class CommodityType {
     public:
         int id;
         std::string name;
+
+        static auto get_table(){
+            return  make_table("commodity_type",
+                    make_column("id", &CommodityType::id, primary_key()),
+                    make_column("name", &CommodityType::name));
+        }
 };
 
 class Commodity {
@@ -39,6 +45,14 @@ class Commodity {
         int type_id;
         int corp_id;
         std::string name;
+
+        static auto get_table(){
+            return  make_table("commodity",
+                    make_column("id", &Commodity::id, primary_key()),
+                    make_column("type_id", &Commodity::type_id),
+                    make_column("manufacturer_id", &Commodity::corp_id),
+                    make_column("name", &Commodity::name));
+        }
 };
 
 
@@ -72,7 +86,9 @@ void orm_test(){
 
 void lancer_test(){
     auto storage = make_storage("lancer.db",
-        Corporation::get_table());
+        Corporation::get_table(),
+        Commodity::get_table(),
+        CommodityType::get_table());
     cerr << "lancer opened" << endl;
     storage.sync_schema();
 
@@ -80,6 +96,28 @@ void lancer_test(){
     cerr << rows.size() << endl;
     for(auto& i: rows){
         cerr << std::get<0>(i) << " " << std::get<1>(i) << endl;
+    }
+
+    auto rows1 = storage.select(columns(&Commodity::id, &Commodity::name));
+    cerr << rows1.size() << endl;
+    for(auto& i: rows1){
+        cerr << std::get<0>(i) << " " << std::get<1>(i) << endl;
+    }
+
+    auto rows2 = storage.select(columns(&CommodityType::id, &CommodityType::name));
+    cerr << rows2.size() << endl;
+    for(auto& i: rows2){
+        cerr << std::get<0>(i) << " " << std::get<1>(i) << endl;
+    }
+
+    auto comrows = storage.select(
+        columns(&Commodity::name, &CommodityType::name, &Corporation::name),
+        join<Corporation>(on(c(&Commodity::corp_id) == &Corporation::id)),
+        join<CommodityType>(on(c(&Commodity::type_id) == &CommodityType::id))
+        );
+    cerr << comrows.size() << endl;
+    for(auto& i: comrows){
+        cerr << std::get<0>(i) << " " << std::get<1>(i) << " " << std::get<2>(i) << endl;
     }
 }
 
