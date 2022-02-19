@@ -9,7 +9,7 @@
     // https://stackoverflow.com/a/70052837
 namespace pathing{
 
-    std::filesystem::path get_exe_dir(){
+    std::string get_exe_dir(){
     #ifdef _WIN32
         // Windows specific
         wchar_t szPath[MAX_PATH];
@@ -22,7 +22,7 @@ namespace pathing{
             return {}; // some error
         szPath[count] = '\0';
     #endif
-        return std::filesystem::path{ szPath }.parent_path() / ""; // to finish the folder path with (back)slash
+        return (std::filesystem::path{ szPath }.parent_path() / "").u8string(); // to finish the folder path with (back)slash
     }
 
 }

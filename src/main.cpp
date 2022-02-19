@@ -5,6 +5,7 @@
 #include <cassert>
 #include "lancer.hpp"
 #include "path.hpp"
+#include "database.hpp"
 #include <type_traits>
 
 using namespace sqlite_orm;
@@ -47,41 +48,11 @@ void orm_test(){
 }
 
 void lancer_test(){
-    auto storage = make_storage("lancer.db",
-        Corporation::get_table(),
-        Commodity::get_table(),
-        CommodityType::get_table());
-    cerr << "lancer opened" << endl;
-    storage.sync_schema();
-
-    auto rows = storage.select(columns(&Corporation::id, &Corporation::name));
-    cerr << rows.size() << endl;
-    for(auto& i: rows){
-        cerr << std::get<0>(i) << " " << std::get<1>(i) << endl;
-    }
-
-    auto rows1 = storage.select(columns(&Commodity::id, &Commodity::name));
-    cerr << rows1.size() << endl;
-    for(auto& i: rows1){
-        cerr << std::get<0>(i) << " " << std::get<1>(i) << endl;
-    }
-
-    auto rows2 = storage.select(columns(&CommodityType::id, &CommodityType::name));
-    cerr << rows2.size() << endl;
-    for(auto& i: rows2){
-        cerr << std::get<0>(i) << " " << std::get<1>(i) << endl;
-    }
-
-    auto comrows = storage.select(
-        columns(&Commodity::name, &CommodityType::name, &Corporation::name),
-        join<Corporation>(on(c(&Commodity::corp_id) == &Corporation::id)),
-        join<CommodityType>(on(c(&Commodity::type_id) == &CommodityType::id))
-        );
-    cerr << comrows.size() << endl;
-    for(auto& i: comrows){
-        cerr << std::get<0>(i) << " " << std::get<1>(i) << " " << std::get<2>(i) << endl;
-    }
-    cerr << "oops";
+    db::Connector::sync();
+    db::Connector::select_corporation();
+    db::Connector::select_commodity();
+    db::Connector::select_commodity_type();
+    db::Connector::select_commodity_full();
 }
 
 int main(int, char**) {
