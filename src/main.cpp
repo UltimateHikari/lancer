@@ -4,6 +4,8 @@
 #include <iostream>
 #include <cassert>
 #include "lancer.hpp"
+#include "path.hpp"
+#include <type_traits>
 
 using namespace sqlite_orm;
 
@@ -79,6 +81,7 @@ void lancer_test(){
     for(auto& i: comrows){
         cerr << std::get<0>(i) << " " << std::get<1>(i) << " " << std::get<2>(i) << endl;
     }
+    cerr << "oops";
 }
 
 int main(int, char**) {

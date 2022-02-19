@@ -22,18 +22,18 @@ DROP TABLE IF EXISTS modificator;
 DROP TABLE IF EXISTS bots;
 
 CREATE TABLE corporation(
-    id integer PRIMARY KEY,
-    name text
+    id integer PRIMARY KEY NOT NULL,
+    name text NOT NULL
 );
 
 CREATE TABLE commodity_type(
-    id integer PRIMARY KEY,
-    name text
+    id integer PRIMARY KEY NOT NULL,
+    name text NOT NULL
 );
 
 CREATE TABLE commodity(
-    id integer PRIMARY KEY,
-    type_id integer REFERENCES commodity_type(id),
-    manufacturer_id integer REFERENCES corporation(id),
-    name text
+    id integer PRIMARY KEY NOT NULL,
+    type_id integer REFERENCES commodity_type(id) NOT NULL,
+    manufacturer_id integer REFERENCES corporation(id) NOT NULL,
+    name text NOT NULL
 );

@@ -57,5 +57,6 @@ TEST(SelectTest, Commodity_full)  {
         join<Corporation>(on(c(&Commodity::corp_id) == &Corporation::id)),
         join<CommodityType>(on(c(&Commodity::type_id) == &CommodityType::id))
         );
+    
     EXPECT_EQ(comrows.size(),5);
 }
