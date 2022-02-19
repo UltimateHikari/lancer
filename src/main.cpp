@@ -16,26 +16,6 @@ struct RapArtist {
     std::string name;
 };
 
-auto Corporation::get_table(){
-    return  make_table("corporation",
-            make_column("id", &Corporation::id, primary_key()),
-            make_column("name", &Corporation::name));
-}
-
-auto CommodityType::get_table(){
-    return  make_table("commodity_type",
-            make_column("id", &CommodityType::id, primary_key()),
-            make_column("name", &CommodityType::name));
-}
-
-auto Commodity::get_table(){
-    return  make_table("commodity",
-            make_column("id", &Commodity::id, primary_key()),
-            make_column("type_id", &Commodity::type_id),
-            make_column("manufacturer_id", &Commodity::corp_id),
-            make_column("name", &Commodity::name));
-}
-
 void orm_test(){
     auto storage = make_storage(":memory:",
                                 make_table("rap_artists",

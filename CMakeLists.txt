@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 ### Dependencies ###
+include_directories(src)
 add_subdirectory(dependencies)
 
 ### Main Targets ###
