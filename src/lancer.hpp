@@ -188,4 +188,50 @@ class Module {
 };
 
 
+class Node {
+    public:
+        int id;
+        std::string name;
+
+        int pref_id;
+        int corp_affinity;
+        int order_level;
+        int tech_level;
+
+    static auto get_table(){
+        using namespace sqlite_orm;
+        return make_table(
+            "node",
+            make_column("id", &Node::id, primary_key()),
+            make_column("name", &Node::name),
+            make_column("pref_id", &Node::pref_id),
+            make_column("corp_affinity", &Node::corp_affinity),
+            make_column("order_level", &Node::order_level),
+            make_column("tech_level", &Node::tech_level)
+        );
+    }
+};
+
+class Lane {
+    public:
+        int id;
+        int start;
+        int end;
+        int traverse_time;
+        bool initial_stability;
+
+    static auto get_table(){
+        using namespace sqlite_orm;
+        return make_table(
+            "lane",
+            make_column("id", &Lane::id, primary_key()),
+            make_column("start_node_id", &Lane::start),
+            make_column("end_node_id", &Lane::end),
+            make_column("traverse_time", &Lane::traverse_time),
+            make_column("initial_stability", &Lane::initial_stability)
+        );
+    }
+};
+
+
 #endif

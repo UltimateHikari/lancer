@@ -96,3 +96,41 @@ VALUES(
     40,0
 );
 
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Eternity",
+    2,1,2,10
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Arcadia",
+    4,1,10,5
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Radiance",
+    3,1,8,8
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    1,2,10,"TRUE"
+);

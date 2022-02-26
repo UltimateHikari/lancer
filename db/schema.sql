@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS element;
 DROP TABLE IF EXISTS module_type;
 DROP TABLE IF EXISTS module;
 
-DROP TABLE IF EXISTS frame_preset;
+--DROP TABLE IF EXISTS frame_preset;
 
 
 --planetary system->node
@@ -18,10 +18,10 @@ DROP TABLE IF EXISTS frame_preset;
 DROP TABLE IF EXISTS node;
 DROP TABLE IF EXISTS lane;
 
-DROP TABLE IF EXISTS encounter;
-DROP TABLE IF EXISTS modificator;
+--DROP TABLE IF EXISTS encounter;
+--DROP TABLE IF EXISTS modificator;
 
-DROP TABLE IF EXISTS bots;
+--DROP TABLE IF EXISTS bots;
 
 CREATE TABLE corporation(
     id integer PRIMARY KEY NOT NULL,
@@ -94,4 +94,22 @@ CREATE TABLE module(
     energy_modifier integer NOT NULL,
     inventory_modifier integer NOT NULL,
     drill_profit_modifier integer NOT NULL
+);
+
+CREATE TABLE node(
+    id integer PRIMARY KEY NOT NULL,
+    name text NOT NULL,
+
+    pref_id integer REFERENCES commodity_type(id) NOT NULL,
+    corp_affinity integer REFERENCES corporation(id) NOT NULL,
+    order_level integer NOT NULL,
+    tech_level integer NOT NULL
+);
+
+CREATE TABLE lane(
+    id integer PRIMARY KEY NOT NULL,
+    start_node_id integer NOT NULL,
+    end_node_id integer NOT NULL,
+    traverse_time integer NOT NULL,
+    initial_stability boolean NOT NULL
 );

@@ -56,3 +56,13 @@ TEST(SelectTest, Module)    {
     db::Connector::sync();
     EXPECT_EQ(db::Connector::select_module(), 3);
 }
+
+TEST(SelectTest, Node)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::select_node(), 3);
+}
+
+TEST(SelectTest, Lane)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::select_lane(), 1);
+}

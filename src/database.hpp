@@ -19,6 +19,8 @@ namespace db{
             static int select_module_type();
             static int select_element();
             static int select_module();
+            static int select_node();
+            static int select_lane();
     };
 
 }

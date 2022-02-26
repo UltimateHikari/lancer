@@ -13,7 +13,9 @@ namespace db{
             Frame::get_table(),
             ModuleType::get_table(),
             Element::get_table(),
-            Module::get_table());
+            Module::get_table(),
+            Node::get_table(),
+            Lane::get_table());
     }
 }
 
@@ -100,6 +102,22 @@ int Connector::select_element(){
 
 int Connector::select_module(){
     auto rows = db::internal::storage.select(columns(&Module::id, &Module::name));
+    for(auto& i: rows){
+        cerr << get<0>(i) << " " << get<1>(i) << endl;
+    }
+    return rows.size();
+}
+
+int Connector::select_node(){
+    auto rows = db::internal::storage.select(columns(&Node::id, &Node::name));
+    for(auto& i: rows){
+        cerr << get<0>(i) << " " << get<1>(i) << endl;
+    }
+    return rows.size();
+}
+
+int Connector::select_lane(){
+    auto rows = db::internal::storage.select(columns(&Lane::id, &Lane::traverse_time));
     for(auto& i: rows){
         cerr << get<0>(i) << " " << get<1>(i) << endl;
     }
