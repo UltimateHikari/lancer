@@ -41,3 +41,18 @@ TEST(SelectTest, Frame)    {
     db::Connector::sync();
     EXPECT_EQ(db::Connector::select_frame(), 1);
 }
+
+TEST(SelectTest, ModuleType)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::select_module_type(), 3);
+}
+
+TEST(SelectTest, Element)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::select_element(), 3);
+}
+
+TEST(SelectTest, Module)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::select_module(), 3);
+}

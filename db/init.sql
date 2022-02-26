@@ -29,4 +29,70 @@ VALUES(
     4,6,6,
     200,40,
     600,100,10
+);
+
+INSERT INTO module_type(name) VALUES ("weapon");
+INSERT INTO module_type(name) VALUES ("armor");
+INSERT INTO module_type(name) VALUES ("support");
+
+INSERT INTO element(name) VALUES ("solar");
+INSERT INTO element(name) VALUES ("arc");
+INSERT INTO element(name) VALUES ("void");
+
+INSERT INTO module(
+    type_id, manufacturer_id,
+    name,
+    element_id,energy_cost,initial_cost,
+    damage,accuracy,cooldown,
+    structure_points,
+    speed_modifier, evasion_modifier, energy_modifier,
+    inventory_modifier, drill_profit_modifier
 )
+VALUES(
+    1,1,
+    "Pulse laser",
+    1,20,100,
+    40,85,5,
+    0,
+    0,0,0,
+    0,0
+);
+
+INSERT INTO module(
+    type_id, manufacturer_id,
+    name,
+    element_id,energy_cost,initial_cost,
+    damage,accuracy,cooldown,
+    structure_points,
+    speed_modifier, evasion_modifier, energy_modifier,
+    inventory_modifier, drill_profit_modifier
+)
+VALUES(
+    2,1,
+    "Delta shield",
+    2,100,1000,
+    0,0,0,
+    100,
+    20,0,0,
+    0,0
+);
+
+INSERT INTO module(
+    type_id, manufacturer_id,
+    name,
+    element_id,energy_cost,initial_cost,
+    damage,accuracy,cooldown,
+    structure_points,
+    speed_modifier, evasion_modifier, energy_modifier,
+    inventory_modifier, drill_profit_modifier
+)
+VALUES(
+    3,1,
+    "External cargo bay",
+    3,0,100,
+    0,0,0,
+    0,
+    -10,0,0,
+    40,0
+);
+

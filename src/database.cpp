@@ -10,7 +10,10 @@ namespace db{
             Commodity::get_table(),
             CommodityType::get_table(),
             FrameClass::get_table(),
-            Frame::get_table());
+            Frame::get_table(),
+            ModuleType::get_table(),
+            Element::get_table(),
+            Module::get_table());
     }
 }
 
@@ -73,6 +76,30 @@ int Connector::select_frame_class(){
 
 int Connector::select_frame(){
     auto rows = db::internal::storage.select(columns(&Frame::id, &Frame::name));
+    for(auto& i: rows){
+        cerr << get<0>(i) << " " << get<1>(i) << endl;
+    }
+    return rows.size();
+}
+
+int Connector::select_module_type(){
+    auto rows = db::internal::storage.select(columns(&ModuleType::id, &ModuleType::name));
+    for(auto& i: rows){
+        cerr << get<0>(i) << " " << get<1>(i) << endl;
+    }
+    return rows.size();
+}
+
+int Connector::select_element(){
+    auto rows = db::internal::storage.select(columns(&Element::id, &Element::name));
+    for(auto& i: rows){
+        cerr << get<0>(i) << " " << get<1>(i) << endl;
+    }
+    return rows.size();
+}
+
+int Connector::select_module(){
+    auto rows = db::internal::storage.select(columns(&Module::id, &Module::name));
     for(auto& i: rows){
         cerr << get<0>(i) << " " << get<1>(i) << endl;
     }

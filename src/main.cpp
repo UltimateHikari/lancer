@@ -53,6 +53,11 @@ void lancer_test(){
     db::Connector::select_commodity();
     db::Connector::select_commodity_type();
     db::Connector::select_commodity_full();
+    db::Connector::select_frame_class();
+    db::Connector::select_frame();
+    db::Connector::select_module_type();
+    db::Connector::select_element();
+    db::Connector::select_module();
 }
 
 int main(int, char**) {

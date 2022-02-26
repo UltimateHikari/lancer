@@ -16,6 +16,9 @@ namespace db{
             static int select_commodity_full();
             static int select_frame_class();
             static int select_frame();
+            static int select_module_type();
+            static int select_element();
+            static int select_module();
     };
 
 }

@@ -71,7 +71,7 @@ class Frame {
     public:
         int id;
         int class_id;
-        int manufacturer_id;
+        int corp_id;
 
         int weap_slots;
         int armr_slots;
@@ -92,7 +92,7 @@ class Frame {
             "frame",
             make_column("id", &Frame::id, primary_key()),
             make_column("class_id", &Frame::class_id),
-            make_column("manufacturer_id", &Frame::manufacturer_id),
+            make_column("manufacturer_id", &Frame::corp_id),
             make_column("weap_slots", &Frame::weap_slots),
             make_column("armr_slots", &Frame::armr_slots),
             make_column("supp_slots", &Frame::supp_slots),
@@ -107,5 +107,85 @@ class Frame {
         );
     }
 };
+
+class ModuleType {
+    public:
+        int id;
+        std::string name;
+
+    static auto get_table(){
+        using namespace sqlite_orm;
+        return make_table(
+            "module_type",
+            make_column("id", &ModuleType::id, primary_key()),
+            make_column("name", &ModuleType::name)
+        );
+    }
+};
+
+class Element {
+    public:
+        int id;
+        std::string name;
+
+    static auto get_table(){
+        using namespace sqlite_orm;
+        return make_table(
+            "element",
+            make_column("id", &Element::id, primary_key()),
+            make_column("name", &Element::name)
+        );
+    }
+};
+
+class Module {
+    public:
+        int id;
+        int type_id;
+        int corp_id;
+
+        int element_id;
+        int energy_cost;
+        int initial_cost;
+
+        int damage;
+        int accuracy;
+        int cooldown;
+
+        int structure;
+        int speed;
+        int evasion;
+        int energy;
+        int inventory;
+        int drill_profit;
+
+        std::string name;
+
+    static auto get_table(){
+        using namespace sqlite_orm;
+        return make_table(
+            "module",
+            make_column("id", &Module::id, primary_key()),
+            make_column("name", &Module::name),
+            make_column("type_id", &Module::type_id),
+            make_column("manufacturer_id", &Module::corp_id),
+            make_column("element_id", &Module::element_id),
+            make_column("energy_cost", &Module::energy_cost),
+            make_column("initial_cost", &Module::initial_cost),
+
+            make_column("damage", &Module::damage),
+            make_column("accuracy", &Module::accuracy),
+            make_column("cooldown", &Module::cooldown),
+
+            make_column("structure_points", &Module::structure),
+            make_column("speed_modifier", &Module::speed),
+            make_column("evasion_modifier", &Module::evasion),
+            make_column("energy_modifier", &Module::energy),
+            make_column("inventory_modifier", &Module::inventory),
+            make_column("drill_profit_modifier", &Module::drill_profit)
+        );
+    }
+};
+
 
 #endif

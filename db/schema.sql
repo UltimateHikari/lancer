@@ -7,8 +7,8 @@ DROP TABLE IF EXISTS frame_class;
 DROP TABLE IF EXISTS frame;
 
 DROP TABLE IF EXISTS element;
---DROP TABLE IF EXISTS module_type;
-DROP TABLE IF EXISTS frame_module;
+DROP TABLE IF EXISTS module_type;
+DROP TABLE IF EXISTS module;
 
 DROP TABLE IF EXISTS frame_preset;
 
@@ -62,4 +62,36 @@ CREATE TABLE frame(
     structure_points integer NOT NULL,
     speed integer NOT NULL,
     evasion integer NOT NULL
+);
+
+CREATE TABLE module_type(
+    id integer PRIMARY KEY NOT NULL,
+    name text NOT NULL
+);
+
+CREATE TABLE element(
+    id integer PRIMARY KEY NOT NULL,
+    name text NOT NULL
+);
+
+CREATE TABLE module(
+    id integer PRIMARY KEY NOT NULL,
+    type_id integer REFERENCES module_type(id) NOT NULL,
+    manufacturer_id integer REFERENCES corporation(id) NOT NULL,
+    name text NOT NULL,
+    element_id integer REFERENCES element(id) NOT NULL,
+    energy_cost integer NOT NULL,
+    initial_cost integer NOT NULL,
+
+    damage integer NOT NULL,
+    accuracy integer NOT NULL,
+    cooldown integer NOT NULL,
+
+    structure_points integer NOT NULL,
+
+    speed_modifier integer NOT NULL,
+    evasion_modifier integer NOT NULL,
+    energy_modifier integer NOT NULL,
+    inventory_modifier integer NOT NULL,
+    drill_profit_modifier integer NOT NULL
 );
