@@ -31,3 +31,13 @@ TEST(SelectTest, Commodity_full)  {
     db::Connector::sync();
     EXPECT_EQ(db::Connector::select_commodity_full(), 3);
 }
+
+TEST(SelectTest, FrameClass)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::select_frame_class(), 6);
+}
+
+TEST(SelectTest, Frame)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::select_frame(), 1);
+}

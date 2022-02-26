@@ -8,7 +8,9 @@ namespace db{
         auto storage = sqlite_orm::make_storage("lancer.db",
             Corporation::get_table(),
             Commodity::get_table(),
-            CommodityType::get_table());
+            CommodityType::get_table(),
+            FrameClass::get_table(),
+            Frame::get_table());
     }
 }
 
@@ -59,4 +61,20 @@ int Connector::select_commodity_full(){
         cerr << get<0>(i) << " " << get<1>(i) << " " << get<2>(i) << endl;
     }
     return comrows.size();
+}
+
+int Connector::select_frame_class(){
+    auto rows = db::internal::storage.select(columns(&FrameClass::id, &FrameClass::name));
+    for(auto& i: rows){
+        cerr << get<0>(i) << " " << get<1>(i) << endl;
+    }
+    return rows.size();
+}
+
+int Connector::select_frame(){
+    auto rows = db::internal::storage.select(columns(&Frame::id, &Frame::name));
+    for(auto& i: rows){
+        cerr << get<0>(i) << " " << get<1>(i) << endl;
+    }
+    return rows.size();
 }
