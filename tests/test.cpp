@@ -66,3 +66,23 @@ TEST(SelectTest, Lane)    {
     db::Connector::sync();
     EXPECT_EQ(db::Connector::select_lane(), 1);
 }
+
+TEST(SelectTest, Encounter)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::select_encounter(), 6);
+}
+
+TEST(SelectTest, ModificatorType)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::select_mod_type(), 3);
+}
+
+TEST(SelectTest, Modificator)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::select_mod(), 1);
+}
+
+TEST(SelectTest, ModificatorLog)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::select_mod_log(), 0);
+}

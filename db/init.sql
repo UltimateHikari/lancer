@@ -134,3 +134,34 @@ INSERT INTO lane(
 VALUES(
     1,2,10,"TRUE"
 );
+
+INSERT INTO encounter(name, weight)
+    VALUES("Pirate attack", 10);
+INSERT INTO encounter(name, weight)
+    VALUES("Corporation war", 10);
+INSERT INTO encounter(name, weight)
+    VALUES("Resourse shortage", 5);
+INSERT INTO encounter(name, weight)
+    VALUES("Miners strike", 10);
+INSERT INTO encounter(name, weight)
+    VALUES("Solar blast", 1);
+INSERT INTO encounter(name, weight)
+    VALUES("Relay sabotage", 3);
+
+INSERT INTO modificator_type(name)
+    VALUES("System");
+INSERT INTO modificator_type(name)
+    VALUES("Neighbouring systems");
+INSERT INTO modificator_type(name)
+    VALUES("Corporation-owned");
+
+INSERT INTO modificator(
+    type_id, encounter_id,
+    name,
+    pref_id, order_delta, tech_delta
+)
+VALUES(
+    1,1,
+    "Pirates defeated",
+    4,2,0
+);

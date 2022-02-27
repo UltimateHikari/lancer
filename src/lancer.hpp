@@ -233,5 +233,78 @@ class Lane {
     }
 };
 
+class Encounter {
+    public:
+        int id;
+        int weight;
+        std::string name;
+
+    static auto get_table(){
+        using namespace sqlite_orm;
+        return make_table(
+            "encounter",
+            make_column("id", &Encounter::id, primary_key()),
+            make_column("name", &Encounter::name),
+            make_column("weight", &Encounter::weight)
+        );
+    }
+};
+
+class ModificatorType {
+    public:
+        int id;
+        std::string name;
+
+    static auto get_table(){
+        using namespace sqlite_orm;
+        return make_table(
+            "modificator_type",
+            make_column("id", &ModificatorType::id, primary_key()),
+            make_column("name", &ModificatorType::name)
+        );
+    }
+};
+
+class Modificator {
+    public:
+        int id;
+        int type_id;
+        int event_id;
+        std::string name;
+        int pref_id;
+        int order_delta;
+        int tech_delta;
+
+    static auto get_table(){
+        using namespace sqlite_orm;
+        return make_table(
+            "modificator",
+            make_column("id", &Modificator::id, primary_key()),
+            make_column("name", &Modificator::name),
+            make_column("type_id", &Modificator::type_id),
+            make_column("pref_id", &Modificator::pref_id),
+            make_column("encounter_id", &Modificator::event_id),
+            make_column("order_delta", &Modificator::order_delta),
+            make_column("tech_delta", &Modificator::tech_delta)
+        );
+    }
+};
+
+class ModificatorLog {
+    public:
+        int start_time;
+        int node_id;
+        int mod_id;
+
+    static auto get_table(){
+        using namespace sqlite_orm;
+        return make_table(
+            "modificator_log",
+            make_column("start_time", &ModificatorLog::start_time),
+            make_column("node_id", &ModificatorLog::node_id),
+            make_column("mod_id", &ModificatorLog::mod_id)
+        );
+    }
+};
 
 #endif

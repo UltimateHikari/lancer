@@ -11,15 +11,17 @@ DROP TABLE IF EXISTS module_type;
 DROP TABLE IF EXISTS module;
 
 --DROP TABLE IF EXISTS frame_preset;
-
+--DROP TABLE IF EXISTS frame_preset_modules;
 
 --planetary system->node
 --event->encounter
 DROP TABLE IF EXISTS node;
 DROP TABLE IF EXISTS lane;
 
---DROP TABLE IF EXISTS encounter;
---DROP TABLE IF EXISTS modificator;
+DROP TABLE IF EXISTS encounter;
+DROP TABLE IF EXISTS modificator_type;
+DROP TABLE IF EXISTS modificator;
+DROP TABLE IF EXISTS modificator_log;
 
 --DROP TABLE IF EXISTS bots;
 
@@ -113,3 +115,31 @@ CREATE TABLE lane(
     traverse_time integer NOT NULL,
     initial_stability boolean NOT NULL
 );
+
+CREATE TABLE encounter(
+    id integer PRIMARY KEY NOT NULL,
+    name text NOT NULL,
+    weight integer NOT NULL
+);
+
+CREATE TABLE modificator_type(
+    id integer PRIMARY KEY NOT NULL,
+    name text NOT NULL
+);
+
+CREATE TABLE modificator(
+    id integer PRIMARY KEY NOT NULL,
+    type_id integer REFERENCES modificator_type(id) NOT NULL,
+    encounter_id integer REFERENCES encounter(id) NOT NULL,
+    name text NOT NULL,
+    pref_id integer REFERENCES commodity_type(id) NOT NULL,
+    order_delta integer NOT NULL,
+    tech_delta integer NOT NULL
+);
+
+CREATE TABLE modificator_log(
+    start_time integer NOT NULL,
+    node_id integer NOT NULL,
+    mod_id integer NOT NULL,
+    PRIMARY KEY(start_time, node_id,mod_id)
+); 

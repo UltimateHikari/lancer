@@ -15,7 +15,11 @@ namespace db{
             Element::get_table(),
             Module::get_table(),
             Node::get_table(),
-            Lane::get_table());
+            Lane::get_table(),
+            Encounter::get_table(),
+            ModificatorType::get_table(),
+            Modificator::get_table(),
+            ModificatorLog::get_table());
     }
 }
 
@@ -118,6 +122,38 @@ int Connector::select_node(){
 
 int Connector::select_lane(){
     auto rows = db::internal::storage.select(columns(&Lane::id, &Lane::traverse_time));
+    for(auto& i: rows){
+        cerr << get<0>(i) << " " << get<1>(i) << endl;
+    }
+    return rows.size();
+}
+
+int Connector::select_encounter(){
+    auto rows = db::internal::storage.select(columns(&Encounter::id, &Encounter::name));
+    for(auto& i: rows){
+        cerr << get<0>(i) << " " << get<1>(i) << endl;
+    }
+    return rows.size();
+}
+
+int Connector::select_mod_type(){
+    auto rows = db::internal::storage.select(columns(&ModificatorType::id, &ModificatorType::name));
+    for(auto& i: rows){
+        cerr << get<0>(i) << " " << get<1>(i) << endl;
+    }
+    return rows.size();
+}
+
+int Connector::select_mod(){
+    auto rows = db::internal::storage.select(columns(&Modificator::id, &Modificator::name));
+    for(auto& i: rows){
+        cerr << get<0>(i) << " " << get<1>(i) << endl;
+    }
+    return rows.size();
+}
+
+int Connector::select_mod_log(){
+    auto rows = db::internal::storage.select(columns(&ModificatorLog::node_id, &ModificatorLog::mod_id));
     for(auto& i: rows){
         cerr << get<0>(i) << " " << get<1>(i) << endl;
     }
