@@ -24,6 +24,7 @@
 #include "ftxui/screen/string.hpp"
 
 #include "screen/main.hpp"
+#include "game.hpp"
 
 using namespace sqlite_orm;
 
@@ -174,6 +175,9 @@ int main(int, char**) {
     orm_test();
     lancer_test();
     sc::Main* screen = new sc::Main();
-    screen->show();
+
+    Game* game = new Game();
+
+    screen->show(*game);
     return 0;
 }

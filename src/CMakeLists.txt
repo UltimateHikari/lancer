@@ -2,7 +2,6 @@ add_executable(lancer)
 add_library(lancer_lib)
 
 set(sources 
-    screen/entry.cpp
     screen/main.cpp
     main.cpp 
     database.cpp

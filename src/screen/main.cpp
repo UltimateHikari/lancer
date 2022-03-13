@@ -7,40 +7,59 @@
 using namespace sc;
 using namespace ftxui;
 
-Main::Main(){
-    ftxui::ScreenInteractive screen = ScreenInteractive::Fullscreen();
-    entries = std::vector<Entry>{
-        entries::Start()/*,
-        entries::Exit(&screen)*/
-    };
-    entries_content = entries_to_string(entries);
-}
 
-void Main::show(){
+void Main::show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
-    auto main_menu = Menu(entries_content.get(), &menu_selected);
+    auto option = ButtonOption();
+    option.border = false;
 
-    auto renderer = Renderer(main_menu, [&]{
+    auto start_button = Button("Start game", [&]{game.start();}, &option);
+    auto lead_button = Button("Leaderboards", []{}, &option);
+    auto setting_button = Button("Settings", []{}, &option);
+    auto exit_button = Button("Exit", screen.ExitLoopClosure(), &option);
+
+    auto layout = Container::Vertical({
+        start_button,
+        lead_button,
+        setting_button,
+        exit_button
+    });
+
+    auto renderer = Renderer(layout, [&]{
         return vbox({
             text(L" lancer "),
             separator(),
-            main_menu->Render(),
+            start_button->Render(),
+            separator(),
+            lead_button->Render(),
+            separator(),
+            setting_button->Render(),
+            separator(),
+            exit_button->Render(),
         }) |
             border;
     });
 
-    auto final_container = CatchEvent(renderer, [&](Event event) {
+    auto logo = Renderer([] {return text("logo") | center;});
+
+    int left_size = 20;
+
+    auto container = renderer;
+    container = ResizableSplitLeft(container, logo, &left_size);
+
+
+
+    auto final_container = CatchEvent(container, [&](Event event) {
     
     if (event == Event::Character('q') || event == Event::Escape) {
         screen.ExitLoopClosure()();
         return true;
     }
-
     return false;
     });
 
-    main_menu->TakeFocus();
+    start_button->TakeFocus();
 
     screen.Loop(final_container);
 }
