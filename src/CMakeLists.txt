@@ -2,6 +2,8 @@ add_executable(lancer)
 add_library(lancer_lib)
 
 set(sources 
+    screen/entry.cpp
+    screen/main.cpp
     main.cpp 
     database.cpp
 )
@@ -14,23 +16,7 @@ set(libraries
 )
 
 target_link_libraries(lancer PRIVATE ${libraries})
+target_sources(lancer PRIVATE ${sources})
+
 target_link_libraries(lancer_lib PRIVATE ${libraries})
-
-target_sources(lancer 
-    PRIVATE 
-        ${sources}
-)
-target_sources(lancer_lib
-    PRIVATE 
-        ${sources}
-)
-
-
-# add_executable(ftxui-starter src/main.cpp)
-# target_include_directories(ftxui-starter PRIVATE src)
-
-# target_link_libraries(ftxui-starter
-#   PRIVATE ftxui::screen
-#   PRIVATE ftxui::dom
-#   PRIVATE ftxui::component # Not needed for this example.
-# )
+target_sources(lancer_lib PRIVATE ${sources})
