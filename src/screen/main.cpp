@@ -9,14 +9,13 @@
 using namespace sc;
 using namespace ftxui;
 
-
 void Main::show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
     auto option = ButtonOption();
     option.border = false;
 
-    Model& model = game.getModel();
+    ftxui::Component renderer;
 
     auto start_button = Button("New game", [&]{game.start(); System::show(game);}, &option);
     auto save_button = Button("Save game", []{}, &option);
@@ -25,38 +24,28 @@ void Main::show(Game& game){
     auto setting_button = Button("Settings", []{}, &option);
     auto exit_button = Button("Exit", screen.ExitLoopClosure(), &option);
 
-    Component first_button, second_button;
-
-    //TODO not working as intended (change after going back)
-
-    if(!model.is_game_active()){
-        first_button = start_button;
-        second_button = load_button;
-    }else{
-        first_button = save_button;
-        second_button = load_button;
-    }
-
-    auto renderer = Renderer(
+    renderer =  Renderer(
         Container::Vertical({
-            first_button,
-            second_button,
+            start_button,
+            save_button,
+            load_button,
             lead_button,
             setting_button,
             exit_button
-        }), 
+        }),  
         [&]{return vbox({
             text(L" lancer "),
             separator(),
-            first_button->Render(),
-            second_button->Render(),
+            start_button->Render(),
+            save_button->Render(),
+            load_button->Render(),
             lead_button->Render(),
             setting_button->Render(),
             exit_button->Render(),
         }) |
             border;
     });
-
+    
     auto logo = Renderer([] {return text("logo") | center;});
 
     int left_size = 20;
@@ -75,18 +64,11 @@ void Main::show(Game& game){
     return false;
     });
 
-    first_button->TakeFocus();
-
     screen.Loop(final_container);
 }
 
-
-void System::show(Game& game){
-    auto screen = ScreenInteractive::Fullscreen();
-
-///// placeholder
-
-    auto spinner_tab_renderer = Renderer([&] {
+Component spinner_tab_renderer(){
+    return Renderer([&] {
     Elements entries;
     int shift = 0;
     for (int i = 0; i < 22; ++i) {
@@ -95,6 +77,12 @@ void System::show(Game& game){
     }
     return hflow(std::move(entries)) | border;
     });
+}
+
+void System::show(Game& game){
+    auto screen = ScreenInteractive::Fullscreen();
+
+///// placeholder
 
     auto spinner_tab_renderer2 = Renderer([&] {
     Elements entries;
