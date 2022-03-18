@@ -2,17 +2,25 @@
 #define LANCER_GAME_HPP
 
 #include "lancer.hpp"
+#include "model/model.hpp"
 #include <vector>
+#include <memory>
 
 // Controller
 
 class Game{
+    private:
+        std::unique_ptr<Model> model;
     public:
         void start(){
-            exit(-1);
+            model->set_game_active(true);
         }
-        Node& get_system_info();
-        //Lanes get_lanes_info();
+        Game(){
+            model = std::make_unique<Model>();
+        }
+        Model& getModel(){
+            return *model;
+        }
         void end(){};
 };
 

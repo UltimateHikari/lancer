@@ -7,6 +7,11 @@
 
 namespace sc{
 
+    class System{
+        public:
+            static void show(Game& game);
+    };
+
     class Main{
         public:
             static void show(Game& game);
