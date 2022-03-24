@@ -79,6 +79,12 @@ Component spinner_tab_renderer(){
     });
 }
 
+Component time_renderer(Game& game){
+    return Renderer([&]{ 
+        return hflow({text(game.getModel().get_time())}) | border;
+        });
+}
+
 void System::show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
@@ -113,8 +119,8 @@ void System::show(Game& game){
     auto tab_selection = Toggle(&tab_entries, &tab_index);
     auto tab_content = Container::Tab(
     {
-        spinner_tab_renderer,
-        spinner_tab_renderer2,
+        spinner_tab_renderer(),
+        time_renderer(game),
         spinner_tab_renderer3
     },
     &tab_index);

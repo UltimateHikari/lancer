@@ -3,6 +3,7 @@ add_library(lancer_lib)
 
 set(sources 
     screen/main.cpp
+    model/model.cpp
     main.cpp 
     database.cpp
 )
