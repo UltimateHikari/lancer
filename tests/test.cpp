@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <database.hpp>
+#include "model/model.hpp"
 
 using namespace sqlite_orm;
 
@@ -19,7 +20,7 @@ TEST(SelectTest, Corporation)  {
 
 TEST(SelectTest, Commodity)  {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_commodity(), 3);
+    EXPECT_EQ(db::Connector::select_commodity().id, 1);
 }
 
 TEST(SelectTest, Commodity_type)  {
@@ -85,4 +86,40 @@ TEST(SelectTest, Modificator)    {
 TEST(SelectTest, ModificatorLog)    {
     db::Connector::sync();
     EXPECT_EQ(db::Connector::select_mod_log(), 0);
+}
+
+TEST(InventoryTest, Construct){
+    Model* model = new Model();
+    EXPECT_EQ(model->get_inventory().get_commodities().size(),0);
+    EXPECT_EQ(model->get_inventory().get_modules().size(),0);
+    delete model;
+}
+
+// TEST(InventoryTest, Init){
+//     Model* model = new Model();
+//     int save_id = 1;
+//     model->load_saved_model();
+//     EXPECT_EQ(model->get_inventory().get_commodities().size(), 1);
+//     EXPECT_EQ(model->get_inventory().get_modules().size(), 1);
+//     delete model;
+// }
+
+TEST(InventoryTest, PutCommodity){
+    Model* model = new Model();
+    auto first_commodity = db::Connector::select_commodity();
+    EXPECT_EQ(model->get_inventory().get_commodities().size(), 0);
+    model->get_inventory().update_commodity(first_commodity, 2);
+    EXPECT_EQ(model->get_inventory().get_commodities()[0].second, 2);
+    delete model;
+}
+
+TEST(InventoryTest, PutCommodityTwice){
+    Model* model = new Model();
+    auto first_commodity = db::Connector::select_commodity();
+    EXPECT_EQ(model->get_inventory().get_commodities().size(), 0);
+    model->get_inventory().update_commodity(first_commodity, 2);
+    EXPECT_EQ(model->get_inventory().get_commodities()[0].second, 2);
+    model->get_inventory().update_commodity(first_commodity, 3);
+    EXPECT_EQ(model->get_inventory().get_commodities()[0].second, 5);
+    delete model;
 }

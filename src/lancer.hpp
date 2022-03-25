@@ -3,16 +3,6 @@
 #include <string>
 #include <sqlite_orm/sqlite_orm.h>
 
-class Comparable{
-public:
-    virtual int get_id() const = 0;
-};
-inline bool operator< (const Comparable& lhs, const Comparable& rhs){ return lhs.get_id() < rhs.get_id(); }
-
-// inline bool operator> (const Comparable& lhs, const Comparable& rhs){ return rhs < lhs; }
-// inline bool operator<=(const Comparable& lhs, const Comparable& rhs){ return !(lhs > rhs); }
-// inline bool operator>=(const Comparable& lhs, const Comparable& rhs){ return !(lhs < rhs); }
-
 class Corporation{
     public:
         int id;
@@ -43,7 +33,7 @@ class CommodityType {
         }
 };
 
-class Commodity : public Comparable{
+class Commodity {
     public:
         int id;
         int type_id;
@@ -60,7 +50,6 @@ class Commodity : public Comparable{
                 make_column("name", &Commodity::name)
             );
         }
-        int get_id() const{return this->id;}
 };
 
 class FrameClass {
@@ -149,7 +138,7 @@ class Element {
     }
 };
 
-class Module :public Comparable{
+class Module {
     public:
         int id;
         int type_id;
@@ -197,7 +186,6 @@ class Module :public Comparable{
         );
     }
 
-    int get_id() const{return this->id;}
 };
 
 

@@ -2,9 +2,10 @@
 #define LANCER_MODEL_HPP
 
 #include <string>
-#include <lancer.hpp> //TODO - temponary measure, without adapters
+#include "model/entities.hpp"
 #include <map>
 #include <vector>
+#include <utility>
 #include <mutex>
 
 template<class T>
@@ -24,13 +25,13 @@ public:
 
 class Inventory{
 private:
-    SubInventory<Commodity> commodities;
-    SubInventory<Module> modules;
+    SubInventory<ent::Commodity> commodities;
+    SubInventory<ent::Module> modules;
 public:
-    void update_commodity(const Commodity& comm, int delta);
-    const std::vector<std::pair<Commodity, int>>& get_commodities();
-    void update_module(const Module& comm, int delta);
-    const std::vector<std::pair<Module, int>>& get_module();
+    void update_commodity(const ent::Commodity& comm, int delta);
+    const std::vector<std::pair<ent::Commodity, int>>& get_commodities();
+    void update_module(const ent::Module& comm, int delta);
+    const std::vector<std::pair<ent::Module, int>>& get_modules();
 };
 
 

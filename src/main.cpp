@@ -68,7 +68,7 @@ void orm_test(){
 void lancer_test(){
     db::Connector::sync();
     db::Connector::select_corporation();
-    db::Connector::select_commodity();
+    auto comm = db::Connector::select_commodity();
     db::Connector::select_commodity_type();
     db::Connector::select_commodity_full();
     db::Connector::select_frame_class();

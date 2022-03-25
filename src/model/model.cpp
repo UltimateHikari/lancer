@@ -67,24 +67,22 @@ const std::vector<std::pair<T, int>>& SubInventory<T>::get(){
 
 template<class T>
 void SubInventory<T>::repopulate_snapshot(){
-    snapshot.clear();
-    snapshot.resize(inventory.size());
-    std::copy(inventory.begin(), inventory.end(), snapshot.begin());
+    snapshot.assign(inventory.begin(), inventory.end());
 }
 
 
 // ----- Inventory ----- //
 
-void Inventory::update_commodity(const Commodity& comm, int delta){
+void Inventory::update_commodity(const ent::Commodity& comm, int delta){
     commodities.update(comm, delta);
 }
-const std::vector<std::pair<Commodity, int>>& Inventory::get_commodities(){
+const std::vector<std::pair<ent::Commodity, int>>& Inventory::get_commodities(){
     return commodities.get();
 }
-void Inventory::update_module(const Module& mod, int delta){
+void Inventory::update_module(const ent::Module& mod, int delta){
     modules.update(mod, delta);
 }
-const std::vector<std::pair<Module, int>>& Inventory::get_module(){
+const std::vector<std::pair<ent::Module, int>>& Inventory::get_modules(){
     return modules.get();
 }
 

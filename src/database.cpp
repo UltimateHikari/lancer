@@ -1,6 +1,5 @@
 #include <string>
-#include <database.hpp>
-#include <lancer.hpp>
+#include "database.hpp"
 #include <iostream>
 
 namespace db{
@@ -44,12 +43,21 @@ int Connector::select_corporation(){
     return rows.size();
 }
 
-int Connector::select_commodity(){
-    auto rows = db::internal::storage.select(columns(&Commodity::id, &Commodity::name));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
+ent::Commodity Connector::select_commodity(){
+    auto rows = db::internal::storage.select(
+        columns(&Commodity::id, &CommodityType::id, &CommodityType::name, &Commodity::name),
+        join<CommodityType>(on(c(&Commodity::type_id) == &CommodityType::id)));
+
+    if(rows.size() == 0){
+        //TODO: exceptions?
+        cerr << "empty db error in select_commodity, stopping...\n";
+        exit(-1);
     }
-    return rows.size();
+
+    for(auto& i: rows){
+        cerr << get<0>(i) << " " << get<2>(i) << " " << get<3>(i) << endl;
+    }
+    return ent::Commodity{rows[0]};
 }
 
 int Connector::select_commodity_type(){
