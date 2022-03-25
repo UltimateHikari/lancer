@@ -43,7 +43,7 @@ int Connector::select_corporation(){
     return rows.size();
 }
 
-ent::Commodity Connector::select_commodity(){
+std::shared_ptr<std::vector<ent::Commodity>> Connector::select_commodity(){
     auto rows = db::internal::storage.select(
         columns(&Commodity::id, &CommodityType::id, &CommodityType::name, &Commodity::name),
         join<CommodityType>(on(c(&Commodity::type_id) == &CommodityType::id)));
@@ -54,10 +54,12 @@ ent::Commodity Connector::select_commodity(){
         exit(-1);
     }
 
+    auto result_ptr = std::make_shared<std::vector<ent::Commodity>>();
     for(auto& i: rows){
+        result_ptr.get()->push_back({i});
         cerr << get<0>(i) << " " << get<2>(i) << " " << get<3>(i) << endl;
     }
-    return ent::Commodity{rows[0]};
+    return result_ptr;
 }
 
 int Connector::select_commodity_type(){
@@ -66,18 +68,6 @@ int Connector::select_commodity_type(){
         cerr << get<0>(i) << " " << get<1>(i) << endl;
     }
     return rows.size();
-}
-
-int Connector::select_commodity_full(){
-    auto comrows = db::internal::storage.select(
-        columns(&Commodity::name, &CommodityType::name, &Corporation::name),
-        join<Corporation>(on(c(&Commodity::corp_id) == &Corporation::id)),
-        join<CommodityType>(on(c(&Commodity::type_id) == &CommodityType::id))
-        );
-    for(auto& i: comrows){
-        cerr << get<0>(i) << " " << get<1>(i) << " " << get<2>(i) << endl;
-    }
-    return comrows.size();
 }
 
 int Connector::select_frame_class(){

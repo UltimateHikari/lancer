@@ -2,6 +2,7 @@
 #define DATABASE_H
 #include "lancer.hpp"
 #include "model/entities.hpp"
+#include <memory>
 
 namespace db{
 
@@ -11,9 +12,8 @@ namespace db{
             static void sync();
             //TODO dummy realisations
             static int select_corporation();
-            static ent::Commodity select_commodity();
+            static std::shared_ptr<std::vector<ent::Commodity>> select_commodity();
             static int select_commodity_type();
-            static int select_commodity_full();
             static int select_frame_class();
             static int select_frame();
             static int select_module_type();

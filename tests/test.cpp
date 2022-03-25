@@ -20,17 +20,12 @@ TEST(SelectTest, Corporation)  {
 
 TEST(SelectTest, Commodity)  {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_commodity().id, 1);
+    EXPECT_EQ(db::Connector::select_commodity().get()->size(), 3);
 }
 
 TEST(SelectTest, Commodity_type)  {
     db::Connector::sync();
     EXPECT_EQ(db::Connector::select_commodity_type(), 5);
-}
-
-TEST(SelectTest, Commodity_full)  {
-    db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_commodity_full(), 3);
 }
 
 TEST(SelectTest, FrameClass)    {
@@ -106,20 +101,30 @@ TEST(InventoryTest, Construct){
 
 TEST(InventoryTest, PutCommodity){
     Model* model = new Model();
-    auto first_commodity = db::Connector::select_commodity();
+    auto all_commodities = db::Connector::select_commodity();
     EXPECT_EQ(model->get_inventory().get_commodities().size(), 0);
-    model->get_inventory().update_commodity(first_commodity, 2);
+    model->get_inventory().update_commodity((*all_commodities.get())[0], 2);
     EXPECT_EQ(model->get_inventory().get_commodities()[0].second, 2);
     delete model;
 }
 
 TEST(InventoryTest, PutCommodityTwice){
     Model* model = new Model();
-    auto first_commodity = db::Connector::select_commodity();
+    auto all_commodities = db::Connector::select_commodity();
     EXPECT_EQ(model->get_inventory().get_commodities().size(), 0);
-    model->get_inventory().update_commodity(first_commodity, 2);
+    model->get_inventory().update_commodity((*all_commodities.get())[0], 2);
     EXPECT_EQ(model->get_inventory().get_commodities()[0].second, 2);
-    model->get_inventory().update_commodity(first_commodity, 3);
+    model->get_inventory().update_commodity((*all_commodities.get())[0], 3);
     EXPECT_EQ(model->get_inventory().get_commodities()[0].second, 5);
+    delete model;
+}
+
+TEST(InventoryTest, PutTwoCommodity){
+    Model* model = new Model();
+    auto all_commodities = db::Connector::select_commodity();
+    EXPECT_EQ(model->get_inventory().get_commodities().size(), 0);
+    model->get_inventory().update_commodity((*all_commodities.get())[0], 2);
+    model->get_inventory().update_commodity((*all_commodities.get())[1], 2);
+    EXPECT_EQ(model->get_inventory().get_commodities().size(), 2);
     delete model;
 }
