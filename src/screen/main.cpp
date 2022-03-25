@@ -85,6 +85,18 @@ Component time_renderer(Game& game){
         });
 }
 
+Component navigation_renderer(Game& game){
+    return time_renderer(game);
+}
+
+Component inventory_renderer(Game& game){
+    return time_renderer(game);
+}
+
+Component trade_renderer(Game& game){
+    return time_renderer(game);
+}
+
 void System::show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
@@ -119,9 +131,9 @@ void System::show(Game& game){
     auto tab_selection = Toggle(&tab_entries, &tab_index);
     auto tab_content = Container::Tab(
     {
-        spinner_tab_renderer(),
-        time_renderer(game),
-        spinner_tab_renderer3
+        navigation_renderer(game),
+        inventory_renderer(game),
+        trade_renderer(game)
     },
     &tab_index);
 

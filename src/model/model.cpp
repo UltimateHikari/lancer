@@ -1,6 +1,17 @@
 #include "model/model.hpp"
-#include <ctime>
-#include <iomanip>
+#include "database.hpp"
+#include <ctime> // time, localtime
+#include <iomanip> // put_time
+#include <algorithm> // copy
+
+// ----- Model ----- //
+
+Model::Model():
+    inventory(new Inventory())
+{}
+Model::~Model(){
+    delete inventory;
+}
 
 int Model::get_sense(){
     return sense_of_life;
@@ -21,3 +32,59 @@ std::string Model::get_time(){
 
     return oss.str();
 }
+
+Inventory& Model::get_inventory(){
+    return *inventory;
+}
+
+// ----- Subinventory ----- //
+
+template<class T>
+SubInventory<T>::SubInventory(): 
+    inventory_state(0), 
+    snapshot_state(0)
+{}
+
+template<class T>
+void SubInventory<T>::update(const T& t, int delta){
+    mutex.lock();
+    inventory[t] += delta;
+    inventory_state++;
+    mutex.unlock();
+}
+
+template<class T>
+const std::vector<std::pair<T, int>>& SubInventory<T>::get(){
+    if(mutex.try_lock()){
+        if(snapshot_state != inventory_state){
+            repopulate_snapshot();
+            snapshot_state = inventory_state;
+        }
+        mutex.unlock();
+    }
+    return snapshot;
+}
+
+template<class T>
+void SubInventory<T>::repopulate_snapshot(){
+    snapshot.clear();
+    snapshot.resize(inventory.size());
+    std::copy(inventory.begin(), inventory.end(), snapshot.begin());
+}
+
+
+// ----- Inventory ----- //
+
+void Inventory::update_commodity(const Commodity& comm, int delta){
+    commodities.update(comm, delta);
+}
+const std::vector<std::pair<Commodity, int>>& Inventory::get_commodities(){
+    return commodities.get();
+}
+void Inventory::update_module(const Module& mod, int delta){
+    modules.update(mod, delta);
+}
+const std::vector<std::pair<Module, int>>& Inventory::get_module(){
+    return modules.get();
+}
+
