@@ -47,6 +47,7 @@ public:
 };
 
 class Module : public Comparable{
+public:
     ModuleType type;
     std::string name;
     Module(std::tuple<int, int, std::string, std::string>& raw_select):

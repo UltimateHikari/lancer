@@ -74,7 +74,8 @@ void lancer_test(){
     db::Connector::select_frame();
     db::Connector::select_module_type();
     db::Connector::select_element();
-    db::Connector::select_module();
+    db::Connector::test_select_module();
+    auto mod = db::Connector::select_module();
 }
 
 void ftxtest(){

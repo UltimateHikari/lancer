@@ -3,6 +3,7 @@
 #include "lancer.hpp"
 #include "model/entities.hpp"
 #include <memory>
+#include <vector>
 
 namespace db{
 
@@ -18,7 +19,8 @@ namespace db{
             static int select_frame();
             static int select_module_type();
             static int select_element();
-            static int select_module();
+            static int test_select_module();
+            static std::shared_ptr<std::vector<ent::Module>> select_module();
             static int select_node();
             static int select_lane();
             static int select_encounter();

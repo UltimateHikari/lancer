@@ -102,13 +102,33 @@ int Connector::select_element(){
     return rows.size();
 }
 
-int Connector::select_module(){
+int Connector::test_select_module(){
     auto rows = db::internal::storage.select(columns(&Module::id, &Module::name));
     for(auto& i: rows){
         cerr << get<0>(i) << " " << get<1>(i) << endl;
     }
     return rows.size();
 }
+
+std::shared_ptr<std::vector<ent::Module>> Connector::select_module(){
+    auto rows = db::internal::storage.select(
+        columns(&Module::id, &ModuleType::id, &ModuleType::name, &Module::name),
+        join<ModuleType>(on(c(&Module::type_id) == &ModuleType::id)));
+
+    if(rows.size() == 0){
+        //TODO: exceptions?
+        cerr << "empty db error in select_module, stopping...\n";
+        exit(-1);
+    }
+
+    auto result_ptr = std::make_shared<std::vector<ent::Module>>();
+    for(auto& i: rows){
+        result_ptr.get()->push_back({i});
+        cerr << get<0>(i) << " " << get<2>(i) << " " << get<3>(i) << endl;
+    }
+    return result_ptr;
+}
+
 
 int Connector::select_node(){
     auto rows = db::internal::storage.select(columns(&Node::id, &Node::name));
