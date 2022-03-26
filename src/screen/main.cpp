@@ -5,6 +5,7 @@
 #include "ftxui/dom/elements.hpp"
 
 #include "model/model.hpp"
+#include "screen/inventory.hpp"
 
 using namespace sc;
 using namespace ftxui;
@@ -89,8 +90,24 @@ Component navigation_renderer(Game& game){
     return time_renderer(game);
 }
 
+
+
 Component inventory_renderer(Game& game){
-    return time_renderer(game);
+    auto module_container = Container::Vertical({});
+    auto commodity_container = Container::Vertical({});
+    auto container = Container::Vertical({
+        std::move(module_container),
+        std::move(commodity_container)
+    });
+    return Renderer(container, [&]{
+        return vbox({
+            text(L" Inventory "),
+            separator(),
+            module_container->Render(),
+            separator(),
+            commodity_container->Render()
+        });
+    });
 }
 
 Component trade_renderer(Game& game){
@@ -132,7 +149,7 @@ void System::show(Game& game){
     auto tab_content = Container::Tab(
     {
         navigation_renderer(game),
-        inventory_renderer(game),
+        sc::Inventory(game),
         trade_renderer(game)
     },
     &tab_index);
