@@ -32,6 +32,8 @@ public:
     const std::vector<std::pair<ent::Commodity, int>>& get_commodities();
     void update_module(const ent::Module& comm, int delta);
     const std::vector<std::pair<ent::Module, int>>& get_modules();
+    void load(int save_id);
+    void save(std::string& save_name);
 };
 
 
@@ -49,6 +51,8 @@ public:
     bool is_game_active();
     void set_game_active(bool activity);
     Inventory& get_inventory();
+    void load_game(int save_id);
+    void save_game(std::string save_name);
 };
 
 #endif

@@ -37,6 +37,13 @@ Inventory& Model::get_inventory(){
     return *inventory;
 }
 
+void Model::load_game(int save_id){
+    inventory->load(save_id);
+}
+void Model::save_game(std::string save_name){
+    inventory->save(save_name);
+}
+
 // ----- Subinventory ----- //
 
 template<class T>
@@ -86,3 +93,18 @@ const std::vector<std::pair<ent::Module, int>>& Inventory::get_modules(){
     return modules.get();
 }
 
+void Inventory::load(int save_id){
+    auto commodities = db::Connector::select_saved_commodity(save_id);
+    auto modules = db::Connector::select_saved_module(save_id);
+    for(auto& i: *(modules.get())){
+        update_module(i.first, i.second);
+    }
+    for(auto& i: *(commodities.get())){
+        update_commodity(i.first, i.second);
+    }
+}
+void Inventory::save(std::string& save_name){
+    auto modules = get_modules();
+    auto commodities = get_commodities();
+    db::Connector::insert_save(save_name, modules, commodities);
+}

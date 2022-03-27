@@ -227,3 +227,32 @@ std::shared_ptr<std::vector<std::pair<ent::Commodity,int>>> Connector::select_sa
     }
     return result_ptr;
 }
+
+void Connector::insert_save(
+                std::string& save_name,
+                const std::vector<std::pair<ent::Module, int>>& modules,
+                const std::vector<std::pair<ent::Commodity, int>>& commodities
+            )
+{
+    db::internal::storage.insert(
+        into<SavedGame>(),
+        columns(&SavedGame::name, &SavedGame::date),
+        values(std::make_tuple(save_name, db::internal::storage.select(datetime("now", "localtime")).front()))
+    );
+    auto save_id = db::internal::storage.select(last_insert_rowid());
+    cerr << "saved as " << save_id[0] << endl;
+    for(auto& i : commodities){
+        db::internal::storage.insert(
+            into<SavedCommodity>(),
+            columns(&SavedCommodity::save_id, &SavedCommodity::comm_id, &SavedCommodity::amount),
+            values(std::make_tuple(save_id[0], i.first.id, i.second))
+        );
+    }
+    for(auto& i : modules){
+        db::internal::storage.insert(
+            into<SavedModule>(),
+            columns(&SavedModule::save_id, &SavedModule::mod_id, &SavedModule::amount),
+            values(std::make_tuple(save_id[0], i.first.id, i.second))
+        );
+    }
+}
