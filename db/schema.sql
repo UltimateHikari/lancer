@@ -23,6 +23,10 @@ DROP TABLE IF EXISTS modificator_type;
 DROP TABLE IF EXISTS modificator;
 DROP TABLE IF EXISTS modificator_log;
 
+DROP TABLE IF EXISTS saved_game;
+DROP TABLE IF EXISTS saved_modules;
+DROP TABLE IF EXISTS saved_commodities;
+
 --DROP TABLE IF EXISTS bots;
 
 CREATE TABLE corporation(
@@ -143,3 +147,25 @@ CREATE TABLE modificator_log(
     mod_id integer NOT NULL,
     PRIMARY KEY(start_time, node_id,mod_id)
 ); 
+
+--todo credit balance, world date
+--all events logged in different table
+CREATE TABLE saved_game(
+    id integer PRIMARY KEY NOT NULL,
+    name text NOT NULL,
+    date text NOT NULL
+);
+
+CREATE TABLE saved_commodities(
+    save_id integer REFERENCES saved_game(id) NOT NULL,
+    comm_id integer REFERENCES commodity(id) NOT NULL,
+    amount integer NOT NULL,
+    PRIMARY KEY(save_id, comm_id)
+);
+
+CREATE TABLE saved_modules(
+    save_id integer REFERENCES saved_game(id) NOT NULL,
+    mod_id integer REFERENCES module(id) NOT NULL,
+    amount integer NOT NULL,
+    PRIMARY KEY(save_id, mod_id)
+);

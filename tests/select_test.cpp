@@ -78,3 +78,23 @@ TEST(SelectTest, ModificatorLog)    {
     db::Connector::sync();
     EXPECT_EQ(db::Connector::select_mod_log(), 0);
 }
+
+TEST(SelectTest, SavedGame) {
+    auto games = db::Connector::select_saved_game();
+    EXPECT_EQ((*games.get()).size(), 1);
+}
+
+
+TEST(SelectTest, SavedModule) {
+    auto games = db::Connector::select_saved_game();
+    int id = (*games.get())[0].id;
+    auto modules = db::Connector::select_saved_module(id);
+    EXPECT_EQ((*modules.get()).size(), 2);
+}
+
+TEST(SelectTest, SavedCommodity) {
+    auto games = db::Connector::select_saved_game();
+    int id = (*games.get())[0].id;
+    auto commodities = db::Connector::select_saved_commodity(id);
+    EXPECT_EQ((*commodities.get()).size(), 3);
+}

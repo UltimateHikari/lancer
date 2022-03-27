@@ -1,6 +1,7 @@
 #include <string>
 #include "database.hpp"
 #include <iostream>
+#include <utility>
 
 namespace db{
     namespace internal{
@@ -18,7 +19,11 @@ namespace db{
             Encounter::get_table(),
             ModificatorType::get_table(),
             Modificator::get_table(),
-            ModificatorLog::get_table());
+            ModificatorLog::get_table(),
+            SavedGame::get_table(),
+            SavedCommodity::get_table(),
+            SavedModule::get_table()
+            );
     }
 }
 
@@ -176,4 +181,49 @@ int Connector::select_mod_log(){
         cerr << get<0>(i) << " " << get<1>(i) << endl;
     }
     return rows.size();
+}
+
+std::shared_ptr<std::vector<ent::SavedGame>> Connector::select_saved_game(){
+    auto rows = db::internal::storage.select(
+        columns(&SavedGame::id, &SavedGame::name, &SavedGame::date));
+
+    auto result_ptr = std::make_shared<std::vector<ent::SavedGame>>();
+    cerr << "saved-games:\n";
+    for(auto& i: rows){
+        result_ptr.get()->push_back({i});
+        cerr << get<0>(i) << " " << get<1>(i) << " " << get<2>(i) << endl;
+    }
+    return result_ptr;
+}
+
+
+std::shared_ptr<std::vector<std::pair<ent::Module,int>>> Connector::select_saved_module(const int id){
+    auto rows = db::internal::storage.select(
+        columns(&SavedModule::mod_id, &ModuleType::id, &ModuleType::name, &Module::name, &SavedModule::amount),
+        join<Module>(on(c(&SavedModule::mod_id) == &Module::id)),
+        join<ModuleType>(on(c(&Module::type_id) == &ModuleType::id)),
+        where(c(&SavedModule::save_id) == id));
+    auto result_ptr = std::make_shared<std::vector<std::pair<ent::Module,int>>>();
+    for(auto& i: rows){
+        ent::Module mod{i};
+        result_ptr.get()->push_back(std::make_pair(mod, get<4>(i)));
+        cerr << mod.id << " " << mod.name << " " << get<4>(i) << endl;
+    }
+    return result_ptr;
+}
+
+std::shared_ptr<std::vector<std::pair<ent::Commodity,int>>> Connector::select_saved_commodity(const int id){
+    auto rows = db::internal::storage.select(
+        columns(&SavedCommodity::comm_id, &CommodityType::id, &CommodityType::name, &Commodity::name, &SavedCommodity::amount),
+        join<Commodity>(on(c(&SavedCommodity::comm_id) == &Commodity::id)),
+        join<CommodityType>(on(c(&Commodity::type_id) == &CommodityType::id)),
+        where(c(&SavedCommodity::save_id) == id));
+
+    auto result_ptr = std::make_shared<std::vector<std::pair<ent::Commodity,int>>>();
+    for(auto& i: rows){
+        ent::Commodity com{i};
+        result_ptr.get()->push_back(std::make_pair(com, get<4>(i)));
+        cerr << com.id << " " << com.name << " " << get<4>(i) << endl;
+    }
+    return result_ptr;
 }

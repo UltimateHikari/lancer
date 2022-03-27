@@ -27,6 +27,9 @@ namespace db{
             static int select_mod_type();
             static int select_mod();
             static int select_mod_log();
+            static std::shared_ptr<std::vector<ent::SavedGame>> select_saved_game();
+            static std::shared_ptr<std::vector<std::pair<ent::Module, int>>> select_saved_module(const int id);
+            static std::shared_ptr<std::vector<std::pair<ent::Commodity, int>>> select_saved_commodity(const int id);
     };
 
 }

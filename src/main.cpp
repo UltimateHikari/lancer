@@ -76,6 +76,9 @@ void lancer_test(){
     db::Connector::select_element();
     db::Connector::test_select_module();
     auto mod = db::Connector::select_module();
+    auto gam = db::Connector::select_saved_game();
+    auto smod = db::Connector::select_saved_module(1);
+    auto scom = db::Connector::select_saved_commodity(1);
 }
 
 void ftxtest(){

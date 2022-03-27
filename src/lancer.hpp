@@ -308,4 +308,55 @@ class ModificatorLog {
     }
 };
 
+class SavedGame{
+    public:
+        int id;
+        std::string name;
+        std::string date;
+    static auto get_table(){
+        using namespace sqlite_orm;
+        return make_table(
+            "saved_game",
+            make_column("id", &SavedGame::id, primary_key()),
+            make_column("name", &SavedGame::name),
+            make_column("date", &SavedGame::date)
+        );
+    }
+};
+
+class SavedCommodity{
+    public:
+        int save_id;
+        int comm_id;
+        int amount;
+    static auto get_table(){
+        using namespace sqlite_orm;
+        return make_table(
+            "saved_commodities",
+            make_column("save_id", &SavedCommodity::save_id),
+            make_column("comm_id", &SavedCommodity::comm_id),
+            make_column("amount", &SavedCommodity::amount),
+            primary_key(&SavedCommodity::save_id, &SavedCommodity::comm_id)
+        );
+    }
+};
+
+class SavedModule{
+    public:
+        int save_id;
+        int mod_id;
+        int amount;
+    static auto get_table(){
+        using namespace sqlite_orm;
+        return make_table(
+            "saved_modules",
+            make_column("save_id", &SavedModule::save_id),
+            make_column("mod_id", &SavedModule::mod_id),
+            make_column("amount", &SavedModule::amount),
+            primary_key(&SavedModule::save_id, &SavedModule::mod_id)
+        );
+    }
+};
+
+
 #endif

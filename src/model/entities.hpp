@@ -44,6 +44,11 @@ public:
         type{std::get<1>(raw_select), std::get<2>(raw_select)},
         name{std::move(std::get<3>(raw_select))}
         {}
+    Commodity(std::tuple<int, int, std::string, std::string, int>& raw_select):
+        Comparable(std::get<0>(raw_select)),
+        type{std::get<1>(raw_select), std::get<2>(raw_select)},
+        name{std::move(std::get<3>(raw_select))}
+        {}
 };
 
 class Module : public Comparable{
@@ -54,6 +59,22 @@ public:
         Comparable(std::get<0>(raw_select)),
         type{std::get<1>(raw_select), std::get<2>(raw_select)},
         name{std::move(std::get<3>(raw_select))}
+        {}
+    Module(std::tuple<int, int, std::string, std::string, int>& raw_select):
+        Comparable(std::get<0>(raw_select)),
+        type{std::get<1>(raw_select), std::get<2>(raw_select)},
+        name{std::move(std::get<3>(raw_select))}
+        {}
+};
+
+class SavedGame : public Comparable{
+public:
+    std::string name;
+    std::string date;
+    SavedGame(std::tuple<int, std::string, std::string>& raw_select):
+        Comparable(std::get<0>(raw_select)),
+        name{std::get<1>(raw_select)},
+        date{std::move(std::get<2>(raw_select))}
         {}
 };
 
