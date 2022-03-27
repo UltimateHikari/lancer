@@ -12,6 +12,11 @@ namespace sc{
             static void show(Game& game);
     };
 
+    class Load{
+        public:
+            static void show(Game& game);
+    };
+
     class Main{
         public:
             static void show(Game& game);

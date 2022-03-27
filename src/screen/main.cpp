@@ -6,6 +6,7 @@
 
 #include "model/model.hpp"
 #include "screen/inventory.hpp"
+#include "database.hpp"
 
 using namespace sc;
 using namespace ftxui;
@@ -20,7 +21,7 @@ void Main::show(Game& game){
 
     auto start_button = Button("New game", [&]{game.start(); System::show(game);}, &option);
     auto save_button = Button("Save game", []{}, &option);
-    auto load_button = Button("Load game", []{}, &option);
+    auto load_button = Button("Load game", [&]{Load::show(game);}, &option);
     auto lead_button = Button("Leaderboards", []{}, &option);
     auto setting_button = Button("Settings", []{}, &option);
     auto exit_button = Button("Exit", screen.ExitLoopClosure(), &option);
@@ -55,6 +56,61 @@ void Main::show(Game& game){
     container = ResizableSplitLeft(container, logo, &left_size);
 
 
+
+    auto final_container = CatchEvent(container, [&](Event event) {
+    
+    if (event == Event::Character('q') || event == Event::Escape) {
+        screen.ExitLoopClosure()();
+        return true;
+    }
+    return false;
+    });
+
+    screen.Loop(final_container);
+}
+
+Component RenderSave(ent::SavedGame& game, std::function<void()> on_click){
+    return Container::Horizontal({
+        Button(game.name, on_click),
+        Renderer([&]{return text(game.date);})
+    });
+}
+
+void Load::show(Game& game){
+    auto screen = ScreenInteractive::Fullscreen();
+
+    auto option = ButtonOption();
+    option.border = false;
+
+    ftxui::Components children;
+
+    auto saved_games = db::Connector::select_saved_game();
+
+    for(auto& i: (*saved_games.get())){
+        children.push_back(RenderSave(i, [&]{
+            screen.ExitLoopClosure();
+             game.getModel().load_game(i.id);
+              game.start();
+               System::show(game);
+               }));
+    }
+
+    auto containerb = Container::Vertical(std::move(children));
+
+    auto renderer = Renderer(containerb, [&]{
+        return vbox({
+            text(L" load game "),
+            separator(),
+            containerb->Render()
+        });
+    });
+
+    auto logo = Renderer([] {return text("logo") | center;});
+
+    int left_size = 20;
+
+    auto container = renderer;
+    container = ResizableSplitLeft(container, logo, &left_size);
 
     auto final_container = CatchEvent(container, [&](Event event) {
     
