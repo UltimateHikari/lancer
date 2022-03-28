@@ -2,7 +2,8 @@ enable_testing()
 
 add_executable(
   lancer_test
-  test.cpp
+  select_test.cpp
+  inventory_test.cpp
 )
 target_link_libraries(
   lancer_test

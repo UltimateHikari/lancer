@@ -165,3 +165,18 @@ VALUES(
     "Pirates defeated",
     4,2,0
 );
+
+INSERT INTO saved_game(name, date)
+    VALUES("Test_game", "2022-03-26 14:44:33");
+
+INSERT INTO saved_commodities(save_id, comm_id, amount)
+    VALUES(1,1,10);
+INSERT INTO saved_commodities(save_id, comm_id, amount)
+    VALUES(1,2,20);
+INSERT INTO saved_commodities(save_id, comm_id, amount)
+    VALUES(1,3,30);
+
+INSERT INTO saved_modules(save_id, mod_id, amount)
+    VALUES(1,1,1);
+INSERT INTO saved_modules(save_id, mod_id, amount)
+    VALUES(1,2,2);

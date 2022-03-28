@@ -11,5 +11,11 @@ FetchContent_Declare(
   URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
 )
 
+FetchContent_Declare(ftxui
+  GIT_REPOSITORY https://github.com/ArthurSonzogni/ftxui
+  GIT_TAG v0.11
+)
+
 add_subdirectory(googletest)
 add_subdirectory(sqlite_orm)
+add_subdirectory(ftxui)

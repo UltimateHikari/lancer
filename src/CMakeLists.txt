@@ -1,19 +1,23 @@
 add_executable(lancer)
 add_library(lancer_lib)
 
-target_link_libraries(lancer PRIVATE sqlite_orm::sqlite_orm)
-target_link_libraries(lancer_lib PRIVATE sqlite_orm::sqlite_orm)
-
 set(sources 
+    screen/main.cpp
+    screen/inventory.cpp
+    model/model.cpp
     main.cpp 
     database.cpp
 )
 
-target_sources(lancer 
-    PRIVATE 
-        ${sources}
+set(libraries
+    sqlite_orm::sqlite_orm
+    ftxui::screen
+    ftxui::dom
+    ftxui::component
 )
-target_sources(lancer_lib
-    PRIVATE 
-        ${sources}
-)
+
+target_link_libraries(lancer PRIVATE ${libraries})
+target_sources(lancer PRIVATE ${sources})
+
+target_link_libraries(lancer_lib PRIVATE ${libraries})
+target_sources(lancer_lib PRIVATE ${sources})

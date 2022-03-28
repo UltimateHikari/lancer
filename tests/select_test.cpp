@@ -1,16 +1,8 @@
 #include <gtest/gtest.h>
 #include <database.hpp>
+#include "model/model.hpp"
 
 using namespace sqlite_orm;
-
-
-// Demonstrate some basic assertions.
-TEST(HelloTest, BasicAssertions) {
-  // Expect two strings not to be equal.
-  EXPECT_STRNE("hello", "world");
-  // Expect equality.
-  EXPECT_EQ(7 * 6, 42);
-}
 
 TEST(SelectTest, Corporation)  {
     db::Connector::sync();
@@ -19,17 +11,12 @@ TEST(SelectTest, Corporation)  {
 
 TEST(SelectTest, Commodity)  {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_commodity(), 3);
+    EXPECT_EQ(db::Connector::select_commodity().get()->size(), 3);
 }
 
 TEST(SelectTest, Commodity_type)  {
     db::Connector::sync();
     EXPECT_EQ(db::Connector::select_commodity_type(), 5);
-}
-
-TEST(SelectTest, Commodity_full)  {
-    db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_commodity_full(), 3);
 }
 
 TEST(SelectTest, FrameClass)    {
@@ -52,9 +39,14 @@ TEST(SelectTest, Element)    {
     EXPECT_EQ(db::Connector::select_element(), 3);
 }
 
+TEST(SelectTest, ModuleTest)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::test_select_module(), 3);
+}
+
 TEST(SelectTest, Module)    {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_module(), 3);
+    EXPECT_EQ(db::Connector::select_module().get()->size(), 3);
 }
 
 TEST(SelectTest, Node)    {
@@ -85,4 +77,24 @@ TEST(SelectTest, Modificator)    {
 TEST(SelectTest, ModificatorLog)    {
     db::Connector::sync();
     EXPECT_EQ(db::Connector::select_mod_log(), 0);
+}
+
+TEST(SelectTest, SavedGame) {
+    auto games = db::Connector::select_saved_game();
+    EXPECT_EQ((*games.get()).size(), 1);
+}
+
+
+TEST(SelectTest, SavedModule) {
+    auto games = db::Connector::select_saved_game();
+    int id = (*games.get())[0].id;
+    auto modules = db::Connector::select_saved_module(id);
+    EXPECT_EQ((*modules.get()).size(), 2);
+}
+
+TEST(SelectTest, SavedCommodity) {
+    auto games = db::Connector::select_saved_game();
+    int id = (*games.get())[0].id;
+    auto commodities = db::Connector::select_saved_commodity(id);
+    EXPECT_EQ((*commodities.get()).size(), 3);
 }
