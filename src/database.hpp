@@ -21,8 +21,10 @@ namespace db{
             static int select_element();
             static int test_select_module();
             static std::shared_ptr<std::vector<ent::Module>> select_module();
-            static int select_node();
-            static int select_lane();
+            static int test_select_node();
+            static std::shared_ptr<std::vector<ent::Node>> select_node();
+            static int test_select_lane();
+            static std::shared_ptr<std::vector<ent::Lane>> select_lane();
             static int select_encounter();
             static int select_mod_type();
             static int select_mod();

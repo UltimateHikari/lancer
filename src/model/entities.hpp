@@ -78,5 +78,73 @@ public:
         {}
 };
 
+class Corporation : public Comparable{
+public:
+    std::string name;
+    Corporation(int id_, std::string& name_):
+        Comparable(id_), 
+        name(std::move(name_))
+    {}
+};
+
+class LightNode{
+public:
+    int id;
+    std::string name;
+
+    LightNode(int id_, std::string& name_):
+        id(id_),
+        name(std::move(name_))
+    {}
+};
+
+class Node {
+public:
+    int id;
+    std::string name;
+
+    ent::CommodityType pref;
+    ent::Corporation corp;
+    int order_level;
+    int tech_level;
+
+    Node(std::tuple<
+        int, 
+        std::string, 
+        int, std::string, 
+        int, std::string, 
+        int, 
+        int>& raw_select):
+        id(std::get<0>(raw_select)),
+        name{std::get<1>(raw_select)},
+        pref{std::get<2>(raw_select), std::get<3>(raw_select)},
+        corp{std::get<4>(raw_select), std::get<5>(raw_select)},
+        order_level{std::get<6>(raw_select)},
+        tech_level{std::get<7>(raw_select)}
+        {}
+};
+
+class Lane {
+public:
+    int id;
+    LightNode start;
+    LightNode end;
+    int traverse_time;
+    bool stability; //TODO make extension for actual stability
+
+    Lane(std::tuple<
+        int,
+        int,std::string,
+        int,std::string,
+        int,
+        bool>& raw_select):
+        id{std::get<0>(raw_select)},
+        start{std::get<1>(raw_select), std::get<2>(raw_select)},
+        end{std::get<3>(raw_select),std::get<4>(raw_select)},
+        traverse_time{std::get<5>(raw_select)},
+        stability{std::get<6>(raw_select)}
+        {}
+};
+
 }
 #endif

@@ -49,14 +49,24 @@ TEST(SelectTest, Module)    {
     EXPECT_EQ(db::Connector::select_module().get()->size(), 3);
 }
 
+TEST(SelectTest, NodeTest)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::test_select_node(), 3);
+}
+
 TEST(SelectTest, Node)    {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_node(), 3);
+    EXPECT_EQ(db::Connector::select_node().get()->size(), 3);
+}
+
+TEST(SelectTest, LaneTest)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::test_select_lane(), 1);
 }
 
 TEST(SelectTest, Lane)    {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_lane(), 1);
+    EXPECT_EQ(db::Connector::select_lane().get()->size(), 1);
 }
 
 TEST(SelectTest, Encounter)    {

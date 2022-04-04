@@ -5,6 +5,7 @@
 #include <algorithm> // copy
 
 // ----- Model ----- //
+using namespace md;
 
 Model::Model():
     inventory(new Inventory())
