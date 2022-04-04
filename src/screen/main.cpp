@@ -6,7 +6,7 @@
 
 #include "model/model.hpp"
 #include "screen/inventory.hpp"
-#include "database.hpp"
+#include "db/database.hpp"
 
 using namespace sc;
 using namespace ftxui;

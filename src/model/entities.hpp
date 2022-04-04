@@ -1,7 +1,7 @@
 #ifndef LANCER_ENTITIES_HPP
 #define LANCER_ENTITIES_HPP
 
-#include "lancer.hpp"
+#include "db/lancer.hpp"
 
 namespace ent{
 

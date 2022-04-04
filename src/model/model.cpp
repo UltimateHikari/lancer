@@ -1,5 +1,5 @@
 #include "model/model.hpp"
-#include "database.hpp"
+#include "db/database.hpp"
 #include <ctime> // time, localtime
 #include <iomanip> // put_time
 #include <algorithm> // copy
