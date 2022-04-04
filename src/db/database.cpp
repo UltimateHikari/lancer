@@ -135,7 +135,7 @@ std::shared_ptr<std::vector<ent::Module>> Connector::select_module(){
 }
 
 
-int Connector::select_node(){
+int Connector::test_select_node(){
     auto rows = db::internal::storage.select(columns(&Node::id, &Node::name));
     for(auto& i: rows){
         cerr << get<0>(i) << " " << get<1>(i) << endl;
@@ -143,12 +143,66 @@ int Connector::select_node(){
     return rows.size();
 }
 
-int Connector::select_lane(){
+std::shared_ptr<std::vector<ent::Node>> Connector::select_node(){
+    auto rows = db::internal::storage.select(
+        columns(
+            &Node::id, &Node::name, 
+            &Node::pref_id, &CommodityType::name,
+            &Node::corp_affinity, &Corporation::name,
+            &Node::order_level, &Node::tech_level
+            ),
+        join<CommodityType>(on(c(&Node::pref_id) == &CommodityType::id)),
+        join<Corporation>(on(c(&Node::corp_affinity) == &Corporation::id))
+        );
+
+    if(rows.size() == 0){
+        //TODO: exceptions?
+        cerr << "empty db error in select_node, stopping...\n";
+        exit(-1);
+    }
+
+    auto result_ptr = std::make_shared<std::vector<ent::Node>>();
+    for(auto& i: rows){
+        result_ptr.get()->push_back({i});
+        cerr << get<0>(i) << " " << get<1>(i) << " " << get<3>(i) << " " << get<5>(i) << endl;
+    }
+    return result_ptr;
+}
+
+int Connector::test_select_lane(){
     auto rows = db::internal::storage.select(columns(&Lane::id, &Lane::traverse_time));
     for(auto& i: rows){
         cerr << get<0>(i) << " " << get<1>(i) << endl;
     }
     return rows.size();
+}
+
+std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(){
+    using stt = alias_a<Node>;
+    using end = alias_b<Node>;
+    auto rows = db::internal::storage.select(
+        columns(
+            &Lane::id,
+            &Lane::start, alias_column<stt>(&Node::name),
+            &Lane::end, alias_column<end>(&Node::name),
+            &Lane::traverse_time, &Lane::initial_stability
+            ),
+        join<stt>(on(alias_column<stt>(&Node::id) == c(&Lane::start))),
+        join<end>(on(alias_column<end>(&Node::id) == c(&Lane::end)))
+        );
+
+    if(rows.size() == 0){
+        //TODO: exceptions?
+        cerr << "empty db error in select_lane, stopping...\n";
+        exit(-1);
+    }
+
+    auto result_ptr = std::make_shared<std::vector<ent::Lane>>();
+    for(auto& i: rows){
+        result_ptr.get()->push_back({i});
+        cerr << get<0>(i) << " " << get<1>(i) << " " << get<3>(i) << " " << get<5>(i) << endl;
+    }
+    return result_ptr;
 }
 
 int Connector::select_encounter(){

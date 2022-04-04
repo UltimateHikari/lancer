@@ -8,6 +8,8 @@
 #include <utility>
 #include <mutex>
 
+namespace md{
+
 template<class T>
 class SubInventory{
 private:
@@ -36,12 +38,24 @@ public:
     void save(std::string& save_name);
 };
 
+class Navigation{
+private:
+    ent::Node current_node;
+    std::shared_ptr<std::vector<ent::Lane>> current_lanes;
+public:
+    void move_with_lane(ent::Lane& lane);
+    const ent::Node& get_current_node();
+    const std::vector<ent::Lane>& get_current_lanes();
+};
+
+};
 
 class Model{
 private:
     int sense_of_life = 42;
     bool game_active_flag = false;
-    Inventory * inventory;
+    md::Inventory * inventory;
+    md::Navigation * navigation;
 public:
     std::string get_time();
 
@@ -50,7 +64,8 @@ public:
     int get_sense();
     bool is_game_active();
     void set_game_active(bool activity);
-    Inventory& get_inventory();
+    md::Inventory& get_inventory();
+    md::Navigation& get_navigation();
     void load_game(int save_id);
     void save_game(std::string save_name);
 };

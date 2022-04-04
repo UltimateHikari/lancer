@@ -6,7 +6,7 @@ set(sources
     screen/inventory.cpp
     model/model.cpp
     main.cpp 
-    database.cpp
+    db/database.cpp
 )
 
 set(libraries

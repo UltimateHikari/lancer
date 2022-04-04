@@ -1,7 +1,6 @@
 #ifndef LANCER_GAME_HPP
 #define LANCER_GAME_HPP
 
-#include "lancer.hpp"
 #include "model/model.hpp"
 #include <vector>
 #include <memory>
