@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <database.hpp>
+#include <db/database.hpp>
 #include "model/model.hpp"
 
 using namespace sqlite_orm;

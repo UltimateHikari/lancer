@@ -40,8 +40,10 @@ public:
 
 class Navigation{
 private:
-    ent::Node current_node;
-    std::shared_ptr<std::vector<ent::Lane>> current_lanes;
+    ent::Node cached_node;
+    int current_node_id = 0;
+    std::shared_ptr<std::vector<ent::Lane>> cached_lanes;
+    int current_lanes_id = 0;
 public:
     void move_with_lane(ent::Lane& lane);
     const ent::Node& get_current_node();
@@ -56,6 +58,8 @@ private:
     bool game_active_flag = false;
     md::Inventory * inventory;
     md::Navigation * navigation;
+    int current_time;
+    int current_balance;
 public:
     std::string get_time();
 
@@ -64,8 +68,31 @@ public:
     int get_sense();
     bool is_game_active();
     void set_game_active(bool activity);
-    md::Inventory& get_inventory();
-    md::Navigation& get_navigation();
+
+    void update_commodity(const ent::Commodity& comm, int delta){
+        inventory->update_commodity(comm, delta);
+    }
+    const std::vector<std::pair<ent::Commodity, int>>& get_commodities(){
+        return inventory->get_commodities();
+    }
+    void update_module(const ent::Module& comm, int delta){
+        inventory->update_module(comm, delta);
+    }
+    const std::vector<std::pair<ent::Module, int>>& get_modules(){
+        return inventory->get_modules();
+    }
+
+    void move_with_lane(ent::Lane& lane){
+        current_time += lane.traverse_time;
+        navigation->move_with_lane(lane);
+    }
+    const ent::Node& get_current_node(){
+        return navigation->get_current_node();
+    }
+    const std::vector<ent::Lane>& get_current_lanes(){
+        return navigation->get_current_lanes();
+    }
+
     void load_game(int save_id);
     void save_game(std::string save_name);
 };

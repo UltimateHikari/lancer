@@ -4,6 +4,7 @@ add_library(lancer_lib)
 set(sources 
     screen/main.cpp
     screen/inventory.cpp
+    screen/navigation.cpp
     model/model.cpp
     main.cpp 
     db/database.cpp

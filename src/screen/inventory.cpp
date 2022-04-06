@@ -39,9 +39,9 @@ ftxui::Element RenderCommodity(std::pair<ent::Commodity, int>& commodity){
 
 ftxui::Element RenderLines(Game& game){
     ftxui::Elements lines;    
-    auto& inv = game.getModel().get_inventory();
-    auto modules = inv.get_modules();
-    auto commodities = inv.get_commodities();
+    auto& model = game.getModel();
+    auto modules = model.get_modules();
+    auto commodities = model.get_commodities();
     for(auto& i: modules){
         lines.push_back(RenderModule(i));
     }
