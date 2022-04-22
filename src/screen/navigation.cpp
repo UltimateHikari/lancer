@@ -80,17 +80,16 @@ public:
     using namespace ftxui;
     nodeinfocolumn = RenderNodeColumn();
     nodeinfo = RenderNodeInfo(mod.get_current_node());
-    nodepanel = hflow({nodeinfocolumn, nodeinfo, separator(), router.get()->Render()}) | border;
+    nodepanel = hflow({nodeinfocolumn, nodeinfo,  router.get()->Render() | borderDouble}) | border | yflex;
   }  
 
-  ftxui::Component RenderLaneLine(ent::Lane& lane, std::function<void()> on_click){
+  ftxui::Component RenderLaneLine(const ent::Lane& lane, std::function<void()> on_click){
     using namespace ftxui;
-    //TODO add real lane data
     return Container::Horizontal({
       Renderer([&]{return hbox({
-        text("lane.start.name"),
+        text(lane.start.name),
         separator(),
-        text("lane.end.name"),
+        text(lane.end.name),
       }) |
       xflex;}),
       Button("depart", on_click)
@@ -99,10 +98,10 @@ public:
 
   void RenderLanePanel(Model& mod){
     using namespace ftxui;
-    auto entities = mod.get_current_lanes();
+    const std::vector<ent::Lane>& entities = mod.get_current_lanes();
     lanes.clear();
     
-    for(auto& i : entities){
+    for(const ent::Lane& i : entities){
       lanes.push_back(RenderLaneLine(i, []{exit(-1);}));
     }
       
