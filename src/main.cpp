@@ -71,8 +71,7 @@ int main(int, char**) {
     sc::Main* screen = new sc::Main();
 
     Game* game = new Game();
-    // std::cerr << game->getModel().get_current_node().name;
-    // exit(-1);
+
 
     screen->show(*game);
     return 0;

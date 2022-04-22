@@ -145,7 +145,7 @@ Component time_renderer(Game& game){
 void System::show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
-    int tab_index = 1;
+    int tab_index = 0;
     std::vector<std::string> tab_entries = {
         "Navigation", "Inventory", "Trade"
     };

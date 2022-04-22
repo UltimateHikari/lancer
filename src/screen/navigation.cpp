@@ -21,31 +21,6 @@ ftxui::Component model_time_renderer(Model& model){
         });
 }
 
-//   ftxui::Component RenderLaneLine(ent::Lane& lane, std::function<void()> on_click){
-//     using namespace ftxui;
-//     return Container::Horizontal({
-//       Renderer([&]{return hbox({
-//         text(lane.start.name),
-//         separator(),
-//         text(lane.end.name),
-//       }) |
-//       xflex;}),
-//       Button("fly", on_click)
-//       });
-//   }
-
-// ftxui::Component RenderLanePanel(Model& mod){
-//   using namespace ftxui;
-//   auto lanes = mod.get_current_lanes();
-//       return model_time_renderer(mod);
-//   Components rendered;
-//   for(auto& i : lanes){
-//     rendered.push_back(RenderLaneLine(i, []{/*TODO answer sth*/}));
-//   }
-//   return Container::Vertical({rendered});
-// }
-
-
 
 // ftxui::Component RenderPanel(Model& mod){
 //   using namespace ftxui;
@@ -59,7 +34,8 @@ ftxui::Component model_time_renderer(Model& model){
 class NavigationBase : public ftxui::ComponentBase{
 public:
   Game* game;
-  ftxui::Component lanes;
+  ftxui::Component router;
+  ftxui::Components lanes = ftxui::Components();
   ftxui::Element nodeinfocolumn;
   ftxui::Element nodeinfo;
   ftxui::Element nodepanel;
@@ -69,11 +45,9 @@ public:
   }
 
   ftxui::Element Render() override{
+    RenderLanePanel(game->getModel());
+    router = ftxui::Container::Vertical(lanes);
     RenderNodeInfoPanel(game->getModel());
-    //return ftxui::text(game->getModel().get_time()) | ftxui::border;
-    // lanes = ftxui::Container::Vertical({});
-    // //lanes.get()->Add();
-    
     return nodepanel | ftxui::border;
   }
 
@@ -106,9 +80,32 @@ public:
   void RenderNodeInfoPanel(Model& mod){
     using namespace ftxui;
     nodeinfocolumn = RenderNodeColumn();
-    //nodeinfo = RenderNodeInfo(mod.get_current_node());
-    nodepanel = hflow({nodeinfocolumn});
+    nodeinfo = RenderNodeInfo(mod.get_current_node());
+    nodepanel = hflow({nodeinfocolumn, nodeinfo, separator(), router->Render()}) | border;
   }  
+
+  ftxui::Component RenderLaneLine(ent::Lane& lane, std::function<void()> on_click){
+    using namespace ftxui;
+    return Container::Horizontal({
+      Renderer([&]{return hbox({
+        text(lane.start.name),
+        separator(),
+        text(lane.end.name),
+      }) |
+      xflex;}),
+      Button("depart", on_click)
+      });
+  }
+
+  void RenderLanePanel(Model& mod){
+    using namespace ftxui;
+    lanes.clear();
+    auto entities = mod.get_current_lanes();
+    for(auto& i : entities){
+      lanes.push_back(RenderLaneLine(i, []{/*TODO answer sth*/}));
+    }
+  }
+
 };
 
 // class NavigationBase : public ftxui::ComponentBase{
