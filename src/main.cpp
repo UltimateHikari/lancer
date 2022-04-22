@@ -11,7 +11,7 @@
 
 using namespace sqlite_orm;
 
-void lancer_test(){
+void lancer_visual_test(){
     using std::cerr;
     db::Connector::sync();
     db::Connector::select_corporation();
@@ -67,11 +67,11 @@ void lancer_test(){
 }
 
 int main(int, char**) {
-    lancer_test();
-    // sc::Main* screen = new sc::Main();
+    //lancer_visual_test();
+    sc::Main* screen = new sc::Main();
 
-    // Game* game = new Game();
+    Game* game = new Game();
 
-    // screen->show(*game);
+    screen->show(*game);
     return 0;
 }
