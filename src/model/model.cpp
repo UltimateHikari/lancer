@@ -9,7 +9,8 @@
 using namespace md;
 
 Model::Model():
-    inventory(new Inventory())
+    inventory(new Inventory()),
+    navigation(new Navigation())
 {}
 Model::~Model(){
     delete inventory;
@@ -109,17 +110,21 @@ void Inventory::save(std::string& save_name){
 
 // ----- Navigation ----- //
 
+ent::Node Navigation::refresh_node(){
+    auto nodes = db::Connector::select_node();
+    if(nodes.get()->size() < current_node_id){
+        std::cerr << "your ship was eaten by current_lane_id dragon\n";
+        exit(-1);
+    }
+    return (*(nodes.get()))[current_node_id];
+}
+
 void Navigation::move_with_lane(ent::Lane& lane){
     current_node_id = (current_node_id == lane.end.id ? lane.end.id : lane.start.id);
 }
 const ent::Node& Navigation::get_current_node(){
     if(cached_node.id != current_node_id){
-        auto nodes = db::Connector::select_node();
-        if(nodes.get()->size() < current_node_id){
-            std::cerr << "your ship was eaten by current_lane_id dragon\n";
-            exit(-1);
-        }
-        cached_node = std::move((*(nodes.get()))[current_node_id]);
+        cached_node = refresh_node();
     }
     return cached_node;
 

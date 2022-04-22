@@ -145,14 +145,16 @@ Component time_renderer(Game& game){
 void System::show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
-    int tab_index = 0;
+    int tab_index = 1;
     std::vector<std::string> tab_entries = {
         "Navigation", "Inventory", "Trade"
     };
     auto tab_selection = Toggle(&tab_entries, &tab_index);
+    auto navigation = sc::Navigation(game);
+    
     auto tab_content = Container::Tab(
     {
-        sc::Navigation(game)/*time_renderer(game)*/,
+        navigation,
         sc::Inventory(game),
         time_renderer(game)
     },

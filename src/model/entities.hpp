@@ -8,6 +8,7 @@ namespace ent{
 class Comparable{
 public:
     int id;
+    Comparable(){};
     Comparable(int id_): id(id_){}
 };
 
@@ -25,6 +26,7 @@ inline bool operator== (const Comparable& lhs, const Comparable& rhs){ return rh
 class CommodityType : public Comparable{
 public:
     std::string name;
+    CommodityType(){};
     CommodityType(int id_, std::string& name_):
         Comparable(id_), 
         name(std::move(name_))
@@ -89,6 +91,7 @@ public:
 class Corporation : public Comparable, public Printable{
 public:
     std::string name;
+    Corporation(){};
     Corporation(int id_, std::string& name_):
         Comparable(id_), 
         name(std::move(name_))
@@ -116,6 +119,8 @@ public:
     ent::Corporation corp;
     int order_level;
     int tech_level;
+
+    Node(){};
 
     Node(std::tuple<
         int, 
