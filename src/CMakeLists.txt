@@ -6,6 +6,7 @@ set(sources
     screen/inventory.cpp
     screen/navigation.cpp
     model/model.cpp
+    model/entities.cpp
     main.cpp 
     db/database.cpp
 )

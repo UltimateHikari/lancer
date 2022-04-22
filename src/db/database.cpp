@@ -42,9 +42,6 @@ void Connector::sync(){
 
 int Connector::select_corporation(){
     auto rows = db::internal::storage.select(columns(&Corporation::id, &Corporation::name));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
-    }
     return rows.size();
 }
 
@@ -62,56 +59,43 @@ std::shared_ptr<std::vector<ent::Commodity>> Connector::select_commodity(){
     auto result_ptr = std::make_shared<std::vector<ent::Commodity>>();
     for(auto& i: rows){
         result_ptr.get()->push_back({i});
-        cerr << get<0>(i) << " " << get<2>(i) << " " << get<3>(i) << endl;
     }
     return result_ptr;
 }
 
 int Connector::select_commodity_type(){
     auto rows = db::internal::storage.select(columns(&CommodityType::id, &CommodityType::name));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
-    }
+
     return rows.size();
 }
 
 int Connector::select_frame_class(){
     auto rows = db::internal::storage.select(columns(&FrameClass::id, &FrameClass::name));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
-    }
+
     return rows.size();
 }
 
 int Connector::select_frame(){
     auto rows = db::internal::storage.select(columns(&Frame::id, &Frame::name));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
-    }
+
     return rows.size();
 }
 
 int Connector::select_module_type(){
     auto rows = db::internal::storage.select(columns(&ModuleType::id, &ModuleType::name));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
-    }
+
     return rows.size();
 }
 
 int Connector::select_element(){
     auto rows = db::internal::storage.select(columns(&Element::id, &Element::name));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
-    }
+
     return rows.size();
 }
 
 int Connector::test_select_module(){
     auto rows = db::internal::storage.select(columns(&Module::id, &Module::name));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
-    }
+
     return rows.size();
 }
 
@@ -129,7 +113,6 @@ std::shared_ptr<std::vector<ent::Module>> Connector::select_module(){
     auto result_ptr = std::make_shared<std::vector<ent::Module>>();
     for(auto& i: rows){
         result_ptr.get()->push_back({i});
-        cerr << get<0>(i) << " " << get<1>(i) << "|" << get<2>(i) << "|" << get<3>(i) << endl;
     }
     return result_ptr;
 }
@@ -137,9 +120,7 @@ std::shared_ptr<std::vector<ent::Module>> Connector::select_module(){
 
 int Connector::test_select_node(){
     auto rows = db::internal::storage.select(columns(&Node::id, &Node::name));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
-    }
+
     return rows.size();
 }
 
@@ -164,16 +145,13 @@ std::shared_ptr<std::vector<ent::Node>> Connector::select_node(){
     auto result_ptr = std::make_shared<std::vector<ent::Node>>();
     for(auto& i: rows){
         result_ptr.get()->push_back({i});
-        cerr << get<0>(i) << " " << get<1>(i) << " " << get<3>(i) << " " << get<5>(i) << endl;
     }
     return result_ptr;
 }
 
 int Connector::test_select_lane(){
     auto rows = db::internal::storage.select(columns(&Lane::id, &Lane::traverse_time));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
-    }
+
     return rows.size();
 }
 
@@ -187,8 +165,8 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(){
             &Lane::end, alias_column<end>(&Node::name),
             &Lane::traverse_time, &Lane::initial_stability
             ),
-        join<stt>(on(alias_column<stt>(&Node::id) == c(&Lane::start))),
-        join<end>(on(alias_column<end>(&Node::id) == c(&Lane::end)))
+        left_join<stt>(on(alias_column<stt>(&Node::id) == c(&Lane::start))),
+        left_join<end>(on(alias_column<end>(&Node::id) == c(&Lane::end)))
         );
 
     if(rows.size() == 0){
@@ -200,40 +178,31 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(){
     auto result_ptr = std::make_shared<std::vector<ent::Lane>>();
     for(auto& i: rows){
         result_ptr.get()->push_back({i});
-        cerr << get<0>(i) << " " << get<1>(i) << " " << get<2>(i) << " " << get<3>(i) << " "  << get<4>(i) << " " << get<5>(i) << endl;
     }
     return result_ptr;
 }
 
 int Connector::select_encounter(){
     auto rows = db::internal::storage.select(columns(&Encounter::id, &Encounter::name));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
-    }
+
     return rows.size();
 }
 
 int Connector::select_mod_type(){
     auto rows = db::internal::storage.select(columns(&ModificatorType::id, &ModificatorType::name));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
-    }
+
     return rows.size();
 }
 
 int Connector::select_mod(){
     auto rows = db::internal::storage.select(columns(&Modificator::id, &Modificator::name));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
-    }
+
     return rows.size();
 }
 
 int Connector::select_mod_log(){
     auto rows = db::internal::storage.select(columns(&ModificatorLog::node_id, &ModificatorLog::mod_id));
-    for(auto& i: rows){
-        cerr << get<0>(i) << " " << get<1>(i) << endl;
-    }
+
     return rows.size();
 }
 
@@ -242,10 +211,8 @@ std::shared_ptr<std::vector<ent::SavedGame>> Connector::select_saved_game(){
         columns(&SavedGame::id, &SavedGame::name, &SavedGame::date));
 
     auto result_ptr = std::make_shared<std::vector<ent::SavedGame>>();
-    cerr << "saved-games:\n";
     for(auto& i: rows){
         result_ptr.get()->push_back({i});
-        cerr << get<0>(i) << " " << get<1>(i) << " " << get<2>(i) << endl;
     }
     return result_ptr;
 }
@@ -261,7 +228,6 @@ std::shared_ptr<std::vector<std::pair<ent::Module,int>>> Connector::select_saved
     for(auto& i: rows){
         ent::Module mod{i};
         result_ptr.get()->push_back(std::make_pair(mod, get<4>(i)));
-        cerr << mod.id << " " << mod.name << " " << get<4>(i) << endl;
     }
     return result_ptr;
 }
@@ -277,7 +243,6 @@ std::shared_ptr<std::vector<std::pair<ent::Commodity,int>>> Connector::select_sa
     for(auto& i: rows){
         ent::Commodity com{i};
         result_ptr.get()->push_back(std::make_pair(com, get<4>(i)));
-        cerr << com.id << " " << com.name << " " << get<4>(i) << endl;
     }
     return result_ptr;
 }
