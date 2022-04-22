@@ -35,7 +35,7 @@ class NavigationBase : public ftxui::ComponentBase{
 public:
   Game* game;
   ftxui::Component router;
-  ftxui::Components lanes = ftxui::Components();
+  ftxui::Components lanes;
   ftxui::Element nodeinfocolumn;
   ftxui::Element nodeinfo;
   ftxui::Element nodepanel;
@@ -46,7 +46,6 @@ public:
 
   ftxui::Element Render() override{
     RenderLanePanel(game->getModel());
-    router = ftxui::Container::Vertical(lanes);
     RenderNodeInfoPanel(game->getModel());
     return nodepanel | ftxui::border;
   }
@@ -81,16 +80,17 @@ public:
     using namespace ftxui;
     nodeinfocolumn = RenderNodeColumn();
     nodeinfo = RenderNodeInfo(mod.get_current_node());
-    nodepanel = hflow({nodeinfocolumn, nodeinfo, separator(), router->Render()}) | border;
+    nodepanel = hflow({nodeinfocolumn, nodeinfo, separator(), router.get()->Render()}) | border;
   }  
 
   ftxui::Component RenderLaneLine(ent::Lane& lane, std::function<void()> on_click){
     using namespace ftxui;
+    //TODO add real lane data
     return Container::Horizontal({
       Renderer([&]{return hbox({
-        text(lane.start.name),
+        text("lane.start.name"),
         separator(),
-        text(lane.end.name),
+        text("lane.end.name"),
       }) |
       xflex;}),
       Button("depart", on_click)
@@ -99,11 +99,14 @@ public:
 
   void RenderLanePanel(Model& mod){
     using namespace ftxui;
-    lanes.clear();
     auto entities = mod.get_current_lanes();
+    lanes.clear();
+    
     for(auto& i : entities){
-      lanes.push_back(RenderLaneLine(i, []{/*TODO answer sth*/}));
+      lanes.push_back(RenderLaneLine(i, []{exit(-1);}));
     }
+      
+    router = Container::Vertical(lanes);
   }
 
 };
