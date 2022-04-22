@@ -41,7 +41,7 @@ public:
 class Navigation{
 private:
     ent::Node cached_node;
-    int current_node_id = 0;
+    int current_node_id = 1;
     std::shared_ptr<std::vector<ent::Lane>> cached_lanes;
     int current_lanes_id = 0;
 public:

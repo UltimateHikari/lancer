@@ -117,7 +117,7 @@ int Connector::test_select_module(){
 
 std::shared_ptr<std::vector<ent::Module>> Connector::select_module(){
     auto rows = db::internal::storage.select(
-        columns(&Module::id, &ModuleType::id, &ModuleType::name, &Module::name),
+        columns(&Module::id, &Module::type_id, &ModuleType::name, &Module::name),
         join<ModuleType>(on(c(&Module::type_id) == &ModuleType::id)));
 
     if(rows.size() == 0){
@@ -129,7 +129,7 @@ std::shared_ptr<std::vector<ent::Module>> Connector::select_module(){
     auto result_ptr = std::make_shared<std::vector<ent::Module>>();
     for(auto& i: rows){
         result_ptr.get()->push_back({i});
-        cerr << get<0>(i) << " " << get<2>(i) << " " << get<3>(i) << endl;
+        cerr << get<0>(i) << " " << get<1>(i) << "|" << get<2>(i) << "|" << get<3>(i) << endl;
     }
     return result_ptr;
 }
@@ -200,7 +200,7 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(){
     auto result_ptr = std::make_shared<std::vector<ent::Lane>>();
     for(auto& i: rows){
         result_ptr.get()->push_back({i});
-        cerr << get<0>(i) << " " << get<1>(i) << " " << get<3>(i) << " " << get<5>(i) << endl;
+        cerr << get<0>(i) << " " << get<1>(i) << " " << get<2>(i) << " " << get<3>(i) << " "  << get<4>(i) << " " << get<5>(i) << endl;
     }
     return result_ptr;
 }

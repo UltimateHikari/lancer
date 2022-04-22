@@ -2,13 +2,24 @@
 
 #include <vector>
 #include <memory>
+#include <iostream>
+
 #include "model/entities.hpp"
 #include "model/model.hpp"
-#include <ftxui/component/event.hpp> 
+
+#include "ftxui/component/component.hpp"
+#include "ftxui/component/event.hpp"
+#include "ftxui/dom/elements.hpp"
 
 
 
 namespace sc{
+
+ftxui::Component model_time_renderer(Model& model){
+    return ftxui::Renderer([&]{ 
+        return ftxui::hflow({ftxui::text(model.get_time())}) | ftxui::border;
+        });
+}
 
 ftxui::Element RenderNodeColumn(){
   using namespace ftxui;
@@ -23,7 +34,7 @@ ftxui::Element RenderNodeColumn(){
   yflex;
 }
 
-ftxui::Element RenderNodeInfo(ent::Node& node){
+ftxui::Element RenderNodeInfo(const ent::Node& node){
   using namespace ftxui;
   return vbox({
     text(node.name),
@@ -52,6 +63,7 @@ ftxui::Component RenderLaneLine(ent::Lane& lane, std::function<void()> on_click)
 ftxui::Component RenderLanePanel(Model& mod){
   using namespace ftxui;
   auto lanes = mod.get_current_lanes();
+      return model_time_renderer(mod);
   Components rendered;
   for(auto& i : lanes){
     rendered.push_back(RenderLaneLine(i, []{/*TODO answer sth*/}));
@@ -61,10 +73,11 @@ ftxui::Component RenderLanePanel(Model& mod){
 
 ftxui::Component RenderNodeInfoPanel(Model& mod){
   using namespace ftxui;
-  auto current_node = mod.get_current_node();
+    return model_time_renderer(mod);
+
   return Container::Horizontal({
     Renderer([]{return RenderNodeColumn();}),
-    Renderer([&]{return RenderNodeInfo(current_node);})
+    Renderer([&]{return RenderNodeInfo(mod.get_current_node());})
   });
 }
 
@@ -72,6 +85,7 @@ ftxui::Component RenderPanel(Model& mod){
   auto nodeinfo = RenderNodeInfoPanel(mod);
   auto lanepanel = RenderLanePanel(mod);
   int left_size = 40;
+  std::cerr << "hello there";
   return ftxui::ResizableSplitLeft(nodeinfo, lanepanel, &left_size);
 }
 

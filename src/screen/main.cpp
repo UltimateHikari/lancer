@@ -145,30 +145,6 @@ Component time_renderer(Game& game){
 void System::show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
-///// placeholder
-
-    auto spinner_tab_renderer2 = Renderer([&] {
-    Elements entries;
-    int shift = 0;
-    for (int i = 0; i < 10; ++i) {
-        entries.push_back(spinner(i, shift / 2) | bold |
-                    size(WIDTH, GREATER_THAN, 2) | border);
-    }
-    return hflow(std::move(entries)) | border;
-    });
-
-    auto spinner_tab_renderer3 = Renderer([&] {
-    Elements entries;
-    int shift = 0;
-    for (int i = 0; i < 5; ++i) {
-        entries.push_back(spinner(i, shift / 2) | bold |
-                    size(WIDTH, GREATER_THAN, 2) | border);
-    }
-    return hflow(std::move(entries)) | border;
-    });
-
-////
-
     int tab_index = 0;
     std::vector<std::string> tab_entries = {
         "Navigation", "Inventory", "Trade"
@@ -176,7 +152,7 @@ void System::show(Game& game){
     auto tab_selection = Toggle(&tab_entries, &tab_index);
     auto tab_content = Container::Tab(
     {
-        /*sc::Navigation(game)*/time_renderer(game),
+        sc::Navigation(game)/*time_renderer(game)*/,
         sc::Inventory(game),
         time_renderer(game)
     },
