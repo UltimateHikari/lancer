@@ -71,7 +71,6 @@ void lancer_visual_test(){
 }
 
 int main(int, char**) {
-    //lancer_visual_test();
     LOG(INFO) << "My first info log using default logger";
     sc::Main* screen = new sc::Main();
 

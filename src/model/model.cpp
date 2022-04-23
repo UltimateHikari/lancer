@@ -5,6 +5,9 @@
 #include <algorithm> // copy
 #include <iostream>
 
+#include "easyloggingpp/easylogging++.h"
+
+
 // ----- Model ----- //
 using namespace md;
 
@@ -120,7 +123,9 @@ ent::Node Navigation::refresh_node(){
 }
 
 void Navigation::move_with_lane(const ent::Lane& lane){
+    LOG(INFO) << "moving from node : " + std::to_string(current_node_id) + "\n";
     current_node_id = (current_node_id == lane.end.id ? lane.start.id : lane.end.id);
+    LOG(INFO) << "moved to node    : " + std::to_string(current_node_id) + "\n";
 }
 
 const ent::Node& Navigation::get_current_node(){
