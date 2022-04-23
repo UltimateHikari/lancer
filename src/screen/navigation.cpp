@@ -40,7 +40,6 @@ public:
   ftxui::Element nodeinfocolumn;
   ftxui::Element nodeinfo;
   ftxui::Element nodepanel;
-  std::string depart = "depart";
 
   NavigationBase(Game& game_){
     router = ftxui::Container::Vertical({});
@@ -93,7 +92,7 @@ public:
   ftxui::Component RenderLaneLine(const ent::Lane& lane, std::function<void()> on_click){
     using namespace ftxui;
     return Container::Horizontal({
-        Button(depart, [&]{game->getModel().move_with_lane(lane); depart = "act";}),
+        Button("Depart", [&]{game->getModel().move_with_lane(lane);}),
         Renderer([&]{return filler();}),
         
         Renderer([&]{

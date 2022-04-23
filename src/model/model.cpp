@@ -3,7 +3,6 @@
 #include <ctime> // time, localtime
 #include <iomanip> // put_time
 #include <algorithm> // copy
-#include <iostream>
 
 #include "easyloggingpp/easylogging++.h"
 
@@ -115,17 +114,18 @@ void Inventory::save(std::string& save_name){
 
 ent::Node Navigation::refresh_node(){
     auto nodes = db::Connector::select_node();
+    LOG(INFO) << "refreshing current node: ";
     if(nodes.get()->size() < current_node_id){
-        std::cerr << "your ship was eaten by current_lane_id dragon\n";
+        LOG(ERROR) << "your ship was eaten by current_lane_id dragon\n";
         exit(-1);
     }
-    return (*(nodes.get()))[current_node_id];
+    return (*(nodes.get()))[current_node_id - 1]; // in res from 0, in db ftom 1. may break, better use find?
 }
 
 void Navigation::move_with_lane(const ent::Lane& lane){
-    LOG(INFO) << "moving from node : " + std::to_string(current_node_id) + "\n";
+    LOG(INFO) << "moving from node : " + std::to_string(current_node_id);
     current_node_id = (current_node_id == lane.end.id ? lane.start.id : lane.end.id);
-    LOG(INFO) << "moved to node    : " + std::to_string(current_node_id) + "\n";
+    LOG(INFO) << "moved to node    : " + std::to_string(current_node_id);
 }
 
 const ent::Node& Navigation::get_current_node(){
