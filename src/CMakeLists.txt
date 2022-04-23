@@ -16,6 +16,7 @@ set(libraries
     ftxui::screen
     ftxui::dom
     ftxui::component
+    easyloggingpp
 )
 
 target_link_libraries(lancer PRIVATE ${libraries})

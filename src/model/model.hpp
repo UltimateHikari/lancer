@@ -49,7 +49,7 @@ public:
     Navigation(){
         this->cached_node = refresh_node();
     };
-    void move_with_lane(ent::Lane& lane);
+    void move_with_lane(const ent::Lane& lane);
     const ent::Node& get_current_node();
     const std::vector<ent::Lane>& get_current_lanes();
 };
@@ -86,7 +86,7 @@ public:
         return inventory->get_modules();
     }
 
-    void move_with_lane(ent::Lane& lane){
+    void move_with_lane(const ent::Lane& lane){
         current_time += lane.traverse_time;
         navigation->move_with_lane(lane);
     }

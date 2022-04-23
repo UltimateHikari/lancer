@@ -119,9 +119,10 @@ ent::Node Navigation::refresh_node(){
     return (*(nodes.get()))[current_node_id];
 }
 
-void Navigation::move_with_lane(ent::Lane& lane){
-    current_node_id = (current_node_id == lane.end.id ? lane.end.id : lane.start.id);
+void Navigation::move_with_lane(const ent::Lane& lane){
+    current_node_id = (current_node_id == lane.end.id ? lane.start.id : lane.end.id);
 }
+
 const ent::Node& Navigation::get_current_node(){
     if(cached_node.id != current_node_id){
         cached_node = refresh_node();

@@ -93,7 +93,7 @@ public:
   ftxui::Component RenderLaneLine(const ent::Lane& lane, std::function<void()> on_click){
     using namespace ftxui;
     return Container::Horizontal({
-        Button(depart, [&]{depart = "act";}),
+        Button(depart, [&]{game->getModel().move_with_lane(lane); depart = "act";}),
         Renderer([&]{return filler();}),
         
         Renderer([&]{
