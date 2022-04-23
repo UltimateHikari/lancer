@@ -8,6 +8,7 @@
 #include "model/model.hpp"
 
 #include "ftxui/component/component.hpp"
+#include "ftxui/component/component_options.hpp"   // for ButtonOption
 #include "ftxui/component/event.hpp"
 #include "ftxui/dom/elements.hpp"
 
@@ -35,17 +36,23 @@ class NavigationBase : public ftxui::ComponentBase{
 public:
   Game* game;
   ftxui::Component router;
-  ftxui::Components lanes;
+  ftxui::Component button = ftxui::Button("testbutton", []{}, ftxui::ButtonOption());
   ftxui::Element nodeinfocolumn;
   ftxui::Element nodeinfo;
   ftxui::Element nodepanel;
+  std::string depart = "depart";
 
   NavigationBase(Game& game_){
+    router = ftxui::Container::Vertical({});
     this->game = &game_;
   }
 
   ftxui::Element Render() override{
+    DetachAllChildren();
     RenderLanePanel(game->getModel());
+        router.get()->Add(button);
+
+    Add(router);
     RenderNodeInfoPanel(game->getModel());
     return nodepanel | ftxui::border;
   }
@@ -80,32 +87,28 @@ public:
     using namespace ftxui;
     nodeinfocolumn = RenderNodeColumn();
     nodeinfo = RenderNodeInfo(mod.get_current_node());
-    nodepanel = hflow({nodeinfocolumn, nodeinfo,  router.get()->Render() | borderDouble}) | border | yflex;
+    nodepanel = hflow({nodeinfocolumn, nodeinfo, router.get()->Render() | borderDouble}) | border | yflex;
   }  
 
   ftxui::Component RenderLaneLine(const ent::Lane& lane, std::function<void()> on_click){
     using namespace ftxui;
     return Container::Horizontal({
-      Renderer([&]{return hbox({
-        text(lane.start.name),
-        separator(),
-        text(lane.end.name),
-      }) |
-      xflex;}),
-      Button("depart", on_click)
+        Button(depart, [&]{depart = "act";}),
+        Renderer([&]{return filler();}),
+        
+        Renderer([&]{
+          return text(lane.start.name + " to " + lane.end.name) | center;
+        }),
       });
   }
 
   void RenderLanePanel(Model& mod){
     using namespace ftxui;
     const std::vector<ent::Lane>& entities = mod.get_current_lanes();
-    lanes.clear();
-    
+    router.get()->DetachAllChildren();
     for(const ent::Lane& i : entities){
-      lanes.push_back(RenderLaneLine(i, []{exit(-1);}));
+      router.get()->Add(RenderLaneLine(i, []{}));
     }
-      
-    router = Container::Vertical(lanes);
   }
 
 };

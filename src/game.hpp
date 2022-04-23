@@ -23,7 +23,9 @@ class Game{
             return *(model.get());
         }
 
-        void end(){};
+        void end(){
+            exit(-1);
+        };
 
         std::shared_ptr<std::vector<ent::SavedGame>> get_saved_games(){
             return db::Connector::select_saved_game();
