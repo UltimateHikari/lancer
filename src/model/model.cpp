@@ -78,6 +78,20 @@ void SubInventory<T>::repopulate_snapshot(){
     snapshot.assign(inventory.begin(), inventory.end());
 }
 
+template<class T>
+bool SubInventory<T>::have_enough_of(const T& t, int delta){
+    auto inv = get();
+    auto it = std::find_if(inv.begin(), inv.end(), 
+                        [&](const auto& p){return p.first.id == t.id;});
+    if(it != inv.end() && it->second + delta > -1){
+        return true;
+    }
+    if(delta >= 0){
+        return true;
+    }
+    return false;
+}
+
 
 // ----- Inventory ----- //
 
@@ -92,6 +106,13 @@ void Inventory::update_module(const ent::Module& mod, int delta){
 }
 std::vector<std::pair<ent::Module, int>>& Inventory::get_modules(){
     return modules.get();
+}
+
+bool Inventory::have_enough_of_comm(const ent::Commodity& t, int delta){
+    return commodities.have_enough_of(t,delta);
+}
+bool Inventory::have_enough_of_mod(const ent::Module& t, int delta){
+    return modules.have_enough_of(t,delta);
 }
 
 void Inventory::load(int save_id){
@@ -165,25 +186,19 @@ Inventory& Trade::get_stock_for(const ent::Node& node){
 }
 const int Trade::stock_record_deal_comm(const ent::Node& node, const ent::Commodity& comm, int delta){
     int stock_delta = (-1)*delta;
-    auto commodities = get_stock_for(node).get_commodities();
-    auto it = std::find_if(commodities.begin(), commodities.end(), 
-                        [&](std::pair<ent::Commodity, int> p){return p.first.id == comm.id;});
-    if(!(it != commodities.end()) && delta > 0){
-        LOG(INFO) << "cannot buy commodity, not enough in stock: " + fmti(comm.id);
-        return 0;
+    int res_delta = 0;
+    if(get_stock_for(node).have_enough_of_comm(comm, stock_delta)){
+        get_stock_for(node).update_commodity(comm, stock_delta);
+        res_delta = delta;
     }
-    get_stock_for(node).update_commodity(comm, stock_delta);
-    return delta;
+    return res_delta;
 }
 const int Trade::stock_record_deal_mod(const ent::Node& node, const ent::Module& mod, int delta){
     int stock_delta = (-1)*delta;
-    auto modules = get_stock_for(node).get_modules();
-    auto it = std::find_if(modules.begin(), modules.end(), 
-                        [&](std::pair<ent::Module, int> p){return p.first.id == mod.id;});
-    if(!(it != modules.end()) && delta > 0){
-        LOG(INFO) << "cannot buy module, not enough in stock: " + fmti(mod.id);
-        return 0;
+    int res_delta = 0;
+    if(get_stock_for(node).have_enough_of_mod(mod, stock_delta)){
+        get_stock_for(node).update_module(mod, stock_delta);
+        res_delta = delta;
     }
-    get_stock_for(node).update_module(mod, stock_delta);
-    return delta;
+    return res_delta;
 }

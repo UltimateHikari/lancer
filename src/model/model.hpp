@@ -27,6 +27,7 @@ public:
     SubInventory();
     void update(const T& t, int delta);
     std::vector<std::pair<T, int>>& get();
+    bool have_enough_of(const T& t, int delta);
 };
 
 class Inventory{
@@ -38,6 +39,8 @@ public:
     std::vector<std::pair<ent::Commodity, int>>& get_commodities();
     void update_module(const ent::Module& comm, int delta);
     std::vector<std::pair<ent::Module, int>>& get_modules();
+    bool have_enough_of_comm(const ent::Commodity& t, int delta);
+    bool have_enough_of_mod(const ent::Module& t, int delta);
     void load(int save_id);
     void save(std::string& save_name);
 };
@@ -113,15 +116,19 @@ public:
 
     void trade_module(const ent::Module& mod, int delta){
         // delta > 0 => buy from stock, sell otherwise
-        auto res = trade->stock_record_deal_mod(get_current_node(), mod, delta);
-        LOG(INFO) << "Traded: " + std::to_string(res);
-        update_module(mod, res);
+        if(inventory->have_enough_of_mod(mod, delta)){
+            auto res = trade->stock_record_deal_mod(get_current_node(), mod, delta);
+            LOG(INFO) << "Traded: got" + fmti(res) + "of " + fmti(mod.id);
+            update_module(mod, res);
+        }
     }
 
     void trade_commodity(const ent::Commodity& comm, int delta){
-        auto res = trade->stock_record_deal_comm(get_current_node(), comm, delta);
-        LOG(INFO) << "Traded: " + std::to_string(res);
-        update_commodity(comm, res);
+        if(inventory->have_enough_of_comm(comm, delta)){
+            auto res = trade->stock_record_deal_comm(get_current_node(), comm, delta);
+            LOG(INFO) << "Traded: got" + fmti(res) + "of " + fmti(comm.id);
+            update_commodity(comm, res);
+        }
     }
 
     md::Inventory& get_current_stock(){

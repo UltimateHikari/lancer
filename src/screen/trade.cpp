@@ -41,6 +41,7 @@ public:
         using namespace ftxui;
         return Container::Horizontal({
             Button("Buy", [&]{game->getModel().trade_commodity(commodity.first, 1);}, ButtonOption()),
+            Button("Sell", [&]{game->getModel().trade_commodity(commodity.first, -1);}, ButtonOption()),
             Button("Details", []{}, ButtonOption()),
             Renderer([&]{return filler();}),
             Renderer([&]{
