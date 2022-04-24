@@ -36,24 +36,20 @@ class NavigationBase : public ftxui::ComponentBase{
 public:
   Game* game;
   ftxui::Component router;
-  ftxui::Component button = ftxui::Button("testbutton", []{}, ftxui::ButtonOption());
   ftxui::Element nodeinfocolumn;
   ftxui::Element nodeinfo;
   ftxui::Element nodepanel;
 
   NavigationBase(Game& game_){
     router = ftxui::Container::Vertical({});
+    Add(router);
     this->game = &game_;
   }
 
   ftxui::Element Render() override{
-    DetachAllChildren();
     RenderLanePanel(game->getModel());
-        router.get()->Add(button);
-
-    Add(router);
     RenderNodeInfoPanel(game->getModel());
-    return nodepanel | ftxui::border;
+    return nodepanel;
   }
 
   ftxui::Element RenderNodeColumn(){
@@ -86,7 +82,7 @@ public:
     using namespace ftxui;
     nodeinfocolumn = RenderNodeColumn();
     nodeinfo = RenderNodeInfo(mod.get_current_node());
-    nodepanel = hflow({nodeinfocolumn, nodeinfo, router.get()->Render() | borderDouble}) | border | yflex;
+    nodepanel = hbox({hflow({nodeinfocolumn, nodeinfo}), router->Render()}) | border | yflex;
   }  
 
   ftxui::Component RenderLaneLine(const ent::Lane& lane, std::function<void()> on_click){
@@ -104,51 +100,17 @@ public:
   void RenderLanePanel(Model& mod){
     using namespace ftxui;
     const std::vector<ent::Lane>& entities = mod.get_current_lanes();
-    router.get()->DetachAllChildren();
+    router->DetachAllChildren();
     for(const ent::Lane& i : entities){
-      router.get()->Add(RenderLaneLine(i, []{}));
+      router->Add(RenderLaneLine(i, []{}));
     }
   }
 
 };
 
-// class NavigationBase : public ftxui::ComponentBase{
-// private:
-//   Game& game;
-
-//   int selected_ = 0;
-//   int size_ = 0;
-//   ftxui::Box box_;
-//   bool Focusable() const final { return true; }
-
-// public:
-//   ftxui::Element Render() final{
-//     using namespace ftxui;
-//     auto focused = Focused() ? focus : ftxui::select;
-//     auto style = Focused() ? inverted : nothing;
-
-//     ftxui::Element background = ComponentBase::Render();
-//     background->ComputeRequirement();
-//     size_ = background->requirement().min_y;
-//     return dbox({
-//             std::move(background),
-//             vbox({
-//                 text(L"") | size(HEIGHT, EQUAL, selected_),
-//                 text(L"") | style | focused,
-//             }),
-//         }) |
-//         vscroll_indicator | yframe | yflex | reflect(box_);
-//     }
-//     NavigationBase(Game& game_):
-//       game(game_)
-//     {Add(RenderPanel(game.getModel()));}
-// };
-
-
 ftxui::Component Navigation(Game& game) {
   return ftxui::Make<NavigationBase>(game);
-  // /return RenderPanel(game.getModel());
-  //return fxtui::Renderer([&]{return });
+
 }
 
 }

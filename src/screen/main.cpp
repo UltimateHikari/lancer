@@ -7,6 +7,7 @@
 #include "model/model.hpp"
 #include "screen/inventory.hpp"
 #include "screen/navigation.hpp"
+#include "screen/trade.hpp"
 
 using namespace sc;
 using namespace ftxui;
