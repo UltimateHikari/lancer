@@ -1,4 +1,8 @@
-INSERT INTO corporation(name) VALUES ("Giperion");
+INSERT INTO corporation(name) VALUES ("G.H.O.S.T");
+INSERT INTO corporation(name) VALUES ("Better World");
+INSERT INTO corporation(name) VALUES ("Yareli");
+INSERT INTO corporation(name) VALUES ("ReVolt Inc.");
+
 
 INSERT INTO commodity_type(name) VALUES ("essential");
 INSERT INTO commodity_type(name) VALUES ("illegal");
@@ -96,6 +100,7 @@ VALUES(
     40,0
 );
 
+--- Nodes 1 - 5 ---
 
 INSERT INTO node(
     name,
@@ -104,7 +109,7 @@ INSERT INTO node(
 )
 VALUES(
     "Eternity",
-    2,1,2,10
+    2,2,2,10
 );
 
 INSERT INTO node(
@@ -114,7 +119,7 @@ INSERT INTO node(
 )
 VALUES(
     "Arcadia",
-    4,1,10,5
+    2,2,10,5
 );
 
 INSERT INTO node(
@@ -124,8 +129,291 @@ INSERT INTO node(
 )
 VALUES(
     "Radiance",
+    4,2,8,8
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Remgolia",
+    5,2,2,10
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Saidai",
+    1,2,2,10
+);
+
+--- Nodes 6 - 10 ---
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Pranelius",
+    1,4,2,10
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Taxopia",
+    3,1,10,5
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Nadorkon",
     3,1,8,8
 );
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Wunarnia",
+    3,3,2,10
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Korog",
+    3,1,2,10
+);
+
+--- Nodes 11 - 15 ---
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Tau Naraka",
+    4,1,2,10
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Aviz",
+    4,3,10,5
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Darkumi",
+    1,3,8,8
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Kuorkon",
+    2,3,2,10
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Ganeaux",
+    2,3,2,10
+);
+
+--- Nodes 16 - 20 ---
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Zeta",
+    5,3,2,10
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Longpid",
+    5,3,10,5
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Noella",
+    2,3,8,8
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Carankor",
+    2,4,2,10
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Farenella",
+    2,1,2,10
+);
+
+--- Nodes 21 - 25 ---
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Paplos",
+    4,1,2,10
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Satacan",
+    5,4,10,5
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Vullak",
+    5,4,8,8
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Sizeonon",
+    5,4,2,10
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Scarva",
+    1,4,2,10
+);
+
+--- Nodes 25 - 30 ---
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Baniru",
+    4,4,2,10
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Ceti",
+    4,4,10,5
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Nitkail",
+    4,2,8,8
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Durreus",
+    3,2,2,10
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Funfiner",
+    3,4,2,10
+);
+
+
+
 
 INSERT INTO lane(
     start_node_id, end_node_id,

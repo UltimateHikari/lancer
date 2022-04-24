@@ -6,7 +6,7 @@ using namespace sqlite_orm;
 
 TEST(SelectTest, Corporation)  {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_corporation(), 1);
+    EXPECT_EQ(db::Connector::select_corporation(), 4);
 }
 
 TEST(SelectTest, Commodity)  {
@@ -55,14 +55,14 @@ TEST(SelectTest, Module)    {
 
 TEST(SelectTest, NodeTest)    {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::test_select_node(), 3);
+    EXPECT_EQ(db::Connector::test_select_node(), 30);
 }
 
 TEST(SelectTest, Node)    {
     db::Connector::sync();
     auto res = db::Connector::select_node().get();
-    EXPECT_EQ(res->size(), 3);
-    EXPECT_NE((*res)[0].name, "");
+    EXPECT_EQ(res->size(), 30);
+    EXPECT_NE((*res)[1].name, "");
 }
 
 TEST(SelectTest, LaneTest)    {
