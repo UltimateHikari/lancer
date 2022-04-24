@@ -16,13 +16,6 @@
 
 namespace sc{
 
-ftxui::Component model_time_renderer(Model& model){
-    return ftxui::Renderer([&]{ 
-        return ftxui::text(model.get_time()) | ftxui::border;
-        });
-}
-
-
 // ftxui::Component RenderPanel(Model& mod){
 //   using namespace ftxui;
 //   auto nodeinfo = RenderNodeInfoPanel(mod);

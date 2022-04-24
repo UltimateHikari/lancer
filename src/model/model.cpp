@@ -28,15 +28,15 @@ void Model::set_game_active(bool activity){
     game_active_flag = activity;
 }
 
-std::string Model::get_time(){
-    auto t = std::time(nullptr);
-    auto tm = *std::localtime(&t);
+// std::string Model::get_time(){
+//     auto t = std::time(nullptr);
+//     auto tm = *std::localtime(&t);
 
-    std::ostringstream oss;
-    oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
+//     std::ostringstream oss;
+//     oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
 
-    return oss.str();
-}
+//     return oss.str();
+// }
 
 void Model::load_game(int save_id){
     inventory->load(save_id);

@@ -80,10 +80,16 @@ private:
     std::unique_ptr<md::Inventory> inventory;
     std::unique_ptr<md::Navigation> navigation;
     std::unique_ptr<md::Trade> trade;
-    int current_time;
-    int current_balance;
+    int current_time = 0;
+    int current_balance = 500;
 public:
-    std::string get_time();
+    int get_time(){
+        return current_time;
+    };
+
+    int get_balance(){
+        return current_balance;
+    };
 
     Model();
     int get_sense();
