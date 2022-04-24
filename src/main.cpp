@@ -73,7 +73,7 @@ void lancer_log_test(){
 
 int main(int, char**) {
     LOG(INFO) << "My first info log using default logger";
-    lancer_log_test();
+    //lancer_log_test();
     sc::Main* screen = new sc::Main();
 
     Game* game = new Game();

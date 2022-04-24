@@ -67,14 +67,14 @@ TEST(SelectTest, Node)    {
 
 TEST(SelectTest, LaneTest)    {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::test_select_lane(), 1);
+    EXPECT_EQ(db::Connector::test_select_lane(), 37);
 }
 
 TEST(SelectTest, Lane)    {
     db::Connector::sync();
     auto res = db::Connector::select_lane().get();
-    EXPECT_EQ(res->size(), 1);
-    EXPECT_NE((*res)[0].start.name, "");
+    EXPECT_EQ(res->size(), 37);
+    // EXPECT_NE((*res)[1].start.name, "");
 
 }
 

@@ -412,8 +412,133 @@ VALUES(
     3,1,5,10
 );
 
+-- Lanes 1-5 --
 
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    24,30,5,"TRUE"
+);
 
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    25,24,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    23,24,12,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    26,25,8,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    27,26,20,"TRUE"
+);
+
+-- Lanes 6-10 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    22,26,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    22,23,14,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    19,22,32,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    21,20,12,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    21,19,13,"TRUE"
+);
+
+-- Lanes 11-15 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    20,19,6,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    4,19,20,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    5,4,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    3,4,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    3,5,10,"TRUE"
+);
+
+-- Lanes 16-20 --
 
 INSERT INTO lane(
     start_node_id, end_node_id,
@@ -421,6 +546,182 @@ INSERT INTO lane(
 )
 VALUES(
     1,2,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    2,3,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    2,28,20,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    28,29,20,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    29,20,10,"TRUE"
+);
+
+-- Lanes 21-25 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    1,5,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    5,6,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    6,7,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    7,8,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    7,9,10,"TRUE"
+);
+
+-- Lanes 26-30 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    9,11,2,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    10,11,15,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    11,12,44,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    12,13,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    12,14,10,"TRUE"
+);
+
+-- Lanes 31-35 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    14,16,20,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    13,15,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    14,18,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    15,18,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    16,17,10,"TRUE"
+);
+
+-- Lanes 36-37 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    17,18,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    18,2,10,"TRUE"
 );
 
 INSERT INTO encounter(name, weight)
