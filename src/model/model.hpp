@@ -9,6 +9,7 @@
 #include <mutex>
 #include <deque>
 
+#include "model/oututil.hpp"
 #include "easyloggingpp/easylogging++.h"
 
 namespace md{
@@ -62,7 +63,7 @@ private:
     std::deque<std::pair<int, std::shared_ptr<Inventory>>> cached_stocks;
     std::shared_ptr<Inventory> generate_stock(const ent::Node& node);
 public: 
-    const Inventory& get_stock_for(const ent::Node& node);
+    Inventory& get_stock_for(const ent::Node& node);
     const int stock_record_deal_comm(const ent::Node& node, const ent::Commodity& comm, int delta);
     const int stock_record_deal_mod(const ent::Node& node, const ent::Module& mod, int delta);
 };
@@ -112,6 +113,7 @@ public:
     }
 
     void trade_module(const ent::Module& mod, int delta){
+        // delta > 0 => buy from stock, sell otherwise
         auto res = trade->stock_record_deal_mod(get_current_node(), mod, delta);
         LOG(INFO) << "Traded: " + std::to_string(res);
         update_module(mod, res);

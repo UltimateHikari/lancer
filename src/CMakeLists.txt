@@ -7,6 +7,7 @@ set(sources
     screen/navigation.cpp
     model/model.cpp
     model/entities.cpp 
+    model/oututil.cpp
     db/database.cpp
 )
 

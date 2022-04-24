@@ -5,7 +5,6 @@
 #include <algorithm> // copy
 #include <algorithm> // find
 
-#include "model/oututil.hpp"
 #include "easyloggingpp/easylogging++.h"
 
 
@@ -125,9 +124,10 @@ ent::Node Navigation::refresh_node(){
 }
 
 void Navigation::move_with_lane(const ent::Lane& lane){
-    LOG(INFO) << "moving from node : " + ent::fmti(current_node_id);
+    LOG(INFO) << "moving from node : " + fmti(current_node_id);
     current_node_id = (current_node_id == lane.end.id ? lane.start.id : lane.end.id);
-    LOG(INFO) << "moved to node    : " + ent::fmti(current_node_id);
+    LOG(INFO) << "moved to node    : " + fmti(current_node_id);
+    //TODO drop extra stocks;
 }
 
 const ent::Node& Navigation::get_current_node(){
@@ -154,14 +154,37 @@ std::shared_ptr<Inventory> Trade::generate_stock(const ent::Node& node){
     }
     return inv;
 }
-const Inventory& Trade::get_stock_for(const ent::Node& node){
-    auto it = std::find(cached_stocks.begin(), cached_stocks.end(), [&](std::pair<int, std::shared_ptr<Inventory>>& p){ return p.first == node.id; });
-    if(it == cached_stocks.end()){
+Inventory& Trade::get_stock_for(const ent::Node& node){
+    auto it = std::find_if(cached_stocks.begin(), cached_stocks.end(), 
+                        [&](std::pair<int, std::shared_ptr<Inventory>> p){ return p.first == node.id; });
+    if(!(it != cached_stocks.end())){
         cached_stocks.push_front(std::make_pair(node.id, generate_stock(node)));
         it = cached_stocks.begin();
-        LOG(INFO) << "Stock for " + ent::fmti(node.id) + " placed";
+        LOG(INFO) << "Stock for " + fmti(node.id) + " placed";
     } 
     return *(it->second.get());
 }
-// const int stock_record_deal_comm(const ent::Node& node, const ent::Commodity& comm, int delta);
-// const int stock_record_deal_mod(const ent::Node& node, const ent::Module& mod, int delta);
+const int Trade::stock_record_deal_comm(const ent::Node& node, const ent::Commodity& comm, int delta){
+    int stock_delta = (-1)*delta;
+    auto commodities = get_stock_for(node).get_commodities();
+    auto it = std::find_if(commodities.begin(), commodities.end(), 
+                        [&](std::pair<ent::Commodity, int> p){return p.first.id == comm.id;});
+    if(!(it != commodities.end()) && delta > 0){
+        LOG(INFO) << "cannot buy commodity, not enough in stock: " + fmti(comm.id);
+        return 0;
+    }
+    get_stock_for(node).update_commodity(comm, stock_delta);
+    return delta;
+}
+const int Trade::stock_record_deal_mod(const ent::Node& node, const ent::Module& mod, int delta){
+    int stock_delta = (-1)*delta;
+    auto modules = get_stock_for(node).get_modules();
+    auto it = std::find_if(modules.begin(), modules.end(), 
+                        [&](std::pair<ent::Module, int> p){return p.first.id == mod.id;});
+    if(!(it != modules.end()) && delta > 0){
+        LOG(INFO) << "cannot buy module, not enough in stock: " + fmti(mod.id);
+        return 0;
+    }
+    get_stock_for(node).update_module(mod, stock_delta);
+    return delta;
+}
