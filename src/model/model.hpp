@@ -7,6 +7,9 @@
 #include <vector>
 #include <utility>
 #include <mutex>
+#include <deque>
+
+#include "easyloggingpp/easylogging++.h"
 
 namespace md{
 
@@ -54,6 +57,16 @@ public:
     const std::vector<ent::Lane>& get_current_lanes();
 };
 
+class Trade{
+private: 
+    std::deque<std::pair<int, std::shared_ptr<Inventory>>> cached_stocks;
+    std::shared_ptr<Inventory> generate_stock(const ent::Node& node);
+public: 
+    const Inventory& get_stock_for(const ent::Node& node);
+    const int stock_record_deal_comm(const ent::Node& node, const ent::Commodity& comm, int delta);
+    const int stock_record_deal_mod(const ent::Node& node, const ent::Module& mod, int delta);
+};
+
 };
 
 class Model{
@@ -62,6 +75,7 @@ private:
     bool game_active_flag = false;
     md::Inventory * inventory;
     md::Navigation * navigation;
+    md::Trade * trade;
     int current_time;
     int current_balance;
 public:
@@ -95,6 +109,18 @@ public:
     }
     const std::vector<ent::Lane>& get_current_lanes(){
         return navigation->get_current_lanes();
+    }
+
+    void trade_module(const ent::Module& mod, int delta){
+        auto res = trade->stock_record_deal_mod(get_current_node(), mod, delta);
+        LOG(INFO) << "Traded: " + std::to_string(res);
+        update_module(mod, res);
+    }
+
+    void trade_commodity(const ent::Commodity& comm, int delta){
+        auto res = trade->stock_record_deal_comm(get_current_node(), comm, delta);
+        LOG(INFO) << "Traded: " + std::to_string(res);
+        update_commodity(comm, res);
     }
 
     void load_game(int save_id);

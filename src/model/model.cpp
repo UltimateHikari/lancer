@@ -3,7 +3,9 @@
 #include <ctime> // time, localtime
 #include <iomanip> // put_time
 #include <algorithm> // copy
+#include <algorithm> // find
 
+#include "model/oututil.hpp"
 #include "easyloggingpp/easylogging++.h"
 
 
@@ -123,9 +125,9 @@ ent::Node Navigation::refresh_node(){
 }
 
 void Navigation::move_with_lane(const ent::Lane& lane){
-    LOG(INFO) << "moving from node : " + std::to_string(current_node_id);
+    LOG(INFO) << "moving from node : " + ent::fmti(current_node_id);
     current_node_id = (current_node_id == lane.end.id ? lane.start.id : lane.end.id);
-    LOG(INFO) << "moved to node    : " + std::to_string(current_node_id);
+    LOG(INFO) << "moved to node    : " + ent::fmti(current_node_id);
 }
 
 const ent::Node& Navigation::get_current_node(){
@@ -142,3 +144,24 @@ const std::vector<ent::Lane>& Navigation::get_current_lanes(){
     }
     return *(cached_lanes.get());
 }
+
+std::shared_ptr<Inventory> Trade::generate_stock(const ent::Node& node){
+    auto inv = std::make_shared<Inventory>();
+    auto dbcomms = db::Connector::select_commodity();
+    //TODO algo for random
+    for(auto& i : *(dbcomms.get())){
+        inv.get()->update_commodity(i, 10);
+    }
+    return inv;
+}
+const Inventory& Trade::get_stock_for(const ent::Node& node){
+    auto it = std::find(cached_stocks.begin(), cached_stocks.end(), [&](std::pair<int, std::shared_ptr<Inventory>>& p){ return p.first == node.id; });
+    if(it == cached_stocks.end()){
+        cached_stocks.push_front(std::make_pair(node.id, generate_stock(node)));
+        it = cached_stocks.begin();
+        LOG(INFO) << "Stock for " + ent::fmti(node.id) + " placed";
+    } 
+    return *(it->second.get());
+}
+// const int stock_record_deal_comm(const ent::Node& node, const ent::Commodity& comm, int delta);
+// const int stock_record_deal_mod(const ent::Node& node, const ent::Module& mod, int delta);
