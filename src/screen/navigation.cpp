@@ -66,7 +66,7 @@ public:
       text(node.corp.name),
       text(node.pref.name),
       text(std::to_string(node.order_level)),
-      text(std::to_string(node.order_level))   
+      text(std::to_string(node.tech_level))   
     }) |
     yflex;
   }

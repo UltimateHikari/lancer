@@ -11,27 +11,43 @@
 
 namespace sc{
 
+enum states{NONE, COMM, MOD};
+
 class InventoryBase : public ftxui::ComponentBase{
 public:
     Game* game;
     ftxui::Component list;
-    ftxui::Component info;
+    ftxui::Element iteminfocolumn;
+    ftxui::Element iteminfo;
     ftxui::Element panel;
+    int state = NONE;
+    ent::Commodity current_comm;
 
     InventoryBase(Game& game_){
         using namespace ftxui;
         list = Container::Vertical({});
-        info = Renderer([] {return text("item info") | center;});;
         Add(list);
         this->game = &game_;
     }
 
     ftxui::Element Render() override {
         RenderList();
-        return ftxui::hflow({panel, info->Render()}) | ftxui::border;
+        switch(state){
+            case COMM:
+                iteminfocolumn = RenderCommDetailsColumn();
+                iteminfo = RenderCommDetails(current_comm);
+                break;
+            //case MOD: //TODO
+            default:
+                iteminfocolumn = ftxui::text("");
+                iteminfo = ftxui::text("");
+                break;
+        }
+        return ftxui::hflow({panel, ftxui::hbox({iteminfocolumn, iteminfo})}) | ftxui::border;
     }
 
     void RenderList(){
+
         list->DetachAllChildren();
         auto& model = game->getModel();
         auto modules = model.get_modules();
@@ -71,7 +87,7 @@ public:
     ftxui::Component RenderCommodity(std::pair<ent::Commodity, ent::Meta>& commodity){
         using namespace ftxui;
         return Container::Horizontal({
-            Button("Details", []{}),
+            Button("Details", [&]{current_comm = commodity.first; state = COMM;}),
             Renderer([&]{return filler();}),
             Renderer([&]{
                 return text(commodity.first.name);
@@ -81,6 +97,29 @@ public:
                 return text(fmti(commodity.second.amount));
             })
         });
+    }
+
+    ftxui::Element RenderCommDetailsColumn(){
+        using namespace ftxui;
+        return vbox({
+            text("Commodity:"),
+            separator(),
+            text("Commodity type:"),
+            text("Average price:"),
+            text("Description:"),
+        }) |
+        yflex;
+    }
+
+    ftxui::Element RenderCommDetails(const ent::Commodity& comm){
+        using namespace ftxui;
+        return vbox({
+        text(comm.name + " (" + std::to_string(comm.id) + ")"), //TODO - for debug purpose
+        separator(),
+        text(comm.type.name),
+        text(fmti(comm.price)),
+        }) |
+        yflex;
     }
 };
 

@@ -167,7 +167,7 @@ const std::vector<ent::Lane>& Navigation::get_current_lanes(){
 }
 
 float order_mod(int order){
-    return 4 - 2*order/5.0;
+    return 4 - 3*order/5.0;
 }
 
 std::shared_ptr<Inventory> Trade::generate_stock(const ent::Node& node){
