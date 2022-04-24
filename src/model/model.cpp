@@ -189,18 +189,44 @@ Inventory& Trade::get_stock_for(const ent::Node& node){
     } 
     return *(it->second.get());
 }
-const int Trade::stock_record_deal_comm(const ent::Node& node, const ent::Commodity& comm, int delta){
+
+int Trade::get_comm_price(const ent::Node& node, const ent::Commodity& comm){
+    auto comd = get_stock_for(node).get_commodities();
+    return std::find_if(comd.begin(), comd.end(), 
+        [&](const auto& p){return p.first.id == comm.id;})->second.price;
+}
+int Trade::get_mod_price(const ent::Node& node, const ent::Module& mod){
+    auto modd = get_stock_for(node).get_modules();
+    // iterator is always here
+    return std::find_if(modd.begin(), modd.end(), 
+        [&](const auto& p){return p.first.id == mod.id;})->second.price;
+}
+
+const int Trade::stock_record_deal_comm(const ent::Node& node, const ent::Commodity& comm, int delta, int balance){
     int stock_delta = (-1)*delta;
     int res_delta = 0;
+
+    //TODO extapolate for situation with > 1 buys:
+    if(balance < get_comm_price(node, comm) && delta > 0){
+        return 0;
+    }
+
     if(get_stock_for(node).have_enough_of_comm(comm, stock_delta)){
         get_stock_for(node).update_commodity(comm, stock_delta, 0);
         res_delta = delta;
     }
     return res_delta;
 }
-const int Trade::stock_record_deal_mod(const ent::Node& node, const ent::Module& mod, int delta){
+const int Trade::stock_record_deal_mod(const ent::Node& node, const ent::Module& mod, int delta, int balance){
     int stock_delta = (-1)*delta;
     int res_delta = 0;
+
+    
+    //TODO extapolate for situation with > 1 buys:
+    if(balance < get_mod_price(node, mod) && delta > 0){
+        return 0;
+    }
+
     if(get_stock_for(node).have_enough_of_mod(mod, stock_delta)){
         get_stock_for(node).update_module(mod, stock_delta, 0);
         res_delta = delta;

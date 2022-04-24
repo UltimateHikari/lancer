@@ -67,8 +67,10 @@ private:
     std::shared_ptr<Inventory> generate_stock(const ent::Node& node);
 public: 
     Inventory& get_stock_for(const ent::Node& node);
-    const int stock_record_deal_comm(const ent::Node& node, const ent::Commodity& comm, int delta);
-    const int stock_record_deal_mod(const ent::Node& node, const ent::Module& mod, int delta);
+    const int stock_record_deal_comm(const ent::Node& node, const ent::Commodity& comm, int delta, int balance);
+    const int stock_record_deal_mod(const ent::Node& node, const ent::Module& mod, int delta, int balance);
+    int get_comm_price(const ent::Node& node, const ent::Commodity& comm);
+    int get_mod_price(const ent::Node& node, const ent::Module& mod);
 };
 
 };
@@ -123,17 +125,19 @@ public:
     void trade_module(const ent::Module& mod, int delta){
         // delta > 0 => buy from stock, sell otherwise
         if(inventory->have_enough_of_mod(mod, delta)){
-            auto res = trade->stock_record_deal_mod(get_current_node(), mod, delta);
+            auto res = trade->stock_record_deal_mod(get_current_node(), mod, delta, current_balance);
             LOG(INFO) << "Traded: got" + fmti(res) + "of " + fmti(mod.id);
             update_module(mod, res);
+            current_balance -= res*trade->get_mod_price(get_current_node(), mod);
         }
     }
 
     void trade_commodity(const ent::Commodity& comm, int delta){
         if(inventory->have_enough_of_comm(comm, delta)){
-            auto res = trade->stock_record_deal_comm(get_current_node(), comm, delta);
+            auto res = trade->stock_record_deal_comm(get_current_node(), comm, delta, current_balance);
             LOG(INFO) << "Traded: got" + fmti(res) + "of " + fmti(comm.id);
             update_commodity(comm, res);
+            current_balance -= res*trade->get_comm_price(get_current_node(), comm);
         }
     }
 
