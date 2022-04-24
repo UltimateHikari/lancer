@@ -109,7 +109,7 @@ INSERT INTO node(
 )
 VALUES(
     "Eternity",
-    2,2,2,10
+    2,2,5,1
 );
 
 INSERT INTO node(
@@ -119,7 +119,7 @@ INSERT INTO node(
 )
 VALUES(
     "Arcadia",
-    2,2,10,5
+    2,2,5,2
 );
 
 INSERT INTO node(
@@ -129,7 +129,7 @@ INSERT INTO node(
 )
 VALUES(
     "Radiance",
-    4,2,8,8
+    4,2,5,3
 );
 
 INSERT INTO node(
@@ -139,7 +139,7 @@ INSERT INTO node(
 )
 VALUES(
     "Remgolia",
-    5,2,2,10
+    5,2,5,4
 );
 
 INSERT INTO node(
@@ -149,7 +149,7 @@ INSERT INTO node(
 )
 VALUES(
     "Saidai",
-    1,2,2,10
+    1,2,4,8
 );
 
 --- Nodes 6 - 10 ---
@@ -161,7 +161,7 @@ INSERT INTO node(
 )
 VALUES(
     "Pranelius",
-    1,4,2,10
+    1,4,2,4
 );
 
 INSERT INTO node(
@@ -171,7 +171,7 @@ INSERT INTO node(
 )
 VALUES(
     "Taxopia",
-    3,1,10,5
+    3,1,3,6
 );
 
 INSERT INTO node(
@@ -181,7 +181,7 @@ INSERT INTO node(
 )
 VALUES(
     "Nadorkon",
-    3,1,8,8
+    3,1,3,8
 );
 
 INSERT INTO node(
@@ -191,7 +191,7 @@ INSERT INTO node(
 )
 VALUES(
     "Wunarnia",
-    3,3,2,10
+    3,3,5,1
 );
 
 INSERT INTO node(
@@ -201,7 +201,7 @@ INSERT INTO node(
 )
 VALUES(
     "Korog",
-    3,1,2,10
+    3,1,1,10
 );
 
 --- Nodes 11 - 15 ---
@@ -213,7 +213,7 @@ INSERT INTO node(
 )
 VALUES(
     "Tau Naraka",
-    4,1,2,10
+    4,1,1,8
 );
 
 INSERT INTO node(
@@ -223,7 +223,7 @@ INSERT INTO node(
 )
 VALUES(
     "Aviz",
-    4,3,10,5
+    4,3,2,3
 );
 
 INSERT INTO node(
@@ -233,7 +233,7 @@ INSERT INTO node(
 )
 VALUES(
     "Darkumi",
-    1,3,8,8
+    1,3,3,2
 );
 
 INSERT INTO node(
@@ -243,7 +243,7 @@ INSERT INTO node(
 )
 VALUES(
     "Kuorkon",
-    2,3,2,10
+    2,3,4,7
 );
 
 INSERT INTO node(
@@ -253,7 +253,7 @@ INSERT INTO node(
 )
 VALUES(
     "Ganeaux",
-    2,3,2,10
+    2,3,2,1
 );
 
 --- Nodes 16 - 20 ---
@@ -265,7 +265,7 @@ INSERT INTO node(
 )
 VALUES(
     "Zeta",
-    5,3,2,10
+    5,3,1,4
 );
 
 INSERT INTO node(
@@ -275,7 +275,7 @@ INSERT INTO node(
 )
 VALUES(
     "Longpid",
-    5,3,10,5
+    5,3,5,2
 );
 
 INSERT INTO node(
@@ -285,7 +285,7 @@ INSERT INTO node(
 )
 VALUES(
     "Noella",
-    2,3,8,8
+    2,3,4,9
 );
 
 INSERT INTO node(
@@ -295,7 +295,7 @@ INSERT INTO node(
 )
 VALUES(
     "Carankor",
-    2,4,2,10
+    2,4,1,1
 );
 
 INSERT INTO node(
@@ -305,7 +305,7 @@ INSERT INTO node(
 )
 VALUES(
     "Farenella",
-    2,1,2,10
+    2,1,3,7
 );
 
 --- Nodes 21 - 25 ---
@@ -317,7 +317,7 @@ INSERT INTO node(
 )
 VALUES(
     "Paplos",
-    4,1,2,10
+    4,1,2,5
 );
 
 INSERT INTO node(
@@ -327,7 +327,7 @@ INSERT INTO node(
 )
 VALUES(
     "Satacan",
-    5,4,10,5
+    5,4,4,5
 );
 
 INSERT INTO node(
@@ -337,7 +337,7 @@ INSERT INTO node(
 )
 VALUES(
     "Vullak",
-    5,4,8,8
+    5,4,5,5
 );
 
 INSERT INTO node(
@@ -347,7 +347,7 @@ INSERT INTO node(
 )
 VALUES(
     "Sizeonon",
-    5,4,2,10
+    5,4,5,2
 );
 
 INSERT INTO node(
@@ -357,7 +357,7 @@ INSERT INTO node(
 )
 VALUES(
     "Scarva",
-    1,4,2,10
+    1,1,5,2
 );
 
 --- Nodes 25 - 30 ---
@@ -369,7 +369,7 @@ INSERT INTO node(
 )
 VALUES(
     "Baniru",
-    4,4,2,10
+    4,4,5,3
 );
 
 INSERT INTO node(
@@ -379,7 +379,7 @@ INSERT INTO node(
 )
 VALUES(
     "Ceti",
-    4,4,10,5
+    4,4,1,10
 );
 
 INSERT INTO node(
@@ -389,7 +389,7 @@ INSERT INTO node(
 )
 VALUES(
     "Nitkail",
-    4,2,8,8
+    4,2,2,6
 );
 
 INSERT INTO node(
@@ -399,7 +399,7 @@ INSERT INTO node(
 )
 VALUES(
     "Durreus",
-    3,2,2,10
+    3,2,3,4
 );
 
 INSERT INTO node(
@@ -409,7 +409,7 @@ INSERT INTO node(
 )
 VALUES(
     "Funfiner",
-    3,4,2,10
+    3,1,5,10
 );
 
 
