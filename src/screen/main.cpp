@@ -151,13 +151,13 @@ void System::show(Game& game){
         "Navigation", "Inventory", "Trade"
     };
     auto tab_selection = Toggle(&tab_entries, &tab_index);
-    auto navigation = sc::Navigation(game);
+    //auto navigation = ;
     
     auto tab_content = Container::Tab(
     {
-        navigation,
+        sc::Navigation(game),
         sc::Inventory(game),
-        time_renderer(game)
+        sc::Trade(game)
     },
     &tab_index);
 

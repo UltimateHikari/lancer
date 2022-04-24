@@ -3,7 +3,7 @@
 #include <ctime> // time, localtime
 #include <iomanip> // put_time
 #include <algorithm> // copy
-#include <algorithm> // find
+
 
 #include "easyloggingpp/easylogging++.h"
 
@@ -12,12 +12,11 @@
 using namespace md;
 
 Model::Model():
-    inventory(new Inventory()),
-    navigation(new Navigation())
+    inventory(std::make_unique<Inventory>()),
+    navigation(std::make_unique<Navigation>()),
+    trade(std::make_unique<Trade>())
 {}
-Model::~Model(){
-    delete inventory;
-}
+
 
 int Model::get_sense(){
     return sense_of_life;
@@ -63,7 +62,7 @@ void SubInventory<T>::update(const T& t, int delta){
 }
 
 template<class T>
-const std::vector<std::pair<T, int>>& SubInventory<T>::get(){
+std::vector<std::pair<T, int>>& SubInventory<T>::get(){
     if(mutex.try_lock()){
         if(snapshot_state != inventory_state){
             repopulate_snapshot();
@@ -85,13 +84,13 @@ void SubInventory<T>::repopulate_snapshot(){
 void Inventory::update_commodity(const ent::Commodity& comm, int delta){
     commodities.update(comm, delta);
 }
-const std::vector<std::pair<ent::Commodity, int>>& Inventory::get_commodities(){
+std::vector<std::pair<ent::Commodity, int>>& Inventory::get_commodities(){
     return commodities.get();
 }
 void Inventory::update_module(const ent::Module& mod, int delta){
     modules.update(mod, delta);
 }
-const std::vector<std::pair<ent::Module, int>>& Inventory::get_modules(){
+std::vector<std::pair<ent::Module, int>>& Inventory::get_modules(){
     return modules.get();
 }
 

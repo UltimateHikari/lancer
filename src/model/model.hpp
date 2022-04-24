@@ -26,7 +26,7 @@ private:
 public: 
     SubInventory();
     void update(const T& t, int delta);
-    const std::vector<std::pair<T, int>>& get();
+    std::vector<std::pair<T, int>>& get();
 };
 
 class Inventory{
@@ -35,9 +35,9 @@ private:
     SubInventory<ent::Module> modules;
 public:
     void update_commodity(const ent::Commodity& comm, int delta);
-    const std::vector<std::pair<ent::Commodity, int>>& get_commodities();
+    std::vector<std::pair<ent::Commodity, int>>& get_commodities();
     void update_module(const ent::Module& comm, int delta);
-    const std::vector<std::pair<ent::Module, int>>& get_modules();
+    std::vector<std::pair<ent::Module, int>>& get_modules();
     void load(int save_id);
     void save(std::string& save_name);
 };
@@ -74,16 +74,15 @@ class Model{
 private:
     int sense_of_life = 42;
     bool game_active_flag = false;
-    md::Inventory * inventory;
-    md::Navigation * navigation;
-    md::Trade * trade;
+    std::unique_ptr<md::Inventory> inventory;
+    std::unique_ptr<md::Navigation> navigation;
+    std::unique_ptr<md::Trade> trade;
     int current_time;
     int current_balance;
 public:
     std::string get_time();
 
     Model();
-    ~Model();
     int get_sense();
     bool is_game_active();
     void set_game_active(bool activity);
@@ -123,6 +122,10 @@ public:
         auto res = trade->stock_record_deal_comm(get_current_node(), comm, delta);
         LOG(INFO) << "Traded: " + std::to_string(res);
         update_commodity(comm, res);
+    }
+
+    md::Inventory& get_current_stock(){
+        return trade->get_stock_for(get_current_node());
     }
 
     void load_game(int save_id);

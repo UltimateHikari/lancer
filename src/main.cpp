@@ -84,6 +84,8 @@ int main(int, char**) {
 
     Game* game = new Game();
 
+    auto commodities = game->getModel().get_current_stock().get_commodities();
+    LOG(INFO) << commodities.size();
 
     screen->show(*game);
     return 0;
