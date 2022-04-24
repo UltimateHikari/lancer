@@ -182,6 +182,34 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(){
     return result_ptr;
 }
 
+std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(const int id){
+    using stt = alias_a<Node>;
+    using end = alias_b<Node>;
+    auto rows = db::internal::storage.select(
+        columns(
+            &Lane::id,
+            &Lane::start, alias_column<stt>(&Node::name),
+            &Lane::end, alias_column<end>(&Node::name),
+            &Lane::traverse_time, &Lane::initial_stability
+            ),
+        left_join<stt>(on(alias_column<stt>(&Node::id) == c(&Lane::start))),
+        left_join<end>(on(alias_column<end>(&Node::id) == c(&Lane::end))),
+        where(is_equal(&Lane::start, id) || is_equal(&Lane::end, id))
+        );
+
+    if(rows.size() == 0){
+        //TODO: exceptions?
+        cerr << "empty db error in select_lane, stopping...\n";
+        exit(-1);
+    }
+
+    auto result_ptr = std::make_shared<std::vector<ent::Lane>>();
+    for(auto& i: rows){
+        result_ptr.get()->push_back({i});
+    }
+    return result_ptr;
+}
+
 int Connector::select_encounter(){
     auto rows = db::internal::storage.select(columns(&Encounter::id, &Encounter::name));
 

@@ -28,4 +28,11 @@ std::string Lane::out(){
     return fmti(id) + fmt(start.name) + fmt(end.name) + fmti(traverse_time);
 }
 
+std::string Lane::getContextedText(const ent::Node& node) const {
+    if(start.id == node.id){
+        return start.name + " to " + end.name + ": " + std::to_string(traverse_time) + " days";
+    }
+    return end.name + " to " + start.name + ": " + std::to_string(traverse_time) + " days";
+}
+
 }

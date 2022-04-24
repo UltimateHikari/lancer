@@ -57,9 +57,15 @@ void lancer_log_test(){
         LOG(INFO) << i.first.out() << " " << std::to_string(i.second);
     }
 
-    auto ln = db::Connector::select_lane();
-    LOG(INFO) << "Lanes:";
-    for(auto& i : *(ln.get())){
+    // auto ln = db::Connector::select_lane();
+    // LOG(INFO) << "Lanes:";
+    // for(auto& i : *(ln.get())){
+    //     LOG(INFO) << i.out();
+    // }
+
+    auto lns = db::Connector::select_lane(1);
+    LOG(INFO) << "Lanes-selected:";
+    for(auto& i : *(lns.get())){
         LOG(INFO) << i.out();
     }
 

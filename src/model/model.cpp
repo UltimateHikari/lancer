@@ -137,7 +137,7 @@ const ent::Node& Navigation::get_current_node(){
 }
 const std::vector<ent::Lane>& Navigation::get_current_lanes(){
     if(current_lanes_id != current_node_id){
-        cached_lanes = db::Connector::select_lane();
+        cached_lanes = db::Connector::select_lane(current_node_id);
         current_lanes_id = current_node_id;
     }
     return *(cached_lanes.get());

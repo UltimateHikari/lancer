@@ -160,6 +160,7 @@ public:
         stability{std::get<6>(raw_select)}
         {}
     std::string out();
+    std::string getContextedText(const ent::Node& node) const;
 };
 
 }

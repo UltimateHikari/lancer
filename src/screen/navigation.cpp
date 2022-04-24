@@ -72,7 +72,7 @@ public:
   ftxui::Element RenderNodeInfo(const ent::Node& node){
     using namespace ftxui;
     return vbox({
-      text(node.name),
+      text(node.name + " (" + std::to_string(node.id) + ")"), //TODO - for debug purpose
       separator(),
       text(node.corp.name),
       text(node.pref.name),
@@ -96,7 +96,7 @@ public:
         Renderer([&]{return filler();}),
         
         Renderer([&]{
-          return text(lane.start.name + " to " + lane.end.name) | center;
+          return text(lane.getContextedText(game->getModel().get_current_node())) | center;
         }),
       });
   }
