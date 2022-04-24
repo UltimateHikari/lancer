@@ -10,8 +10,9 @@ Basic game - movement, stations, battles, equipment, trading;
 
 ## Till 05.2022
 2.2 Navigation; 
-3.1 Trade stock generation;
+3.0 Trade stock generation;
     Trading;
+3.1 Events;
 3.2 Mechanishms of restocking and modifiers; 
 3.3 Battles with default modules
 
