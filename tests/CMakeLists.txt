@@ -2,6 +2,7 @@ enable_testing()
 
 add_executable(
   lancer_test
+  main.cpp
   select_test.cpp
   inventory_test.cpp
 )

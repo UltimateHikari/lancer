@@ -2,6 +2,8 @@
 #define LANCER_GAME_HPP
 
 #include "model/model.hpp"
+#include "model/entities.hpp"
+#include "db/database.hpp"
 #include <vector>
 #include <memory>
 
@@ -18,9 +20,16 @@ class Game{
             model = std::make_unique<Model>();
         }
         Model& getModel(){
-            return *model;
+            return *(model.get());
         }
-        void end(){};
+
+        void end(){
+            exit(-1);
+        };
+
+        std::shared_ptr<std::vector<ent::SavedGame>> get_saved_games(){
+            return db::Connector::select_saved_game();
+        }
 };
 
 #endif

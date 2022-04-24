@@ -1,4 +1,8 @@
-INSERT INTO corporation(name) VALUES ("Giperion");
+INSERT INTO corporation(name) VALUES ("G.H.O.S.T");
+INSERT INTO corporation(name) VALUES ("Better World");
+INSERT INTO corporation(name) VALUES ("Yareli");
+INSERT INTO corporation(name) VALUES ("ReVolt Inc.");
+
 
 INSERT INTO commodity_type(name) VALUES ("essential");
 INSERT INTO commodity_type(name) VALUES ("illegal");
@@ -96,6 +100,7 @@ VALUES(
     40,0
 );
 
+--- Nodes 1 - 5 ---
 
 INSERT INTO node(
     name,
@@ -104,7 +109,7 @@ INSERT INTO node(
 )
 VALUES(
     "Eternity",
-    2,1,2,10
+    2,2,5,1
 );
 
 INSERT INTO node(
@@ -114,7 +119,7 @@ INSERT INTO node(
 )
 VALUES(
     "Arcadia",
-    4,1,10,5
+    2,2,5,2
 );
 
 INSERT INTO node(
@@ -124,7 +129,297 @@ INSERT INTO node(
 )
 VALUES(
     "Radiance",
-    3,1,8,8
+    4,2,5,3
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Remgolia",
+    5,2,5,4
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Saidai",
+    1,2,4,8
+);
+
+--- Nodes 6 - 10 ---
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Pranelius",
+    1,4,2,4
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Taxopia",
+    3,1,3,6
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Nadorkon",
+    3,1,3,8
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Wunarnia",
+    3,3,5,1
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Korog",
+    3,1,1,10
+);
+
+--- Nodes 11 - 15 ---
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Tau Naraka",
+    4,1,1,8
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Aviz",
+    4,3,2,3
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Darkumi",
+    1,3,3,2
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Kuorkon",
+    2,3,4,7
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Ganeaux",
+    2,3,2,1
+);
+
+--- Nodes 16 - 20 ---
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Zeta",
+    5,3,1,4
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Longpid",
+    5,3,5,2
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Noella",
+    2,3,4,9
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Carankor",
+    2,4,1,1
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Farenella",
+    2,1,3,7
+);
+
+--- Nodes 21 - 25 ---
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Paplos",
+    4,1,2,5
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Satacan",
+    5,4,4,5
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Vullak",
+    5,4,5,5
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Sizeonon",
+    5,4,5,2
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Scarva",
+    1,1,5,2
+);
+
+--- Nodes 25 - 30 ---
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Baniru",
+    4,4,5,3
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Ceti",
+    4,4,1,10
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Nitkail",
+    4,2,2,6
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Durreus",
+    3,2,3,4
+);
+
+INSERT INTO node(
+    name,
+    pref_id,corp_affinity,
+    order_level,tech_level
+)
+VALUES(
+    "Funfiner",
+    3,1,5,10
+);
+
+-- Lanes 1-5 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    24,30,5,"TRUE"
 );
 
 INSERT INTO lane(
@@ -132,7 +427,301 @@ INSERT INTO lane(
     traverse_time,initial_stability
 )
 VALUES(
+    25,24,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    23,24,12,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    26,25,8,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    27,26,20,"TRUE"
+);
+
+-- Lanes 6-10 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    22,26,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    22,23,14,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    19,22,32,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    21,20,12,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    21,19,13,"TRUE"
+);
+
+-- Lanes 11-15 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    20,19,6,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    4,19,20,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    5,4,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    3,4,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    3,5,10,"TRUE"
+);
+
+-- Lanes 16-20 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
     1,2,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    2,3,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    2,28,20,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    28,29,20,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    29,20,10,"TRUE"
+);
+
+-- Lanes 21-25 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    1,5,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    5,6,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    6,7,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    7,8,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    7,9,10,"TRUE"
+);
+
+-- Lanes 26-30 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    9,11,2,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    10,11,15,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    11,12,44,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    12,13,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    12,14,10,"TRUE"
+);
+
+-- Lanes 31-35 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    14,16,20,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    13,15,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    14,18,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    15,18,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    16,17,10,"TRUE"
+);
+
+-- Lanes 36-37 --
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    17,18,10,"TRUE"
+);
+
+INSERT INTO lane(
+    start_node_id, end_node_id,
+    traverse_time,initial_stability
+)
+VALUES(
+    18,2,10,"TRUE"
 );
 
 INSERT INTO encounter(name, weight)

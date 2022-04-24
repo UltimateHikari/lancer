@@ -8,7 +8,13 @@ namespace ent{
 class Comparable{
 public:
     int id;
+    Comparable(){};
     Comparable(int id_): id(id_){}
+};
+
+class Printable{
+public:
+    virtual std::string out() = 0;
 };
 
 inline bool operator< (const Comparable& lhs, const Comparable& rhs){ return lhs.id < rhs.id; }
@@ -20,6 +26,7 @@ inline bool operator== (const Comparable& lhs, const Comparable& rhs){ return rh
 class CommodityType : public Comparable{
 public:
     std::string name;
+    CommodityType(){};
     CommodityType(int id_, std::string& name_):
         Comparable(id_), 
         name(std::move(name_))
@@ -35,7 +42,7 @@ public:
     {}
 };
 
-class Commodity : public Comparable{
+class Commodity : public Comparable, Printable{
 public:
     CommodityType type;
     std::string name;
@@ -49,9 +56,10 @@ public:
         type{std::get<1>(raw_select), std::get<2>(raw_select)},
         name{std::move(std::get<3>(raw_select))}
         {}
+    std::string out();
 };
 
-class Module : public Comparable{
+class Module : public Comparable, Printable{
 public:
     ModuleType type;
     std::string name;
@@ -65,9 +73,10 @@ public:
         type{std::get<1>(raw_select), std::get<2>(raw_select)},
         name{std::move(std::get<3>(raw_select))}
         {}
+    std::string out();
 };
 
-class SavedGame : public Comparable{
+class SavedGame : public Comparable, Printable{
 public:
     std::string name;
     std::string date;
@@ -76,15 +85,18 @@ public:
         name{std::get<1>(raw_select)},
         date{std::move(std::get<2>(raw_select))}
         {}
+    std::string out();
 };
 
-class Corporation : public Comparable{
+class Corporation : public Comparable, public Printable{
 public:
     std::string name;
+    Corporation(){};
     Corporation(int id_, std::string& name_):
         Comparable(id_), 
         name(std::move(name_))
     {}
+    std::string out();
 };
 
 class LightNode{
@@ -98,7 +110,7 @@ public:
     {}
 };
 
-class Node {
+class Node : public Printable{
 public:
     int id;
     std::string name;
@@ -107,6 +119,8 @@ public:
     ent::Corporation corp;
     int order_level;
     int tech_level;
+
+    Node(){};
 
     Node(std::tuple<
         int, 
@@ -122,9 +136,10 @@ public:
         order_level{std::get<6>(raw_select)},
         tech_level{std::get<7>(raw_select)}
         {}
+    std::string out();
 };
 
-class Lane {
+class Lane : public Printable{
 public:
     int id;
     LightNode start;
@@ -144,6 +159,8 @@ public:
         traverse_time{std::get<5>(raw_select)},
         stability{std::get<6>(raw_select)}
         {}
+    std::string out();
+    std::string getContextedText(const ent::Node& node) const;
 };
 
 }

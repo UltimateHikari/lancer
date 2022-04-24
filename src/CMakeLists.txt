@@ -4,8 +4,9 @@ add_library(lancer_lib)
 set(sources 
     screen/main.cpp
     screen/inventory.cpp
+    screen/navigation.cpp
     model/model.cpp
-    main.cpp 
+    model/entities.cpp 
     db/database.cpp
 )
 
@@ -14,10 +15,11 @@ set(libraries
     ftxui::screen
     ftxui::dom
     ftxui::component
+    easyloggingpp
 )
 
 target_link_libraries(lancer PRIVATE ${libraries})
-target_sources(lancer PRIVATE ${sources})
+target_sources(lancer PRIVATE ${sources} main.cpp)
 
 target_link_libraries(lancer_lib PRIVATE ${libraries})
 target_sources(lancer_lib PRIVATE ${sources})

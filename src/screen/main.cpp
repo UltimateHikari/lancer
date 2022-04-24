@@ -6,7 +6,7 @@
 
 #include "model/model.hpp"
 #include "screen/inventory.hpp"
-#include "db/database.hpp"
+#include "screen/navigation.hpp"
 
 using namespace sc;
 using namespace ftxui;
@@ -84,7 +84,7 @@ void Load::show(Game& game){
 
     ftxui::Components children;
 
-    auto saved_games = db::Connector::select_saved_game();
+    auto saved_games = game.get_saved_games();
 
     for(auto& i: (*saved_games.get())){
         children.push_back(RenderSave(i, [&]{
@@ -142,71 +142,21 @@ Component time_renderer(Game& game){
         });
 }
 
-Component navigation_renderer(Game& game){
-    return time_renderer(game);
-}
-
-
-
-Component inventory_renderer(Game& game){
-    auto module_container = Container::Vertical({});
-    auto commodity_container = Container::Vertical({});
-    auto container = Container::Vertical({
-        std::move(module_container),
-        std::move(commodity_container)
-    });
-    return Renderer(container, [&]{
-        return vbox({
-            text(L" Inventory "),
-            separator(),
-            module_container->Render(),
-            separator(),
-            commodity_container->Render()
-        });
-    });
-}
-
-Component trade_renderer(Game& game){
-    return time_renderer(game);
-}
-
 void System::show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
-
-///// placeholder
-
-    auto spinner_tab_renderer2 = Renderer([&] {
-    Elements entries;
-    int shift = 0;
-    for (int i = 0; i < 10; ++i) {
-        entries.push_back(spinner(i, shift / 2) | bold |
-                    size(WIDTH, GREATER_THAN, 2) | border);
-    }
-    return hflow(std::move(entries)) | border;
-    });
-
-    auto spinner_tab_renderer3 = Renderer([&] {
-    Elements entries;
-    int shift = 0;
-    for (int i = 0; i < 5; ++i) {
-        entries.push_back(spinner(i, shift / 2) | bold |
-                    size(WIDTH, GREATER_THAN, 2) | border);
-    }
-    return hflow(std::move(entries)) | border;
-    });
-
-////
 
     int tab_index = 0;
     std::vector<std::string> tab_entries = {
         "Navigation", "Inventory", "Trade"
     };
     auto tab_selection = Toggle(&tab_entries, &tab_index);
+    auto navigation = sc::Navigation(game);
+    
     auto tab_content = Container::Tab(
     {
-        navigation_renderer(game),
+        navigation,
         sc::Inventory(game),
-        trade_renderer(game)
+        time_renderer(game)
     },
     &tab_index);
 

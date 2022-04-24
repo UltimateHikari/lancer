@@ -19,3 +19,4 @@ FetchContent_Declare(ftxui
 add_subdirectory(googletest)
 add_subdirectory(sqlite_orm)
 add_subdirectory(ftxui)
+add_subdirectory(easyloggingpp)

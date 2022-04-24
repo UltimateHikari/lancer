@@ -4,11 +4,15 @@
 #include <iomanip> // put_time
 #include <algorithm> // copy
 
+#include "easyloggingpp/easylogging++.h"
+
+
 // ----- Model ----- //
 using namespace md;
 
 Model::Model():
-    inventory(new Inventory())
+    inventory(new Inventory()),
+    navigation(new Navigation())
 {}
 Model::~Model(){
     delete inventory;
@@ -32,10 +36,6 @@ std::string Model::get_time(){
     oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
 
     return oss.str();
-}
-
-Inventory& Model::get_inventory(){
-    return *inventory;
 }
 
 void Model::load_game(int save_id){
@@ -108,4 +108,37 @@ void Inventory::save(std::string& save_name){
     auto modules = get_modules();
     auto commodities = get_commodities();
     db::Connector::insert_save(save_name, modules, commodities);
+}
+
+// ----- Navigation ----- //
+
+ent::Node Navigation::refresh_node(){
+    auto nodes = db::Connector::select_node();
+    LOG(INFO) << "refreshing current node: ";
+    if(nodes.get()->size() < current_node_id){
+        LOG(ERROR) << "your ship was eaten by current_lane_id dragon\n";
+        exit(-1);
+    }
+    return (*(nodes.get()))[current_node_id - 1]; // in res from 0, in db ftom 1. may break, better use find?
+}
+
+void Navigation::move_with_lane(const ent::Lane& lane){
+    LOG(INFO) << "moving from node : " + std::to_string(current_node_id);
+    current_node_id = (current_node_id == lane.end.id ? lane.start.id : lane.end.id);
+    LOG(INFO) << "moved to node    : " + std::to_string(current_node_id);
+}
+
+const ent::Node& Navigation::get_current_node(){
+    if(cached_node.id != current_node_id){
+        cached_node = refresh_node();
+    }
+    return cached_node;
+
+}
+const std::vector<ent::Lane>& Navigation::get_current_lanes(){
+    if(current_lanes_id != current_node_id){
+        cached_lanes = db::Connector::select_lane(current_node_id);
+        current_lanes_id = current_node_id;
+    }
+    return *(cached_lanes.get());
 }
