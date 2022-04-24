@@ -5,6 +5,12 @@
 
 namespace ent{
 
+struct Meta{
+    int amount;
+    int price;
+};
+
+
 class Comparable{
 public:
     int id;
@@ -46,6 +52,7 @@ class Commodity : public Comparable, Printable{
 public:
     CommodityType type;
     std::string name;
+    int price = 100;
     Commodity(std::tuple<int, int, std::string, std::string>& raw_select):
         Comparable(std::get<0>(raw_select)),
         type{std::get<1>(raw_select), std::get<2>(raw_select)},
@@ -63,6 +70,7 @@ class Module : public Comparable, Printable{
 public:
     ModuleType type;
     std::string name;
+    int price = 1000;
     Module(std::tuple<int, int, std::string, std::string>& raw_select):
         Comparable(std::get<0>(raw_select)),
         type{std::get<1>(raw_select), std::get<2>(raw_select)},

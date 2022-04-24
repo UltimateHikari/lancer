@@ -20,13 +20,13 @@ private:
     std::mutex mutex;
     int inventory_state;
     int snapshot_state;
-    std::map<T, int> inventory;
-    std::vector<std::pair<T, int>> snapshot;
+    std::map<T, ent::Meta> inventory;
+    std::vector<std::pair<T, ent::Meta>> snapshot;
     void repopulate_snapshot();
 public: 
     SubInventory();
-    void update(const T& t, int delta);
-    std::vector<std::pair<T, int>>& get();
+    void update(const T& t, int delta, int price);
+    std::vector<std::pair<T, ent::Meta>>& get();
     bool have_enough_of(const T& t, int delta);
 };
 
@@ -35,10 +35,10 @@ private:
     SubInventory<ent::Commodity> commodities;
     SubInventory<ent::Module> modules;
 public:
-    void update_commodity(const ent::Commodity& comm, int delta);
-    std::vector<std::pair<ent::Commodity, int>>& get_commodities();
-    void update_module(const ent::Module& comm, int delta);
-    std::vector<std::pair<ent::Module, int>>& get_modules();
+    void update_commodity(const ent::Commodity& comm, int delta, int price);
+    std::vector<std::pair<ent::Commodity, ent::Meta>>& get_commodities();
+    void update_module(const ent::Module& comm, int delta, int price);
+    std::vector<std::pair<ent::Module, ent::Meta>>& get_modules();
     bool have_enough_of_comm(const ent::Commodity& t, int delta);
     bool have_enough_of_mod(const ent::Module& t, int delta);
     void load(int save_id);
@@ -97,15 +97,15 @@ public:
     void set_game_active(bool activity);
 
     void update_commodity(const ent::Commodity& comm, int delta){
-        inventory->update_commodity(comm, delta);
+        inventory->update_commodity(comm, delta, 0);
     }
-    const std::vector<std::pair<ent::Commodity, int>>& get_commodities(){
+    const std::vector<std::pair<ent::Commodity, ent::Meta>>& get_commodities(){
         return inventory->get_commodities();
     }
     void update_module(const ent::Module& comm, int delta){
-        inventory->update_module(comm, delta);
+        inventory->update_module(comm, delta, 0);
     }
-    const std::vector<std::pair<ent::Module, int>>& get_modules(){
+    const std::vector<std::pair<ent::Module, ent::Meta>>& get_modules(){
         return inventory->get_modules();
     }
 

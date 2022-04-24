@@ -49,7 +49,7 @@ public:
         panel = list->Render() | ftxui::borderDouble;
     }
 
-    ftxui::Component RenderModule(std::pair<ent::Module, int>& module){
+    ftxui::Component RenderModule(std::pair<ent::Module, ent::Meta>& module){
         using namespace ftxui;
         return Container::Horizontal({
             Button("Details", []{}),
@@ -59,12 +59,12 @@ public:
             }),
             Renderer([&]{return filler();}),
             Renderer([&]{
-                return text(fmti(module.second));
+                return text(fmti(module.second.amount));
             })
         });
     }
 
-    ftxui::Component RenderCommodity(std::pair<ent::Commodity, int>& commodity){
+    ftxui::Component RenderCommodity(std::pair<ent::Commodity, ent::Meta>& commodity){
         using namespace ftxui;
         return Container::Horizontal({
             Button("Details", []{}),
@@ -74,7 +74,7 @@ public:
             }),
             Renderer([&]{return filler();}),
             Renderer([&]{
-                return text(fmti(commodity.second));
+                return text(fmti(commodity.second.amount));
             })
         });
     }

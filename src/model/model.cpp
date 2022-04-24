@@ -54,15 +54,16 @@ SubInventory<T>::SubInventory():
 {}
 
 template<class T>
-void SubInventory<T>::update(const T& t, int delta){
+void SubInventory<T>::update(const T& t, int delta, int price){
     mutex.lock();
-    inventory[t] += delta;
+    inventory[t].amount += delta;
+    inventory[t].price += price; // non-zero only on init?
     inventory_state++;
     mutex.unlock();
 }
 
 template<class T>
-std::vector<std::pair<T, int>>& SubInventory<T>::get(){
+std::vector<std::pair<T, ent::Meta>>& SubInventory<T>::get(){
     if(mutex.try_lock()){
         if(snapshot_state != inventory_state){
             repopulate_snapshot();
@@ -83,7 +84,7 @@ bool SubInventory<T>::have_enough_of(const T& t, int delta){
     auto inv = get();
     auto it = std::find_if(inv.begin(), inv.end(), 
                         [&](const auto& p){return p.first.id == t.id;});
-    if(it != inv.end() && it->second + delta > -1){
+    if(it != inv.end() && it->second.amount + delta > -1){
         return true;
     }
     if(delta >= 0){
@@ -95,16 +96,16 @@ bool SubInventory<T>::have_enough_of(const T& t, int delta){
 
 // ----- Inventory ----- //
 
-void Inventory::update_commodity(const ent::Commodity& comm, int delta){
-    commodities.update(comm, delta);
+void Inventory::update_commodity(const ent::Commodity& comm, int delta, int price){
+    commodities.update(comm, delta, price);
 }
-std::vector<std::pair<ent::Commodity, int>>& Inventory::get_commodities(){
+std::vector<std::pair<ent::Commodity, ent::Meta>>& Inventory::get_commodities(){
     return commodities.get();
 }
-void Inventory::update_module(const ent::Module& mod, int delta){
-    modules.update(mod, delta);
+void Inventory::update_module(const ent::Module& mod, int delta, int price){
+    modules.update(mod, delta, price);
 }
-std::vector<std::pair<ent::Module, int>>& Inventory::get_modules(){
+std::vector<std::pair<ent::Module, ent::Meta>>& Inventory::get_modules(){
     return modules.get();
 }
 
@@ -119,10 +120,10 @@ void Inventory::load(int save_id){
     auto commodities = db::Connector::select_saved_commodity(save_id);
     auto modules = db::Connector::select_saved_module(save_id);
     for(auto& i: *(modules.get())){
-        update_module(i.first, i.second);
+        update_module(i.first, i.second, 0);
     }
     for(auto& i: *(commodities.get())){
-        update_commodity(i.first, i.second);
+        update_commodity(i.first, i.second, 0);
     }
 }
 void Inventory::save(std::string& save_name){
@@ -165,12 +166,16 @@ const std::vector<ent::Lane>& Navigation::get_current_lanes(){
     return *(cached_lanes.get());
 }
 
+float order_mod(int order){
+    return 4 - 2*order/5.0;
+}
+
 std::shared_ptr<Inventory> Trade::generate_stock(const ent::Node& node){
     auto inv = std::make_shared<Inventory>();
     auto dbcomms = db::Connector::select_commodity();
     //TODO algo for random
     for(auto& i : *(dbcomms.get())){
-        inv.get()->update_commodity(i, 10);
+        inv.get()->update_commodity(i, 10, (int)(i.price*order_mod(node.order_level)));
     }
     return inv;
 }
@@ -188,7 +193,7 @@ const int Trade::stock_record_deal_comm(const ent::Node& node, const ent::Commod
     int stock_delta = (-1)*delta;
     int res_delta = 0;
     if(get_stock_for(node).have_enough_of_comm(comm, stock_delta)){
-        get_stock_for(node).update_commodity(comm, stock_delta);
+        get_stock_for(node).update_commodity(comm, stock_delta, 0);
         res_delta = delta;
     }
     return res_delta;
@@ -197,7 +202,7 @@ const int Trade::stock_record_deal_mod(const ent::Node& node, const ent::Module&
     int stock_delta = (-1)*delta;
     int res_delta = 0;
     if(get_stock_for(node).have_enough_of_mod(mod, stock_delta)){
-        get_stock_for(node).update_module(mod, stock_delta);
+        get_stock_for(node).update_module(mod, stock_delta, 0);
         res_delta = delta;
     }
     return res_delta;

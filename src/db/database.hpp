@@ -35,8 +35,8 @@ namespace db{
             static std::shared_ptr<std::vector<std::pair<ent::Commodity, int>>> select_saved_commodity(const int id);
             static void insert_save(
                 std::string& save_name,
-                const std::vector<std::pair<ent::Module, int>>& modules,
-                const std::vector<std::pair<ent::Commodity, int>>& commodities
+                const std::vector<std::pair<ent::Module, ent::Meta>>& modules,
+                const std::vector<std::pair<ent::Commodity, ent::Meta>>& commodities
             );
     };
 

@@ -23,7 +23,7 @@ public:
 
     void RenderList(){
         list->DetachAllChildren();
-        std::vector<std::pair<ent::Commodity, int>>& commodities = game->getModel().get_current_stock().get_commodities();
+        std::vector<std::pair<ent::Commodity, ent::Meta>>& commodities = game->getModel().get_current_stock().get_commodities();
         //auto modules = game->getModel().get_current_stock().get_modules();
         // for(auto& i: modules){
         //     list->Add(RenderModule(i));
@@ -37,7 +37,7 @@ public:
         panel = list->Render() | ftxui::borderDouble;
     }
 
-    ftxui::Component RenderCommodity(std::pair<ent::Commodity, int>& commodity){
+    ftxui::Component RenderCommodity(std::pair<ent::Commodity, ent::Meta>& commodity){
         using namespace ftxui;
         return Container::Horizontal({
             Button("Buy", [&]{game->getModel().trade_commodity(commodity.first, 1);}, ButtonOption()),
@@ -49,7 +49,11 @@ public:
             }),
             Renderer([&]{return filler();}),
             Renderer([&]{
-                return text(fmti(commodity.second));
+                return text(fmti(commodity.second.amount));
+            }),
+            Renderer([&]{return filler();}),
+            Renderer([&]{
+                return text(fmti(commodity.second.price) + "cred");
             })
         });
     }
