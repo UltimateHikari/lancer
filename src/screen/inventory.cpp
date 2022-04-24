@@ -38,10 +38,14 @@ public:
         auto commodities = model.get_commodities();
 
         for(auto& i: modules){
-            list->Add(RenderModule(i));
+            if(i.second.amount > 0){
+                list->Add(RenderModule(i));
+            }
         }
         for(auto& i: commodities){
-            list->Add(RenderCommodity(i));
+            if(i.second.amount > 0){
+                list->Add(RenderCommodity(i));
+            }
         }
         if(list->ChildCount() == 0){
             list->Add(ftxui::Renderer([]{return ftxui::text("Inventory empty");}));
