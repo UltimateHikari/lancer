@@ -277,8 +277,8 @@ std::shared_ptr<std::vector<std::pair<ent::Commodity,int>>> Connector::select_sa
 
 void Connector::insert_save(
                 std::string& save_name,
-                const std::vector<std::pair<ent::Module, int>>& modules,
-                const std::vector<std::pair<ent::Commodity, int>>& commodities
+                const std::vector<std::pair<ent::Module, ent::Meta>>& modules,
+                const std::vector<std::pair<ent::Commodity, ent::Meta>>& commodities
             )
 {
     db::internal::storage.insert(
@@ -292,14 +292,14 @@ void Connector::insert_save(
         db::internal::storage.insert(
             into<SavedCommodity>(),
             columns(&SavedCommodity::save_id, &SavedCommodity::comm_id, &SavedCommodity::amount),
-            values(std::make_tuple(save_id[0], i.first.id, i.second))
+            values(std::make_tuple(save_id[0], i.first.id, i.second.amount))
         );
     }
     for(auto& i : modules){
         db::internal::storage.insert(
             into<SavedModule>(),
             columns(&SavedModule::save_id, &SavedModule::mod_id, &SavedModule::amount),
-            values(std::make_tuple(save_id[0], i.first.id, i.second))
+            values(std::make_tuple(save_id[0], i.first.id, i.second.amount))
         );
     }
 }

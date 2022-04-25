@@ -25,7 +25,7 @@ TEST(InventoryTest, PutCommodity){
     auto all_commodities = db::Connector::select_commodity();
     EXPECT_EQ(model->get_commodities().size(), 0);
     model->update_commodity((*all_commodities.get())[0], 2);
-    EXPECT_EQ(model->get_commodities()[0].second, 2);
+    EXPECT_EQ(model->get_commodities()[0].second.amount, 2);
     delete model;
 }
 
@@ -34,9 +34,9 @@ TEST(InventoryTest, PutCommodityTwice){
     auto all_commodities = db::Connector::select_commodity();
     EXPECT_EQ(model->get_commodities().size(), 0);
     model->update_commodity((*all_commodities.get())[0], 2);
-    EXPECT_EQ(model->get_commodities()[0].second, 2);
+    EXPECT_EQ(model->get_commodities()[0].second.amount, 2);
     model->update_commodity((*all_commodities.get())[0], 3);
-    EXPECT_EQ(model->get_commodities()[0].second, 5);
+    EXPECT_EQ(model->get_commodities()[0].second.amount, 5);
     delete model;
 }
 
@@ -55,7 +55,7 @@ TEST(InventoryTest, PutModule){
     auto all_modules = db::Connector::select_module();
     EXPECT_EQ(model->get_modules().size(), 0);
     model->update_module((*all_modules.get())[0], 2);
-    EXPECT_EQ(model->get_modules()[0].second, 2);
+    EXPECT_EQ(model->get_modules()[0].second.amount, 2);
     delete model;
 }
 
@@ -64,9 +64,9 @@ TEST(InventoryTest, PutModuleTwice){
     auto all_modules = db::Connector::select_module();
     EXPECT_EQ(model->get_modules().size(), 0);
     model->update_module((*all_modules.get())[0], 2);
-    EXPECT_EQ(model->get_modules()[0].second, 2);
+    EXPECT_EQ(model->get_modules()[0].second.amount, 2);
     model->update_module((*all_modules.get())[0], 3);
-    EXPECT_EQ(model->get_modules()[0].second, 5);
+    EXPECT_EQ(model->get_modules()[0].second.amount, 5);
     delete model;
 }
 

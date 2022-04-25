@@ -4,123 +4,128 @@
 #include <memory>
 #include "model/entities.hpp"
 #include "model/model.hpp"
+
 #include <ftxui/component/event.hpp> 
 
 
 
 namespace sc{
 
+enum states{NONE, COMM, MOD};
 
-ftxui::Element RenderModule(std::pair<ent::Module, int>& module){
-    using namespace ftxui;
-    return hbox({
-             text(module.first.type.name),
-             separator(),
-             text(module.first.name),
-             separator(),
-             text(std::to_string(module.second))
-             | size(WIDTH, EQUAL, 800) | xflex,
-         }) |
-         xflex;
-}
+class InventoryBase : public ftxui::ComponentBase{
+public:
+    Game* game;
+    ftxui::Component list;
+    ftxui::Element iteminfocolumn;
+    ftxui::Element iteminfo;
+    ftxui::Element panel;
+    int state = NONE;
+    ent::Commodity current_comm;
 
-ftxui::Element RenderCommodity(std::pair<ent::Commodity, int>& commodity){
-    using namespace ftxui;
-    return hbox({
-             text(commodity.first.type.name),
-             separator(),
-             text(commodity.first.name),
-             separator(),
-             text(std::to_string(commodity.second))
-             | size(WIDTH, EQUAL, 800) | xflex,
-         }) |
-         xflex;
-}
-
-ftxui::Element RenderLines(Game& game){
-    ftxui::Elements lines;    
-    auto& model = game.getModel();
-    auto modules = model.get_modules();
-    auto commodities = model.get_commodities();
-    for(auto& i: modules){
-        lines.push_back(RenderModule(i));
-    }
-    for(auto& i: commodities){
-        lines.push_back(RenderCommodity(i));
+    InventoryBase(Game& game_){
+        using namespace ftxui;
+        list = Container::Vertical({});
+        Add(list);
+        this->game = &game_;
     }
 
-    if(lines.empty()){
-        lines.push_back(ftxui::text("Inventory empty"));
+    ftxui::Element Render() override {
+        RenderList();
+        switch(state){
+            case COMM:
+                iteminfocolumn = RenderCommDetailsColumn();
+                iteminfo = RenderCommDetails(current_comm);
+                break;
+            //case MOD: //TODO
+            default:
+                iteminfocolumn = ftxui::text("");
+                iteminfo = ftxui::text("");
+                break;
+        }
+        return ftxui::hflow({panel, ftxui::hbox({iteminfocolumn, iteminfo})}) | ftxui::border;
     }
 
-    return vbox(std::move(lines)) | ftxui::border;
-}
+    void RenderList(){
 
-// class InventoryBase : public ftxui::ComponentBase{
-// private:
-//     std::shared_ptr<std::vector<ent::Commodity>> commodities;
-//     std::shared_ptr<std::vector<ent::Module>> modules;
-//     Model& model;
+        list->DetachAllChildren();
+        auto& model = game->getModel();
+        auto modules = model.get_modules();
+        auto commodities = model.get_commodities();
 
-//     int selected_ = 0;
-//     int size_ = 0;
-//     ftxui::Box box_;
-//     bool Focusable() const final { return true; }
+        for(auto& i: modules){
+            if(i.second.amount > 0){
+                list->Add(RenderModule(i));
+            }
+        }
+        for(auto& i: commodities){
+            if(i.second.amount > 0){
+                list->Add(RenderCommodity(i));
+            }
+        }
+        if(list->ChildCount() == 0){
+            list->Add(ftxui::Renderer([]{return ftxui::text("Inventory empty");}));
+        }
+        panel = list->Render() | ftxui::borderDouble;
+    }
 
-    
+    ftxui::Component RenderModule(std::pair<ent::Module, ent::Meta>& module){
+        using namespace ftxui;
+        return Container::Horizontal({
+            Button("Details", []{}),
+            Renderer([&]{return filler();}),
+            Renderer([&]{
+                return text(module.first.name);
+            }),
+            Renderer([&]{return filler();}),
+            Renderer([&]{
+                return text(fmti(module.second.amount));
+            })
+        });
+    }
 
-//     bool OnEvent(ftxui::Event event) final{
-//         using namespace ftxui;
-//         if (event.is_mouse() && box_.Contain(event.mouse().x, event.mouse().y))
-//         TakeFocus();
+    ftxui::Component RenderCommodity(std::pair<ent::Commodity, ent::Meta>& commodity){
+        using namespace ftxui;
+        return Container::Horizontal({
+            Button("Details", [&]{current_comm = commodity.first; state = COMM;}),
+            Renderer([&]{return filler();}),
+            Renderer([&]{
+                return text(commodity.first.name);
+            }),
+            Renderer([&]{return filler();}),
+            Renderer([&]{
+                return text(fmti(commodity.second.amount));
+            })
+        });
+    }
 
-//         int selected_old = selected_;
-//         if (event == Event::ArrowUp || event == Event::Character('k') ||
-//             (event.is_mouse() && event.mouse().button == Mouse::WheelUp)) {
-//         selected_--;
-//         }
-//         if ((event == Event::ArrowDown || event == Event::Character('j') ||
-//             (event.is_mouse() && event.mouse().button == Mouse::WheelDown))) {
-//         selected_++;
-//         }
-//         if (event == Event::PageDown)
-//         selected_ += box_.y_max - box_.y_min;
-//         if (event == Event::PageUp)
-//         selected_ -= box_.y_max - box_.y_min;
-//         if (event == Event::Home)
-//         selected_ = 0;
-//         if (event == Event::End)
-//         selected_ = size_;
+    ftxui::Element RenderCommDetailsColumn(){
+        using namespace ftxui;
+        return vbox({
+            text("Commodity:"),
+            separator(),
+            text("Commodity type:"),
+            text("Average price:"),
+            text("Description:"),
+        }) |
+        yflex;
+    }
 
-//         selected_ = std::max(0, std::min(size_ - 1, selected_));
-//         return selected_old != selected_;
-//     }
-// public:
-//     ftxui::Element Render() final{
-//         using namespace ftxui;
-//         auto focused = Focused() ? focus : ftxui::select;
-//         auto style = Focused() ? inverted : nothing;
-
-//         ftxui::Element background = ComponentBase::Render();
-//         background->ComputeRequirement();
-//         size_ = background->requirement().min_y;
-//         return dbox({
-//                 std::move(background),
-//                 vbox({
-//                     text(L"") | size(HEIGHT, EQUAL, selected_),
-//                     text(L"") | style | focused,
-//                 }),
-//             }) |
-//            vscroll_indicator | yframe | yflex | reflect(box_);
-//     }
-//     InventoryBase(Game& game):
-//         model{game.getModel()}
-//     {Add(ftxui::Renderer([&]{return RenderLines(game);}));}
-// };
+    ftxui::Element RenderCommDetails(const ent::Commodity& comm){
+        using namespace ftxui;
+        return vbox({
+        text(comm.name + " (" + std::to_string(comm.id) + ")"), //TODO - for debug purpose
+        separator(),
+        text(comm.type.name),
+        text(fmti(comm.price)),
+        }) |
+        yflex;
+    }
+};
 
 ftxui::Component Inventory(Game& game) {
-  //return ftxui::Make<InventoryBase>(game);
-  return ftxui::Renderer([&]{return RenderLines(game);});
+  return ftxui::Make<InventoryBase>(game);
+  //return ftxui::Renderer([&]{return RenderLines(game);});
 }
 
 }

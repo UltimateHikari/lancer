@@ -7,6 +7,7 @@
 #include "model/model.hpp"
 #include "screen/inventory.hpp"
 #include "screen/navigation.hpp"
+#include "screen/trade.hpp"
 
 using namespace sc;
 using namespace ftxui;
@@ -136,12 +137,6 @@ Component spinner_tab_renderer(){
     });
 }
 
-Component time_renderer(Game& game){
-    return Renderer([&]{ 
-        return hflow({text(game.getModel().get_time())}) | border;
-        });
-}
-
 void System::show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
@@ -150,19 +145,28 @@ void System::show(Game& game){
         "Navigation", "Inventory", "Trade"
     };
     auto tab_selection = Toggle(&tab_entries, &tab_index);
-    auto navigation = sc::Navigation(game);
+    //auto navigation = ;
     
     auto tab_content = Container::Tab(
     {
-        navigation,
+        sc::Navigation(game),
         sc::Inventory(game),
-        time_renderer(game)
+        sc::Trade(game)
     },
     &tab_index);
+
+    auto footer = Container::Horizontal({
+        Renderer([&]{return filler();}),
+        Renderer([&]{return text("Current time: " + fmti(game.getModel().get_time()) + "day") | flex | hcenter;}),
+        Renderer([&]{return filler();}),
+        Renderer([&]{return text("Current balance: " + fmti(game.getModel().get_balance()) + "credits") | flex | hcenter;}),
+        Renderer([&]{return filler();}),
+    });
 
     auto main_container = Container::Vertical({
         tab_selection,
         tab_content,
+        footer
     });
 
     auto main_renderer = Renderer(main_container, [&] {
@@ -170,6 +174,7 @@ void System::show(Game& game){
         text("lancer") | bold | hcenter,
         tab_selection->Render() | hcenter,
         tab_content->Render() | flex,
+        footer->Render() 
     });
     });
  

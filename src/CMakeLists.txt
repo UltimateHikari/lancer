@@ -5,8 +5,10 @@ set(sources
     screen/main.cpp
     screen/inventory.cpp
     screen/navigation.cpp
+    screen/trade.cpp
     model/model.cpp
     model/entities.cpp 
+    model/oututil.cpp
     db/database.cpp
 )
 

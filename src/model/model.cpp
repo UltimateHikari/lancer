@@ -4,6 +4,7 @@
 #include <iomanip> // put_time
 #include <algorithm> // copy
 
+
 #include "easyloggingpp/easylogging++.h"
 
 
@@ -11,12 +12,11 @@
 using namespace md;
 
 Model::Model():
-    inventory(new Inventory()),
-    navigation(new Navigation())
+    inventory(std::make_unique<Inventory>()),
+    navigation(std::make_unique<Navigation>()),
+    trade(std::make_unique<Trade>())
 {}
-Model::~Model(){
-    delete inventory;
-}
+
 
 int Model::get_sense(){
     return sense_of_life;
@@ -28,15 +28,15 @@ void Model::set_game_active(bool activity){
     game_active_flag = activity;
 }
 
-std::string Model::get_time(){
-    auto t = std::time(nullptr);
-    auto tm = *std::localtime(&t);
+// std::string Model::get_time(){
+//     auto t = std::time(nullptr);
+//     auto tm = *std::localtime(&t);
 
-    std::ostringstream oss;
-    oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
+//     std::ostringstream oss;
+//     oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
 
-    return oss.str();
-}
+//     return oss.str();
+// }
 
 void Model::load_game(int save_id){
     inventory->load(save_id);
@@ -54,15 +54,16 @@ SubInventory<T>::SubInventory():
 {}
 
 template<class T>
-void SubInventory<T>::update(const T& t, int delta){
+void SubInventory<T>::update(const T& t, int delta, int price){
     mutex.lock();
-    inventory[t] += delta;
+    inventory[t].amount += delta;
+    inventory[t].price += price; // non-zero only on init?
     inventory_state++;
     mutex.unlock();
 }
 
 template<class T>
-const std::vector<std::pair<T, int>>& SubInventory<T>::get(){
+std::vector<std::pair<T, ent::Meta>>& SubInventory<T>::get(){
     if(mutex.try_lock()){
         if(snapshot_state != inventory_state){
             repopulate_snapshot();
@@ -78,30 +79,51 @@ void SubInventory<T>::repopulate_snapshot(){
     snapshot.assign(inventory.begin(), inventory.end());
 }
 
+template<class T>
+bool SubInventory<T>::have_enough_of(const T& t, int delta){
+    auto inv = get();
+    auto it = std::find_if(inv.begin(), inv.end(), 
+                        [&](const auto& p){return p.first.id == t.id;});
+    if(it != inv.end() && it->second.amount + delta > -1){
+        return true;
+    }
+    if(delta >= 0){
+        return true;
+    }
+    return false;
+}
+
 
 // ----- Inventory ----- //
 
-void Inventory::update_commodity(const ent::Commodity& comm, int delta){
-    commodities.update(comm, delta);
+void Inventory::update_commodity(const ent::Commodity& comm, int delta, int price){
+    commodities.update(comm, delta, price);
 }
-const std::vector<std::pair<ent::Commodity, int>>& Inventory::get_commodities(){
+std::vector<std::pair<ent::Commodity, ent::Meta>>& Inventory::get_commodities(){
     return commodities.get();
 }
-void Inventory::update_module(const ent::Module& mod, int delta){
-    modules.update(mod, delta);
+void Inventory::update_module(const ent::Module& mod, int delta, int price){
+    modules.update(mod, delta, price);
 }
-const std::vector<std::pair<ent::Module, int>>& Inventory::get_modules(){
+std::vector<std::pair<ent::Module, ent::Meta>>& Inventory::get_modules(){
     return modules.get();
+}
+
+bool Inventory::have_enough_of_comm(const ent::Commodity& t, int delta){
+    return commodities.have_enough_of(t,delta);
+}
+bool Inventory::have_enough_of_mod(const ent::Module& t, int delta){
+    return modules.have_enough_of(t,delta);
 }
 
 void Inventory::load(int save_id){
     auto commodities = db::Connector::select_saved_commodity(save_id);
     auto modules = db::Connector::select_saved_module(save_id);
     for(auto& i: *(modules.get())){
-        update_module(i.first, i.second);
+        update_module(i.first, i.second, 0);
     }
     for(auto& i: *(commodities.get())){
-        update_commodity(i.first, i.second);
+        update_commodity(i.first, i.second, 0);
     }
 }
 void Inventory::save(std::string& save_name){
@@ -123,9 +145,10 @@ ent::Node Navigation::refresh_node(){
 }
 
 void Navigation::move_with_lane(const ent::Lane& lane){
-    LOG(INFO) << "moving from node : " + std::to_string(current_node_id);
+    LOG(INFO) << "moving from node : " + fmti(current_node_id);
     current_node_id = (current_node_id == lane.end.id ? lane.start.id : lane.end.id);
-    LOG(INFO) << "moved to node    : " + std::to_string(current_node_id);
+    LOG(INFO) << "moved to node    : " + fmti(current_node_id);
+    //TODO drop extra stocks;
 }
 
 const ent::Node& Navigation::get_current_node(){
@@ -141,4 +164,72 @@ const std::vector<ent::Lane>& Navigation::get_current_lanes(){
         current_lanes_id = current_node_id;
     }
     return *(cached_lanes.get());
+}
+
+float order_mod(int order){
+    return 4 - 3*order/5.0;
+}
+
+std::shared_ptr<Inventory> Trade::generate_stock(const ent::Node& node){
+    auto inv = std::make_shared<Inventory>();
+    auto dbcomms = db::Connector::select_commodity();
+    //TODO algo for random
+    for(auto& i : *(dbcomms.get())){
+        inv.get()->update_commodity(i, 10, (int)(i.price*order_mod(node.order_level)));
+    }
+    return inv;
+}
+Inventory& Trade::get_stock_for(const ent::Node& node){
+    auto it = std::find_if(cached_stocks.begin(), cached_stocks.end(), 
+                        [&](std::pair<int, std::shared_ptr<Inventory>> p){ return p.first == node.id; });
+    if(!(it != cached_stocks.end())){
+        cached_stocks.push_front(std::make_pair(node.id, generate_stock(node)));
+        it = cached_stocks.begin();
+        LOG(INFO) << "Stock for " + fmti(node.id) + " placed";
+    } 
+    return *(it->second.get());
+}
+
+int Trade::get_comm_price(const ent::Node& node, const ent::Commodity& comm){
+    auto comd = get_stock_for(node).get_commodities();
+    return std::find_if(comd.begin(), comd.end(), 
+        [&](const auto& p){return p.first.id == comm.id;})->second.price;
+}
+int Trade::get_mod_price(const ent::Node& node, const ent::Module& mod){
+    auto modd = get_stock_for(node).get_modules();
+    // iterator is always here
+    return std::find_if(modd.begin(), modd.end(), 
+        [&](const auto& p){return p.first.id == mod.id;})->second.price;
+}
+
+const int Trade::stock_record_deal_comm(const ent::Node& node, const ent::Commodity& comm, int delta, int balance){
+    int stock_delta = (-1)*delta;
+    int res_delta = 0;
+
+    //TODO extapolate for situation with > 1 buys:
+    if(balance < get_comm_price(node, comm) && delta > 0){
+        return 0;
+    }
+
+    if(get_stock_for(node).have_enough_of_comm(comm, stock_delta)){
+        get_stock_for(node).update_commodity(comm, stock_delta, 0);
+        res_delta = delta;
+    }
+    return res_delta;
+}
+const int Trade::stock_record_deal_mod(const ent::Node& node, const ent::Module& mod, int delta, int balance){
+    int stock_delta = (-1)*delta;
+    int res_delta = 0;
+
+    
+    //TODO extapolate for situation with > 1 buys:
+    if(balance < get_mod_price(node, mod) && delta > 0){
+        return 0;
+    }
+
+    if(get_stock_for(node).have_enough_of_mod(mod, stock_delta)){
+        get_stock_for(node).update_module(mod, stock_delta, 0);
+        res_delta = delta;
+    }
+    return res_delta;
 }
