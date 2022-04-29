@@ -10,9 +10,26 @@ INSERT INTO commodity_type(name) VALUES ("industrial");
 INSERT INTO commodity_type(name) VALUES ("commodity");
 INSERT INTO commodity_type(name) VALUES ("ore");
 
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (1, 1, "Medical supplies");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (2, 1, "Organs");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (4, 3, "Alien Cats");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (1, 1, "Chemicals");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (4, 3, "Collectibles");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (2, 1, "Drugs");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (3, 2, "Energy Contours");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (4, 1, "Files");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (2, 4, "Ghost Organs");
 INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (4, 1, "Luxury");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (1, 3, "Medicine");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (3, 1, "Nanotech");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (5, 2, "Noble Gas");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (2, 4, "Organs");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (3, 1, "Plastics");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (4, 4, "Rare Food");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (4, 4, "Rare Plants");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (1, 3, "Soap");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (1, 1, "Towels");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (3, 2, "Transformators");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (1, 2, "Water");
+INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (2, 1, "Weapons");
 
 INSERT INTO frame_class(name) VALUES ("interceptor");
 INSERT INTO frame_class(name) VALUES ("fighter");

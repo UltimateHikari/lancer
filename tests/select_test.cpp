@@ -12,7 +12,7 @@ TEST(SelectTest, Corporation)  {
 TEST(SelectTest, Commodity)  {
     db::Connector::sync();
     auto res = db::Connector::select_commodity().get();
-    EXPECT_EQ(res->size(), 3);
+    EXPECT_EQ(res->size(), 20);
     EXPECT_NE((*res)[0].name, "");
 }
 
