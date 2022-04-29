@@ -28,8 +28,13 @@ public:
         // for(auto& i: modules){
         //     list->Add(RenderModule(i));
         // }
+        int a = 0; //TODO remove with true random
         for(auto& i: commodities){
             list->Add(RenderCommodity(i));
+            a++;
+            if(a==10){
+                break;
+            }
         }
         if(list->ChildCount() == 0){
             list->Add(ftxui::Renderer([]{return ftxui::text("Inventory empty");}));
