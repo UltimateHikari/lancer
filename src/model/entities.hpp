@@ -174,17 +174,15 @@ public:
     std::string getContextedText(const ent::Node& node) const;
 };
 
-class Event : public Printable{
-private:
-    int id;
+class Event : public Printable, public Comparable{
+public:
     std::string name;
     int weight;
-public:
     Event(std::tuple<
         int,
         std::string,
         int>& raw_select):
-        id{std::get<0>(raw_select)},
+        Comparable(std::get<0>(raw_select)),
         name{std::get<1>(raw_select)},
         weight{std::get<2>(raw_select)}
         {}
@@ -192,11 +190,55 @@ public:
     
 };
 
-class Modifier{
+class ModifierType : public Comparable{
+public:
+    std::string name;
+    ModifierType(){};
+    ModifierType(int id_, std::string& name_):
+        Comparable(id_), 
+        name(std::move(name_))
+    {}
+};
+
+class Modifier /*: public Printable*/{
+    //TODO: mb split this fat thingy in separated queries, now its for details
 private:
     int id;
+    ent::ModifierType type;
+    int event_id;
+    std::string event_name;
+    std::string name;
+
+    ent::CommodityType pref;
+    ent::Corporation corp;
+    int order_level;
+    int tech_level;
+
 public:
-    Modifier();
+    Modifier(std::tuple<
+        int,
+        int,std::string,
+        int,std::string,
+
+        int,std::string,
+        int,std::string,int,int
+        >& raw_select):
+        id{std::get<0>(raw_select)},
+        type{std::get<1>(raw_select), std::get<2>(raw_select)},
+        event_id{std::get<3>(raw_select)},
+        event_name{std::get<4>(raw_select)},
+        pref{std::get<5>(raw_select), std::get<6>(raw_select)},
+        corp{std::get<7>(raw_select), std::get<8>(raw_select)},
+        order_level{std::get<9>(raw_select)},
+        tech_level{std::get<10>(raw_select)}
+        {}
+};
+
+class ModifierLog{
+public:
+    int time;
+    int node_id;
+    int mod_id;
 };
 
 }

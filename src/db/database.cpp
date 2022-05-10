@@ -3,6 +3,7 @@
 #include <iostream>
 #include <utility>
 
+
 namespace db{
     namespace internal{
         auto storage = sqlite_orm::make_storage("lancer.db",
@@ -320,4 +321,9 @@ void Connector::insert_save(
             values(std::make_tuple(save_id[0], i.first.id, i.second.amount))
         );
     }
+}
+
+void Connector::push_mod_log(ent::ModifierLog& log){
+    std::cerr << "pushed log";
+    //TODO: stub
 }

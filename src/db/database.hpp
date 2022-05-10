@@ -39,6 +39,7 @@ namespace db{
                 const std::vector<std::pair<ent::Module, ent::Meta>>& modules,
                 const std::vector<std::pair<ent::Commodity, ent::Meta>>& commodities
             );
+            static void push_mod_log(ent::ModifierLog& log);
     };
 
 }

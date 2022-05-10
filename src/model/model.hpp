@@ -56,7 +56,7 @@ public:
     Navigation(){
         this->cached_node = refresh_node();
     };
-    void move_with_lane(const ent::Lane& lane);
+    int move_with_lane(const ent::Lane& lane);
     const ent::Node& get_current_node();
     const std::vector<ent::Lane>& get_current_lanes();
 };
@@ -73,6 +73,18 @@ public:
     int get_mod_price(const ent::Node& node, const ent::Module& mod);
 };
 
+class Storyteller { //TODO - init with modifs in db, write tests for modifs
+private:
+    std::map<ent::Event, int> events;
+    int get_random_modifier();
+    static const int TELLER_MAX_WEIGHT = 10;
+    void log_modifier(int time, int node_id, int mod_id);
+public: 
+    void put_event(ent::Event& e, int mod_id);
+    void play_random_event(int time, int node_id);
+    void play_event(int time, int node_id, ent::Event& e);
+};
+
 };
 
 class Model{
@@ -82,6 +94,7 @@ private:
     std::unique_ptr<md::Inventory> inventory;
     std::unique_ptr<md::Navigation> navigation;
     std::unique_ptr<md::Trade> trade;
+    std::unique_ptr<md::Storyteller> teller;
     int current_time = 0;
     int current_balance = 500;
 public:
@@ -98,52 +111,18 @@ public:
     bool is_game_active();
     void set_game_active(bool activity);
 
-    void update_commodity(const ent::Commodity& comm, int delta){
-        inventory->update_commodity(comm, delta, 0);
-    }
-    const std::vector<std::pair<ent::Commodity, ent::Meta>>& get_commodities(){
-        return inventory->get_commodities();
-    }
-    void update_module(const ent::Module& comm, int delta){
-        inventory->update_module(comm, delta, 0);
-    }
-    const std::vector<std::pair<ent::Module, ent::Meta>>& get_modules(){
-        return inventory->get_modules();
-    }
+    void update_commodity(const ent::Commodity& comm, int delta);
+    const std::vector<std::pair<ent::Commodity, ent::Meta>>& get_commodities();
+    void update_module(const ent::Module& comm, int delta);
+    const std::vector<std::pair<ent::Module, ent::Meta>>& get_modules();
 
-    void move_with_lane(const ent::Lane& lane){
-        current_time += lane.traverse_time;
-        navigation->move_with_lane(lane);
-    }
-    const ent::Node& get_current_node(){
-        return navigation->get_current_node();
-    }
-    const std::vector<ent::Lane>& get_current_lanes(){
-        return navigation->get_current_lanes();
-    }
+    void move_with_lane(const ent::Lane& lane);
+    const ent::Node& get_current_node();
+    const std::vector<ent::Lane>& get_current_lanes();
 
-    void trade_module(const ent::Module& mod, int delta){
-        // delta > 0 => buy from stock, sell otherwise
-        if(inventory->have_enough_of_mod(mod, delta)){
-            auto res = trade->stock_record_deal_mod(get_current_node(), mod, delta, current_balance);
-            LOG(INFO) << "Traded: got" + fmti(res) + "of " + fmti(mod.id);
-            update_module(mod, res);
-            current_balance -= res*trade->get_mod_price(get_current_node(), mod);
-        }
-    }
-
-    void trade_commodity(const ent::Commodity& comm, int delta){
-        if(inventory->have_enough_of_comm(comm, delta)){
-            auto res = trade->stock_record_deal_comm(get_current_node(), comm, delta, current_balance);
-            LOG(INFO) << "Traded: got" + fmti(res) + "of " + fmti(comm.id);
-            update_commodity(comm, res);
-            current_balance -= res*trade->get_comm_price(get_current_node(), comm);
-        }
-    }
-
-    md::Inventory& get_current_stock(){
-        return trade->get_stock_for(get_current_node());
-    }
+    void trade_module(const ent::Module& mod, int delta);
+    void trade_commodity(const ent::Commodity& comm, int delta);
+    md::Inventory& get_current_stock();
 
     void load_game(int save_id);
     void save_game(std::string save_name);

@@ -3,7 +3,7 @@
 #include <ctime> // time, localtime
 #include <iomanip> // put_time
 #include <algorithm> // copy
-
+#include <random> 
 
 #include "easyloggingpp/easylogging++.h"
 
@@ -14,7 +14,8 @@ using namespace md;
 Model::Model():
     inventory(std::make_unique<Inventory>()),
     navigation(std::make_unique<Navigation>()),
-    trade(std::make_unique<Trade>())
+    trade(std::make_unique<Trade>()),
+    teller(std::make_unique<Storyteller>())
 {}
 
 
@@ -43,6 +44,54 @@ void Model::load_game(int save_id){
 }
 void Model::save_game(std::string save_name){
     inventory->save(save_name);
+}
+
+void Model::update_commodity(const ent::Commodity& comm, int delta){
+    inventory->update_commodity(comm, delta, 0);
+}
+const std::vector<std::pair<ent::Commodity, ent::Meta>>& Model::get_commodities(){
+    return inventory->get_commodities();
+}
+void Model::update_module(const ent::Module& comm, int delta){
+    inventory->update_module(comm, delta, 0);
+}
+const std::vector<std::pair<ent::Module, ent::Meta>>& Model::get_modules(){
+    return inventory->get_modules();
+}
+
+void Model::move_with_lane(const ent::Lane& lane){
+    current_time += lane.traverse_time;
+    auto dest_node_id =  navigation->move_with_lane(lane);
+}
+
+const ent::Node& Model::get_current_node(){
+    return navigation->get_current_node();
+}
+const std::vector<ent::Lane>& Model::get_current_lanes(){
+    return navigation->get_current_lanes();
+}
+
+void Model::trade_module(const ent::Module& mod, int delta){
+    // delta > 0 => buy from stock, sell otherwise
+    if(inventory->have_enough_of_mod(mod, delta)){
+        auto res = trade->stock_record_deal_mod(get_current_node(), mod, delta, current_balance);
+        LOG(INFO) << "Traded: got" + fmti(res) + "of " + fmti(mod.id);
+        update_module(mod, res);
+        current_balance -= res*trade->get_mod_price(get_current_node(), mod);
+    }
+}
+
+void Model::trade_commodity(const ent::Commodity& comm, int delta){
+    if(inventory->have_enough_of_comm(comm, delta)){
+        auto res = trade->stock_record_deal_comm(get_current_node(), comm, delta, current_balance);
+        LOG(INFO) << "Traded: got" + fmti(res) + "of " + fmti(comm.id);
+        update_commodity(comm, res);
+        current_balance -= res*trade->get_comm_price(get_current_node(), comm);
+    }
+}
+
+md::Inventory& Model::get_current_stock(){
+    return trade->get_stock_for(get_current_node());
 }
 
 // ----- Subinventory ----- //
@@ -144,11 +193,12 @@ ent::Node Navigation::refresh_node(){
     return (*(nodes.get()))[current_node_id - 1]; // in res from 0, in db ftom 1. may break, better use find?
 }
 
-void Navigation::move_with_lane(const ent::Lane& lane){
+int Navigation::move_with_lane(const ent::Lane& lane){
     LOG(INFO) << "moving from node : " + fmti(current_node_id);
     current_node_id = (current_node_id == lane.end.id ? lane.start.id : lane.end.id);
     LOG(INFO) << "moved to node    : " + fmti(current_node_id);
     //TODO drop extra stocks;
+    return current_node_id;
 }
 
 const ent::Node& Navigation::get_current_node(){
@@ -232,4 +282,44 @@ const int Trade::stock_record_deal_mod(const ent::Node& node, const ent::Module&
         res_delta = delta;
     }
     return res_delta;
+}
+
+// ----- Teller ----- //
+
+int Storyteller::get_random_modifier(){
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<double> dist(0.0, 1.0);
+
+    int weight = dist(mt)*TELLER_MAX_WEIGHT;
+
+    if(events.empty()){
+        LOG(ERROR) << "empty events map, aborting";
+        exit(-1);
+    }
+    
+    for (auto& i : events){
+        if(i.first.weight <= weight){
+            auto mod = i.second;
+            return i.second;
+        }
+    }
+    
+    return events.begin()->second;
+}
+
+void Storyteller::log_modifier(int time, int node_id, int mod_id){
+    ent::ModifierLog log{time, node_id, mod_id};
+    db::Connector::push_mod_log(log);
+}
+
+void Storyteller::put_event(ent::Event& e, int mod_id){
+    events[e] = mod_id;
+}
+void Storyteller::play_random_event(int time, int node_id){
+    log_modifier(time, node_id, get_random_modifier());
+}
+void Storyteller::play_event(int time, int node_id, ent::Event& e){
+    //TODO event may not reside in events
+    log_modifier(time, node_id, events[e]);
 }
