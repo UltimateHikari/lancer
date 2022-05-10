@@ -174,5 +174,30 @@ public:
     std::string getContextedText(const ent::Node& node) const;
 };
 
+class Event : public Printable{
+private:
+    int id;
+    std::string name;
+    int weight;
+public:
+    Event(std::tuple<
+        int,
+        std::string,
+        int>& raw_select):
+        id{std::get<0>(raw_select)},
+        name{std::get<1>(raw_select)},
+        weight{std::get<2>(raw_select)}
+        {}
+    std::string out();
+    
+};
+
+class Modifier{
+private:
+    int id;
+public:
+    Modifier();
+};
+
 }
 #endif

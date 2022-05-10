@@ -35,4 +35,8 @@ std::string Lane::getContextedText(const ent::Node& node) const {
     return end.name + " to " + start.name + ": " + std::to_string(traverse_time) + " days";
 }
 
+std::string Event::out(){
+    return fmti(id) + fmt(name) + fmti(weight);
+}
+
 }

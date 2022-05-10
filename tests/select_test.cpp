@@ -78,9 +78,15 @@ TEST(SelectTest, Lane)    {
 
 }
 
+TEST(SelectTest, EncounterTest)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::test_select_encounter(), 6);
+}
+
 TEST(SelectTest, Encounter)    {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_encounter(), 6);
+    auto res = db::Connector::select_encounter();
+    EXPECT_EQ((*(res.get())).size(), 6);
 }
 
 TEST(SelectTest, ModificatorType)    {

@@ -210,10 +210,28 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(const int id){
     return result_ptr;
 }
 
-int Connector::select_encounter(){
+int Connector::test_select_encounter(){
     auto rows = db::internal::storage.select(columns(&Encounter::id, &Encounter::name));
 
     return rows.size();
+}
+
+std::shared_ptr<std::vector<ent::Event>> Connector::select_encounter(){
+    auto rows = db::internal::storage.select(
+        columns(&Encounter::id, &Encounter::name, &Encounter::weight)
+        );
+
+    if(rows.size() == 0){
+        //TODO: exceptions?
+        cerr << "empty db error in select_enc, stopping...\n";
+        exit(-1);
+    }
+
+    auto result_ptr = std::make_shared<std::vector<ent::Event>>();
+    for(auto& i: rows){
+        result_ptr.get()->push_back({i});
+    }
+    return result_ptr;
 }
 
 int Connector::select_mod_type(){
