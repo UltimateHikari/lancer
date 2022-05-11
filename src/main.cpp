@@ -63,7 +63,7 @@ void lancer_log_test(){
     //     LOG(INFO) << i.out();
     // }
 
-    auto lns = db::Connector::select_lane(1);
+    auto lns = db::Connector::select_single_lane(1);
     LOG(INFO) << "Lanes-selected:";
     for(auto& i : *(lns.get())){
         LOG(INFO) << i.out();

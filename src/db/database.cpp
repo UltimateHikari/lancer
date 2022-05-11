@@ -1,7 +1,8 @@
 #include <string>
 #include "database.hpp"
-#include <iostream>
 #include <utility>
+
+#include "easyloggingpp/easylogging++.h"
 
 
 namespace db{
@@ -32,8 +33,15 @@ using namespace db;
 using namespace sqlite_orm;
 
 using std::get;
-using std::cerr;
-using std::endl;
+
+template <class T>
+void empty_output_check(std::vector<T>& v, std::string func){
+    if(v.size() == 0){
+        //TODO: exceptions?
+        LOG(ERROR) << "empty db error in " + func + ", stopping...\n";
+        exit(-1);
+    }
+}
 
 const std::string Connector::db_name = "lancer.db";
 
@@ -51,11 +59,7 @@ std::shared_ptr<std::vector<ent::Commodity>> Connector::select_commodity(){
         columns(&Commodity::id, &CommodityType::id, &CommodityType::name, &Commodity::name),
         join<CommodityType>(on(c(&Commodity::type_id) == &CommodityType::id)));
 
-    if(rows.size() == 0){
-        //TODO: exceptions?
-        cerr << "empty db error in select_commodity, stopping...\n";
-        exit(-1);
-    }
+    empty_output_check(rows, "select_commodity");
 
     auto result_ptr = std::make_shared<std::vector<ent::Commodity>>();
     for(auto& i: rows){
@@ -105,11 +109,7 @@ std::shared_ptr<std::vector<ent::Module>> Connector::select_module(){
         columns(&Module::id, &Module::type_id, &ModuleType::name, &Module::name),
         join<ModuleType>(on(c(&Module::type_id) == &ModuleType::id)));
 
-    if(rows.size() == 0){
-        //TODO: exceptions?
-        cerr << "empty db error in select_module, stopping...\n";
-        exit(-1);
-    }
+    empty_output_check(rows, "select_module");
 
     auto result_ptr = std::make_shared<std::vector<ent::Module>>();
     for(auto& i: rows){
@@ -137,11 +137,7 @@ std::shared_ptr<std::vector<ent::Node>> Connector::select_node(){
         join<Corporation>(on(c(&Node::corp_affinity) == &Corporation::id))
         );
 
-    if(rows.size() == 0){
-        //TODO: exceptions?
-        cerr << "empty db error in select_node, stopping...\n";
-        exit(-1);
-    }
+    empty_output_check(rows, "select_node");
 
     auto result_ptr = std::make_shared<std::vector<ent::Node>>();
     for(auto& i: rows){
@@ -170,11 +166,7 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(){
         left_join<end>(on(alias_column<end>(&Node::id) == c(&Lane::end)))
         );
 
-    if(rows.size() == 0){
-        //TODO: exceptions?
-        cerr << "empty db error in select_lane, stopping...\n";
-        exit(-1);
-    }
+    empty_output_check(rows, "select_lane");
 
     auto result_ptr = std::make_shared<std::vector<ent::Lane>>();
     for(auto& i: rows){
@@ -183,7 +175,7 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(){
     return result_ptr;
 }
 
-std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(const int id){
+std::shared_ptr<std::vector<ent::Lane>> Connector::select_single_lane(const int id){
     using stt = alias_a<Node>;
     using end = alias_b<Node>;
     auto rows = db::internal::storage.select(
@@ -198,11 +190,7 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(const int id){
         where(is_equal(&Lane::start, id) || is_equal(&Lane::end, id))
         );
 
-    if(rows.size() == 0){
-        //TODO: exceptions?
-        cerr << "empty db error in select_lane, stopping...\n";
-        exit(-1);
-    }
+    empty_output_check(rows, "select_single_lane");
 
     auto result_ptr = std::make_shared<std::vector<ent::Lane>>();
     for(auto& i: rows){
@@ -222,11 +210,7 @@ std::shared_ptr<std::vector<ent::Event>> Connector::select_encounter(){
         columns(&Encounter::id, &Encounter::name, &Encounter::weight)
         );
 
-    if(rows.size() == 0){
-        //TODO: exceptions?
-        cerr << "empty db error in select_enc, stopping...\n";
-        exit(-1);
-    }
+    empty_output_check(rows, "select_encounter");
 
     auto result_ptr = std::make_shared<std::vector<ent::Event>>();
     for(auto& i: rows){
@@ -235,16 +219,21 @@ std::shared_ptr<std::vector<ent::Event>> Connector::select_encounter(){
     return result_ptr;
 }
 
-int Connector::select_mod_type(){
+int Connector::test_select_mod_type(){
     auto rows = db::internal::storage.select(columns(&ModificatorType::id, &ModificatorType::name));
 
     return rows.size();
 }
 
-int Connector::select_mod(){
-    auto rows = db::internal::storage.select(columns(&Modificator::id, &Modificator::name));
+std::shared_ptr<std::vector<ent::LightModifier>> Connector::select_mod(){
+    //TODO:stub
+}
+std::shared_ptr<ent::Modifier> Connector::select_single_mod(const int id){
+    //TODO:stub
+}
 
-    return rows.size();
+void Connector::push_mod_log(ent::ModifierLog& log){
+    //TODO:stub
 }
 
 int Connector::select_mod_log(){
@@ -306,7 +295,7 @@ void Connector::insert_save(
         values(std::make_tuple(save_name, db::internal::storage.select(datetime("now", "localtime")).front()))
     );
     auto save_id = db::internal::storage.select(last_insert_rowid());
-    cerr << "saved as " << save_id[0] << endl;
+    LOG(INFO) << "saved as " + std::to_string(save_id[0]);
     for(auto& i : commodities){
         db::internal::storage.insert(
             into<SavedCommodity>(),
@@ -321,9 +310,4 @@ void Connector::insert_save(
             values(std::make_tuple(save_id[0], i.first.id, i.second.amount))
         );
     }
-}
-
-void Connector::push_mod_log(ent::ModifierLog& log){
-    std::cerr << "pushed log";
-    //TODO: stub
 }

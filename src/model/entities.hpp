@@ -200,6 +200,16 @@ public:
     {}
 };
 
+class LightModifier : public Comparable{
+public:
+    int id;
+    int event_id;
+    LightModifier(std::tuple<int,int>& raw_select):
+        Comparable(std::get<0>(raw_select)),
+        event_id(std::get<1>(raw_select))
+    {}
+};
+
 class Modifier /*: public Printable*/{
     //TODO: mb split this fat thingy in separated queries, now its for details
 private:
