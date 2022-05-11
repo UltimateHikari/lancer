@@ -741,36 +741,112 @@ VALUES(
     18,2,10,"TRUE"
 );
 
+-- bad conditions change pref, pref = high price
+-- TODO change corp affinity
 INSERT INTO encounter(name, weight)
     VALUES("Pirate attack", 10);
 INSERT INTO encounter(name, weight)
     VALUES("Corporation war", 10);
 INSERT INTO encounter(name, weight)
-    VALUES("Resourse shortage", 5);
+    VALUES("Resource shortage", 5);
 INSERT INTO encounter(name, weight)
     VALUES("Miners strike", 10);
 INSERT INTO encounter(name, weight)
     VALUES("Solar blast", 1);
 INSERT INTO encounter(name, weight)
     VALUES("Relay sabotage", 3);
+INSERT INTO encounter(name, weight)
+    VALUES("Lucky year", 3);
 
 INSERT INTO modificator_type(name)
-    VALUES("System");
+    VALUES("LEVELS");
 INSERT INTO modificator_type(name)
-    VALUES("Neighbouring systems");
-INSERT INTO modificator_type(name)
-    VALUES("Corporation-owned");
+    VALUES("PREFS");
 
+--Pirate attack-1
 INSERT INTO modificator(
     type_id, encounter_id,
     name,
     pref_id, order_delta, tech_delta
 )
 VALUES(
-    1,1,
-    "Pirates defeated",
-    4,2,0
+    2,1,
+    "Crime uprise",
+    2,0,0
 );
+
+--Corporation war-2
+INSERT INTO modificator(
+    type_id, encounter_id,
+    name,
+    pref_id, order_delta, tech_delta
+)
+VALUES(
+    1,2,
+    "Attrition",
+    1,-2,-2
+);
+
+--Resource shortage-3
+INSERT INTO modificator(
+    type_id, encounter_id,
+    name,
+    pref_id, order_delta, tech_delta
+)
+VALUES(
+    2,3,
+    "Traders pact",
+    4,0,0
+);
+
+--Miners strike-4
+INSERT INTO modificator(
+    type_id, encounter_id,
+    name,
+    pref_id, order_delta, tech_delta
+)
+VALUES(
+    2,4,
+    "Miners frenzy",
+    5,0,0
+);
+
+--Solar blast-5
+INSERT INTO modificator(
+    type_id, encounter_id,
+    name,
+    pref_id, order_delta, tech_delta
+)
+VALUES(
+    2,5,
+    "Tech outage",
+    1,0,0
+);
+
+--Relay sabotage-6
+INSERT INTO modificator(
+    type_id, encounter_id,
+    name,
+    pref_id, order_delta, tech_delta
+)
+VALUES(
+    2,6,
+    "Relay repair order",
+    3,0,0
+);
+
+--Lucky year-7
+INSERT INTO modificator(
+    type_id, encounter_id,
+    name,
+    pref_id, order_delta, tech_delta
+)
+VALUES(
+    1,7,
+    "Prosperity",
+    1,1,2
+);
+
 
 INSERT INTO saved_game(name, date)
     VALUES("Test_game", "2022-03-26 14:44:33");
