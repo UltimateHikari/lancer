@@ -75,12 +75,14 @@ public:
 
 class Storyteller { //TODO - init with modifs in db, write tests for modifs
 private:
+    std::vector<int> weights;
     std::map<ent::Event, int> events;
+
     int get_random_modifier();
     static const int TELLER_MAX_WEIGHT = 10;
     void log_modifier(int time, int node_id, int mod_id);
 public: 
-    void put_event(ent::Event& e, int mod_id);
+    Storyteller();
     void play_random_event(int time, int node_id);
     void play_event(int time, int node_id, ent::Event& e);
 };

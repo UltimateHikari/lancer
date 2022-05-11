@@ -202,7 +202,6 @@ public:
 
 class LightModifier : public Comparable{
 public:
-    int id;
     int event_id;
     LightModifier(std::tuple<int,int>& raw_select):
         Comparable(std::get<0>(raw_select)),

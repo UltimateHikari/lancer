@@ -62,6 +62,7 @@ const std::vector<std::pair<ent::Module, ent::Meta>>& Model::get_modules(){
 void Model::move_with_lane(const ent::Lane& lane){
     current_time += lane.traverse_time;
     auto dest_node_id =  navigation->move_with_lane(lane);
+    teller->play_random_event(current_time, dest_node_id);
 }
 
 const ent::Node& Model::get_current_node(){
@@ -286,36 +287,49 @@ const int Trade::stock_record_deal_mod(const ent::Node& node, const ent::Module&
 
 // ----- Teller ----- //
 
+Storyteller::Storyteller(){
+    auto evt = db::Connector::select_encounter();
+    auto mods = db::Connector::select_mod();
+    for(auto& m : *(mods.get())){
+        auto key_ptr = std::find_if(
+            evt.get()->begin(), evt.get()->end(),
+            [&](const auto& p){return p.id == m.event_id;}
+            );
+        if(key_ptr != evt.get()->end()){
+            events[*key_ptr] = m.id;
+            LOG(INFO) << "teller noted event-id: " << key_ptr->id << " with mod-id " << m.id;
+        }
+    }
+    transform(events.begin(), events.end(), std::back_inserter(weights),
+         [](const auto& val){return val.first.weight;} 
+         );
+    LOG(INFO) << "tellers event weights:";
+    for(auto& i : weights){
+        LOG(INFO) << i;
+    }
+}
+
 int Storyteller::get_random_modifier(){
     std::random_device rd;
     std::mt19937 mt(rd());
-    std::uniform_real_distribution<double> dist(0.0, 1.0);
+    std::discrete_distribution<> dist(weights.begin(), weights.end());
 
-    int weight = dist(mt)*TELLER_MAX_WEIGHT;
+    int ind = dist(mt);
 
-    if(events.empty()){
-        LOG(ERROR) << "empty events map, aborting";
-        exit(-1);
-    }
+    LOG(INFO) << "teller chose " << ind;
     
-    for (auto& i : events){
-        if(i.first.weight <= weight){
-            auto mod = i.second;
-            return i.second;
-        }
-    }
-    
-    return events.begin()->second;
+    // index = id, assuming continioius id in table
+    // return events[ind].id;
+    // TODO rewrite map to vector, now it works only because event.id = mod.id
+    return ind;
 }
 
 void Storyteller::log_modifier(int time, int node_id, int mod_id){
+    LOG(INFO) << "teller got mod: " << mod_id << " on node: " << node_id;
     ent::ModifierLog log{time, node_id, mod_id};
     db::Connector::push_mod_log(log);
 }
 
-void Storyteller::put_event(ent::Event& e, int mod_id){
-    events[e] = mod_id;
-}
 void Storyteller::play_random_event(int time, int node_id){
     log_modifier(time, node_id, get_random_modifier());
 }

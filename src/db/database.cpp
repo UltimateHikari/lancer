@@ -226,14 +226,29 @@ int Connector::test_select_mod_type(){
 }
 
 std::shared_ptr<std::vector<ent::LightModifier>> Connector::select_mod(){
-    //TODO:stub
+    auto rows = db::internal::storage.select(
+        columns(&Modificator::id, &Modificator::event_id)
+        );
+
+    empty_output_check(rows, "select_light_modifier");
+
+    auto result_ptr = std::make_shared<std::vector<ent::LightModifier>>();
+    for(auto& i: rows){
+        result_ptr.get()->push_back({i});
+    }
+    return result_ptr;
 }
+
 std::shared_ptr<ent::Modifier> Connector::select_single_mod(const int id){
-    //TODO:stub
+    //TODO:stub wanna select huge thingy for details
 }
 
 void Connector::push_mod_log(ent::ModifierLog& log){
-    //TODO:stub
+    db::internal::storage.insert(
+        into<ModificatorLog>(),
+        columns(&ModificatorLog::start_time, &ModificatorLog::node_id, &ModificatorLog::mod_id),
+        values(std::make_tuple(log.time, log.node_id, log.mod_id))
+    );
 }
 
 int Connector::select_mod_log(){
