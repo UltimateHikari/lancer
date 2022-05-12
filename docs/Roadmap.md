@@ -14,8 +14,12 @@ Basic game - movement, stations, battles, equipment, trading;
     Trading;
 3.1 Events;
 3.2 Mechanishms of restocking and modifiers; 
-3.3 Battles with default modules
 
 ## Till 06.2022
-Fitting ship with modules;
-Creation of new frames, uploading and downloading frames, leaderboards, server infra
+4.0 Modules and frames
+4.1 Fitting ship with modules;
+4.2 Battles with default modules;
+
+5.0 Creation of new frames;
+5.1 Download & upload new frames;
+5.6 Leaderboards
