@@ -243,18 +243,18 @@ std::shared_ptr<ent::Modifier> Connector::select_single_mod(const int id){
     //TODO:stub wanna select huge thingy for details
 }
 
-void Connector::push_mod_log(ent::ModifierLog& log){
+std::shared_ptr<ent::VModifierLog> Connector::push_mod_log(ent::ModifierLog& log){
     db::internal::storage.insert(
         into<ModificatorLog>(),
         columns(&ModificatorLog::start_time, &ModificatorLog::node_id, &ModificatorLog::mod_id),
         values(std::make_tuple(log.time, log.node_id, log.mod_id))
     );
-}
-
-int Connector::select_mod_log(){
-    auto rows = db::internal::storage.select(columns(&ModificatorLog::node_id, &ModificatorLog::mod_id));
-
-    return rows.size();
+    auto rows = db::internal::storage.select(
+        columns(log.time, &Node::name, &Modificator::name),
+        where(is_equal(&Node::id, log.node_id) && is_equal(&Modificator::id, log.mod_id))
+    );
+    empty_output_check(rows, "select mod log");
+    return std::make_shared<ent::VModifierLog>(rows[0]);
 }
 
 std::shared_ptr<std::vector<ent::SavedGame>> Connector::select_saved_game(){

@@ -100,10 +100,10 @@ TEST(SelectTest, Modificator)    {
     EXPECT_EQ((*(res.get())).size(), 7);
 }
 
-TEST(SelectTest, ModificatorLog)    {
-    db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_mod_log(), 0);
-}
+// TEST(SelectTest, ModificatorLog)    {
+//     db::Connector::sync();
+//     EXPECT_EQ(db::Connector::select_mod_log(), 0);
+// }
 
 TEST(SelectTest, SavedGame) {
     auto games = db::Connector::select_saved_game().get();

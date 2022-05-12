@@ -350,13 +350,14 @@ int Storyteller::get_random_modifier(){
     // index = id, assuming continioius id in table
     // return events[ind].id;
     // TODO rewrite map to vector, now it works only because event.id = mod.id
-    return ind;
+    return ind + 1;
 }
 
 void Storyteller::log_modifier(int time, int node_id, int mod_id){
     LOG(INFO) << "teller got mod: " << mod_id << " on node: " << node_id;
     ent::ModifierLog log{time, node_id, mod_id};
-    db::Connector::push_mod_log(log);
+    auto res_vmodlog = db::Connector::push_mod_log(log);
+    LOG(INFO) << res_vmodlog->out();
 }
 
 void Storyteller::play_random_event(int time, int node_id){
