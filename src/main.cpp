@@ -78,6 +78,11 @@ void lancer_log_test(){
 }
 
 int main(int, char**) {
+    el::Configurations defaultConf;
+    defaultConf.setToDefault();
+    defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
+    el::Loggers::reconfigureLogger("default", defaultConf);
+
     LOG(INFO) << "My first info log using default logger";
     //lancer_log_test();
     sc::Main* screen = new sc::Main();
@@ -85,7 +90,7 @@ int main(int, char**) {
     Game* game = new Game();
 
     auto commodities = game->getModel().get_current_stock().get_commodities();
-    LOG(INFO) << commodities.size();
+    LOG(INFO) << "Got " << commodities.size() << " commodities";
 
     screen->show(*game);
     return 0;
