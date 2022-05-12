@@ -210,21 +210,21 @@ std::shared_ptr<std::vector<ent::LightModifier>> Connector::select_mod(){
     return parse_to_shared_vector<ent::LightModifier>(rows);
 }
 
+// can return empty
 std::shared_ptr<std::vector<ent::Modifier>> Connector::select_mod_per_node(const int node_id){
     auto rows = db::internal::storage.select(
         columns(
-            &Modificator::id, 
+            &ModificatorLog::mod_id, 
             &ModificatorType::id, &ModificatorType::name,
             &CommodityType::id, &CommodityType::name,
             &Modificator::order_delta,
             &Modificator::tech_delta),
         from<ModificatorLog>(),
-        left_join<Modificator>(on(&ModificatorLog::mod_id) == c(&Modificator::id)),
-        left_join<ModificatorType>(on(&Modificator::type_id) == c(&ModificatorType::id)),
-        left_join<ModificatorType>(on(&Modificator::pref_id) == c(&CommodityType::id)),
+        left_join<Modificator>(on(c(&ModificatorLog::mod_id) == &Modificator::id)),
+        left_join<ModificatorType>(on(c(&Modificator::type_id) == &ModificatorType::id)),
+        left_join<CommodityType>(on(c(&Modificator::pref_id) == &CommodityType::id)),
         where(is_equal(&ModificatorLog::node_id, node_id))
         );
-    empty_output_check(rows, "select mod per node");
     return parse_to_shared_vector<ent::Modifier>(rows);
 }
 

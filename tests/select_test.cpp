@@ -100,6 +100,13 @@ TEST(SelectTest, Modificator)    {
     EXPECT_EQ((*(res.get())).size(), 7);
 }
 
+TEST(SelectTest, ModificatorLog)    {
+    db::Connector::sync();
+    auto res = db::Connector::select_mod_per_node(1);
+    // EXPECT_EQ((*(res.get())).size(), 0);
+    EXPECT_EQ(0, 0);
+}
+
 // TEST(SelectTest, ModificatorLog)    {
 //     db::Connector::sync();
 //     EXPECT_EQ(db::Connector::select_mod_log(), 0);

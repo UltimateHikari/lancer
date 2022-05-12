@@ -187,6 +187,27 @@ void Inventory::save(std::string& save_name){
 
 // ----- Navigation ----- //
 
+void apply_mod_to_node(ent::Node* node, ent::Modifier& mod){
+    //TODO: note current time retating to start time
+    //TODO: magic_numbers
+    if(mod.type.name == "LEVELS"){
+        node->order_level += mod.order_level;
+        node->order_level = (node->order_level < 1 ? 1 : node->order_level);
+        node->order_level = (node->order_level > 5 ? 5 : node->order_level);
+
+        node->tech_level += mod.tech_level;
+        node->tech_level = (node->tech_level < 1 ? 1 : node->tech_level);
+        node->tech_level = (node->tech_level > 10 ? 10 : node->tech_level);
+        LOG(INFO) << "applied type " << mod.type.name << " on node " << node->name;
+
+    }
+    if(mod.type.name == "PREFS"){
+        node->pref = mod.pref;
+        LOG(INFO) << "applied type " << mod.type.name << " on node " << node->name;
+    }
+    LOG(INFO) << "applied";
+}
+
 ent::Node Navigation::refresh_node(){
     auto nodes = db::Connector::select_node();
     LOG(INFO) << "refreshing current node: ";
@@ -194,7 +215,13 @@ ent::Node Navigation::refresh_node(){
         LOG(ERROR) << "your ship was eaten by current_lane_id dragon\n";
         exit(-1);
     }
-    return (*(nodes.get()))[current_node_id - 1]; // in res from 0, in db ftom 1. may break, better use find?
+    // in res from 0, in db ftom 1. may break, better use find?
+    ent::Node node = (*(nodes.get()))[current_node_id - 1];
+    auto mods = db::Connector::select_mod_per_node(node.id);
+    for(auto& i : *mods){
+        apply_mod_to_node(&node, i);
+    }
+    return node; 
 }
 
 int Navigation::move_with_lane(const ent::Lane& lane){

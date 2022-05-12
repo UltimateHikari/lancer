@@ -211,7 +211,7 @@ public:
 
 // purpose is updating details for node
 class Modifier /*: public Printable*/{
-private:
+public:
     int id;
     ent::ModifierType type;
 
@@ -220,7 +220,6 @@ private:
     int order_level;
     int tech_level;
 
-public:
     Modifier(std::tuple<
         int,
         int,std::string,
