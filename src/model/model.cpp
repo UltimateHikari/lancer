@@ -62,7 +62,7 @@ const std::vector<std::pair<ent::Module, ent::Meta>>& Model::get_modules(){
 void Model::move_with_lane(const ent::Lane& lane){
     current_time += lane.traverse_time;
     auto dest_node_id =  navigation->move_with_lane(lane);
-    teller->play_random_event(current_time, dest_node_id);
+    last_log = *(teller->play_random_event(current_time, dest_node_id));
     // stock trim happens on get_current_stock
 }
 
@@ -353,17 +353,18 @@ int Storyteller::get_random_modifier(){
     return ind + 1;
 }
 
-void Storyteller::log_modifier(int time, int node_id, int mod_id){
+std::shared_ptr<ent::VModifierLog> Storyteller::log_modifier(int time, int node_id, int mod_id){
     LOG(INFO) << "teller got mod: " << mod_id << " on node: " << node_id;
     ent::ModifierLog log{time, node_id, mod_id};
     auto res_vmodlog = db::Connector::push_mod_log(log);
     LOG(INFO) << res_vmodlog->out();
+    return res_vmodlog;
 }
 
-void Storyteller::play_random_event(int time, int node_id){
-    log_modifier(time, node_id, get_random_modifier());
+std::shared_ptr<ent::VModifierLog> Storyteller::play_random_event(int time, int node_id){
+    return log_modifier(time, node_id, get_random_modifier());
 }
-void Storyteller::play_event(int time, int node_id, ent::Event& e){
+std::shared_ptr<ent::VModifierLog> Storyteller::play_event(int time, int node_id, ent::Event& e){
     //TODO event may not reside in events
-    log_modifier(time, node_id, events[e]);
+    return log_modifier(time, node_id, events[e]);
 }

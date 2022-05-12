@@ -255,6 +255,7 @@ public:
     int time;
     std::string node_name;
     std::string mod_name;
+    VModifierLog(){};
     VModifierLog(std::tuple<int,std::string,std::string>& raw_select):
         time(std::get<0>(raw_select)),
         node_name(std::get<1>(raw_select)),

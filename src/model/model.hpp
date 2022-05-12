@@ -89,11 +89,11 @@ private:
 
     int get_random_modifier();
     static const int TELLER_MAX_WEIGHT = 10;
-    void log_modifier(int time, int node_id, int mod_id);
+    std::shared_ptr<ent::VModifierLog> log_modifier(int time, int node_id, int mod_id);
 public: 
     Storyteller();
-    void play_random_event(int time, int node_id);
-    void play_event(int time, int node_id, ent::Event& e);
+    std::shared_ptr<ent::VModifierLog> play_random_event(int time, int node_id);
+    std::shared_ptr<ent::VModifierLog> play_event(int time, int node_id, ent::Event& e);
 };
 
 };
@@ -109,6 +109,7 @@ private:
     int current_time = 0;
     int current_balance = 500;
 public:
+    ent::VModifierLog last_log;
     int get_time(){
         return current_time;
     };
