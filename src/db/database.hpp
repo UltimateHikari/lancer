@@ -28,7 +28,7 @@ namespace db{
 
             static std::shared_ptr<std::vector<ent::Event>> select_encounter();
             static std::shared_ptr<std::vector<ent::LightModifier>> select_mod();
-            static std::shared_ptr<ent::Modifier> select_single_mod(const int id);
+            static std::shared_ptr<std::vector<ent::Modifier>> select_mod_per_node(const int node_id);
             static std::shared_ptr<ent::VModifierLog> push_mod_log(ent::ModifierLog& log);
 
 

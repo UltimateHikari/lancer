@@ -209,17 +209,14 @@ public:
     {}
 };
 
+// purpose is updating details for node
 class Modifier /*: public Printable*/{
-    //TODO: mb split this fat thingy in separated queries, now its for details
 private:
     int id;
     ent::ModifierType type;
-    int event_id;
-    std::string event_name;
-    std::string name;
 
     ent::CommodityType pref;
-    ent::Corporation corp;
+    //ent::Corporation corp;
     int order_level;
     int tech_level;
 
@@ -228,18 +225,13 @@ public:
         int,
         int,std::string,
         int,std::string,
-
-        int,std::string,
-        int,std::string,int,int
+        int,int
         >& raw_select):
         id{std::get<0>(raw_select)},
         type{std::get<1>(raw_select), std::get<2>(raw_select)},
-        event_id{std::get<3>(raw_select)},
-        event_name{std::get<4>(raw_select)},
-        pref{std::get<5>(raw_select), std::get<6>(raw_select)},
-        corp{std::get<7>(raw_select), std::get<8>(raw_select)},
-        order_level{std::get<9>(raw_select)},
-        tech_level{std::get<10>(raw_select)}
+        pref{std::get<3>(raw_select), std::get<4>(raw_select)},
+        order_level{std::get<5>(raw_select)},
+        tech_level{std::get<6>(raw_select)}
         {}
 };
 

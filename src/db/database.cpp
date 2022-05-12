@@ -43,6 +43,15 @@ void empty_output_check(std::vector<T>& v, std::string func){
     }
 }
 
+template<typename T, typename M>
+std::shared_ptr<std::vector<T>> parse_to_shared_vector(std::vector<M>& rows){
+    auto result_ptr = std::make_shared<std::vector<T>>();
+    for(auto& i: rows){
+        result_ptr->push_back({i});
+    }
+    return result_ptr;
+}
+
 const std::string Connector::db_name = "lancer.db";
 
 void Connector::sync(){
@@ -60,12 +69,7 @@ std::shared_ptr<std::vector<ent::Commodity>> Connector::select_commodity(){
         join<CommodityType>(on(c(&Commodity::type_id) == &CommodityType::id)));
 
     empty_output_check(rows, "select_commodity");
-
-    auto result_ptr = std::make_shared<std::vector<ent::Commodity>>();
-    for(auto& i: rows){
-        result_ptr.get()->push_back({i});
-    }
-    return result_ptr;
+    return parse_to_shared_vector<ent::Commodity>(rows);
 }
 
 int Connector::select_commodity_type(){
@@ -110,12 +114,7 @@ std::shared_ptr<std::vector<ent::Module>> Connector::select_module(){
         join<ModuleType>(on(c(&Module::type_id) == &ModuleType::id)));
 
     empty_output_check(rows, "select_module");
-
-    auto result_ptr = std::make_shared<std::vector<ent::Module>>();
-    for(auto& i: rows){
-        result_ptr.get()->push_back({i});
-    }
-    return result_ptr;
+    return parse_to_shared_vector<ent::Module>(rows);
 }
 
 
@@ -138,12 +137,7 @@ std::shared_ptr<std::vector<ent::Node>> Connector::select_node(){
         );
 
     empty_output_check(rows, "select_node");
-
-    auto result_ptr = std::make_shared<std::vector<ent::Node>>();
-    for(auto& i: rows){
-        result_ptr.get()->push_back({i});
-    }
-    return result_ptr;
+    return parse_to_shared_vector<ent::Node>(rows);
 }
 
 int Connector::test_select_lane(){
@@ -165,14 +159,8 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(){
         left_join<stt>(on(alias_column<stt>(&Node::id) == c(&Lane::start))),
         left_join<end>(on(alias_column<end>(&Node::id) == c(&Lane::end)))
         );
-
     empty_output_check(rows, "select_lane");
-
-    auto result_ptr = std::make_shared<std::vector<ent::Lane>>();
-    for(auto& i: rows){
-        result_ptr.get()->push_back({i});
-    }
-    return result_ptr;
+    return parse_to_shared_vector<ent::Lane>(rows);
 }
 
 std::shared_ptr<std::vector<ent::Lane>> Connector::select_single_lane(const int id){
@@ -189,14 +177,8 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_single_lane(const int 
         left_join<end>(on(alias_column<end>(&Node::id) == c(&Lane::end))),
         where(is_equal(&Lane::start, id) || is_equal(&Lane::end, id))
         );
-
     empty_output_check(rows, "select_single_lane");
-
-    auto result_ptr = std::make_shared<std::vector<ent::Lane>>();
-    for(auto& i: rows){
-        result_ptr.get()->push_back({i});
-    }
-    return result_ptr;
+    return parse_to_shared_vector<ent::Lane>(rows);
 }
 
 int Connector::test_select_encounter(){
@@ -211,12 +193,7 @@ std::shared_ptr<std::vector<ent::Event>> Connector::select_encounter(){
         );
 
     empty_output_check(rows, "select_encounter");
-
-    auto result_ptr = std::make_shared<std::vector<ent::Event>>();
-    for(auto& i: rows){
-        result_ptr.get()->push_back({i});
-    }
-    return result_ptr;
+    return parse_to_shared_vector<ent::Event>(rows);
 }
 
 int Connector::test_select_mod_type(){
@@ -229,18 +206,26 @@ std::shared_ptr<std::vector<ent::LightModifier>> Connector::select_mod(){
     auto rows = db::internal::storage.select(
         columns(&Modificator::id, &Modificator::event_id)
         );
-
     empty_output_check(rows, "select_light_modifier");
-
-    auto result_ptr = std::make_shared<std::vector<ent::LightModifier>>();
-    for(auto& i: rows){
-        result_ptr.get()->push_back({i});
-    }
-    return result_ptr;
+    return parse_to_shared_vector<ent::LightModifier>(rows);
 }
 
-std::shared_ptr<ent::Modifier> Connector::select_single_mod(const int id){
-    //TODO:stub wanna select huge thingy for details
+std::shared_ptr<std::vector<ent::Modifier>> Connector::select_mod_per_node(const int node_id){
+    auto rows = db::internal::storage.select(
+        columns(
+            &Modificator::id, 
+            &ModificatorType::id, &ModificatorType::name,
+            &CommodityType::id, &CommodityType::name,
+            &Modificator::order_delta,
+            &Modificator::tech_delta),
+        from<ModificatorLog>(),
+        left_join<Modificator>(on(&ModificatorLog::mod_id) == c(&Modificator::id)),
+        left_join<ModificatorType>(on(&Modificator::type_id) == c(&ModificatorType::id)),
+        left_join<ModificatorType>(on(&Modificator::pref_id) == c(&CommodityType::id)),
+        where(is_equal(&ModificatorLog::node_id, node_id))
+        );
+    empty_output_check(rows, "select mod per node");
+    return parse_to_shared_vector<ent::Modifier>(rows);
 }
 
 std::shared_ptr<ent::VModifierLog> Connector::push_mod_log(ent::ModifierLog& log){
