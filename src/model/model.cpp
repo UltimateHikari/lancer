@@ -63,6 +63,7 @@ void Model::move_with_lane(const ent::Lane& lane){
     current_time += lane.traverse_time;
     auto dest_node_id =  navigation->move_with_lane(lane);
     teller->play_random_event(current_time, dest_node_id);
+    // stock trim happens on get_current_stock
 }
 
 const ent::Node& Model::get_current_node(){
@@ -107,7 +108,7 @@ template<class T>
 void SubInventory<T>::update(const T& t, int delta, int price){
     mutex.lock();
     inventory[t].amount += delta;
-    inventory[t].price += price; // non-zero only on init?
+    inventory[t].price = price; // non-zero only on init?
     inventory_state++;
     mutex.unlock();
 }
@@ -198,7 +199,6 @@ int Navigation::move_with_lane(const ent::Lane& lane){
     LOG(INFO) << "moving from node : " + fmti(current_node_id);
     current_node_id = (current_node_id == lane.end.id ? lane.start.id : lane.end.id);
     LOG(INFO) << "moved to node    : " + fmti(current_node_id);
-    //TODO drop extra stocks;
     return current_node_id;
 }
 
@@ -221,13 +221,38 @@ float order_mod(int order){
     return 4 - 3*order/5.0;
 }
 
+std::shared_ptr<std::vector<int>> Trade::get_weights(
+    std::shared_ptr<std::vector<ent::Commodity>> comms,
+    ent::CommodityType pref
+){
+    int pref_weight = Trade::PREF_WEIGHT;
+    int usual_weight = Trade::WEIGHT;
+    auto res = std::make_shared<std::vector<int>>();
+    for(auto& i : *comms){
+        if(i.type.id == pref.id){
+            res->push_back(pref_weight);
+        }else{
+            res->push_back(usual_weight);
+        }
+    }
+    return res;
+}
+
 std::shared_ptr<Inventory> Trade::generate_stock(const ent::Node& node){
     auto inv = std::make_shared<Inventory>();
     auto dbcomms = db::Connector::select_commodity();
-    //TODO algo for random
-    for(auto& i : *(dbcomms.get())){
-        inv.get()->update_commodity(i, 10, (int)(i.price*order_mod(node.order_level)));
+    auto weights = get_weights(dbcomms, node.pref);
+    int amount = Trade::LEVEL_AMOUNT*node.tech_level;
+
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::discrete_distribution<> dist(weights->begin(), weights->end());
+
+    for(int i = 0; i < amount; i++){
+        const ent::Commodity& rand_comm = (*dbcomms)[dist(mt)];
+        inv.get()->update_commodity(rand_comm, 1, (int)(rand_comm.price*order_mod(node.order_level)));
     }
+
     return inv;
 }
 Inventory& Trade::get_stock_for(const ent::Node& node){
@@ -238,6 +263,10 @@ Inventory& Trade::get_stock_for(const ent::Node& node){
         it = cached_stocks.begin();
         LOG(INFO) << "Stock for " + fmti(node.id) + " placed";
     } 
+    if(cached_stocks.size() > Trade::STOCK_MEM){
+        cached_stocks.pop_back();
+        LOG(INFO) << "Stock popped";
+    }
     return *(it->second.get());
 }
 
