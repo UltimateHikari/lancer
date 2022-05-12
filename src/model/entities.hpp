@@ -174,5 +174,86 @@ public:
     std::string getContextedText(const ent::Node& node) const;
 };
 
+class Event : public Printable, public Comparable{
+public:
+    std::string name;
+    int weight;
+    Event(std::tuple<
+        int,
+        std::string,
+        int>& raw_select):
+        Comparable(std::get<0>(raw_select)),
+        name{std::get<1>(raw_select)},
+        weight{std::get<2>(raw_select)}
+        {}
+    std::string out();
+    
+};
+
+class ModifierType : public Comparable{
+public:
+    std::string name;
+    ModifierType(){};
+    ModifierType(int id_, std::string& name_):
+        Comparable(id_), 
+        name(std::move(name_))
+    {}
+};
+
+class LightModifier : public Comparable{
+public:
+    int event_id;
+    LightModifier(std::tuple<int,int>& raw_select):
+        Comparable(std::get<0>(raw_select)),
+        event_id(std::get<1>(raw_select))
+    {}
+};
+
+// purpose is updating details for node
+class Modifier /*: public Printable*/{
+public:
+    int id;
+    ent::ModifierType type;
+
+    ent::CommodityType pref;
+    //ent::Corporation corp;
+    int order_level;
+    int tech_level;
+
+    Modifier(std::tuple<
+        int,
+        int,std::string,
+        int,std::string,
+        int,int
+        >& raw_select):
+        id{std::get<0>(raw_select)},
+        type{std::get<1>(raw_select), std::get<2>(raw_select)},
+        pref{std::get<3>(raw_select), std::get<4>(raw_select)},
+        order_level{std::get<5>(raw_select)},
+        tech_level{std::get<6>(raw_select)}
+        {}
+};
+
+class ModifierLog{
+public:
+    int time;
+    int node_id;
+    int mod_id;
+};
+
+class VModifierLog : public Printable{
+public:
+    int time;
+    std::string node_name;
+    std::string mod_name;
+    VModifierLog(){};
+    VModifierLog(std::tuple<int,std::string,std::string>& raw_select):
+        time(std::get<0>(raw_select)),
+        node_name(std::get<1>(raw_select)),
+        mod_name(std::get<2>(raw_select))
+    {}
+    std::string out();
+};
+
 }
 #endif

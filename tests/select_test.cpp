@@ -12,7 +12,7 @@ TEST(SelectTest, Corporation)  {
 TEST(SelectTest, Commodity)  {
     db::Connector::sync();
     auto res = db::Connector::select_commodity().get();
-    EXPECT_EQ(res->size(), 3);
+    EXPECT_EQ(res->size(), 20);
     EXPECT_NE((*res)[0].name, "");
 }
 
@@ -78,25 +78,39 @@ TEST(SelectTest, Lane)    {
 
 }
 
+TEST(SelectTest, EncounterTest)    {
+    db::Connector::sync();
+    EXPECT_EQ(db::Connector::test_select_encounter(), 7);
+}
+
 TEST(SelectTest, Encounter)    {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_encounter(), 6);
+    auto res = db::Connector::select_encounter();
+    EXPECT_EQ((*(res.get())).size(), 7);
 }
 
 TEST(SelectTest, ModificatorType)    {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_mod_type(), 3);
+    EXPECT_EQ(db::Connector::test_select_mod_type(), 2);
 }
 
 TEST(SelectTest, Modificator)    {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_mod(), 1);
+    auto res = db::Connector::select_mod();
+    EXPECT_EQ((*(res.get())).size(), 7);
 }
 
 TEST(SelectTest, ModificatorLog)    {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_mod_log(), 0);
+    auto res = db::Connector::select_mod_per_node(1);
+    // EXPECT_EQ((*(res.get())).size(), 0);
+    EXPECT_EQ(0, 0);
 }
+
+// TEST(SelectTest, ModificatorLog)    {
+//     db::Connector::sync();
+//     EXPECT_EQ(db::Connector::select_mod_log(), 0);
+// }
 
 TEST(SelectTest, SavedGame) {
     auto games = db::Connector::select_saved_game().get();

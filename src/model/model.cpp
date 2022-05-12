@@ -3,7 +3,7 @@
 #include <ctime> // time, localtime
 #include <iomanip> // put_time
 #include <algorithm> // copy
-
+#include <random> 
 
 #include "easyloggingpp/easylogging++.h"
 
@@ -14,7 +14,8 @@ using namespace md;
 Model::Model():
     inventory(std::make_unique<Inventory>()),
     navigation(std::make_unique<Navigation>()),
-    trade(std::make_unique<Trade>())
+    trade(std::make_unique<Trade>()),
+    teller(std::make_unique<Storyteller>())
 {}
 
 
@@ -45,6 +46,56 @@ void Model::save_game(std::string save_name){
     inventory->save(save_name);
 }
 
+void Model::update_commodity(const ent::Commodity& comm, int delta){
+    inventory->update_commodity(comm, delta, 0);
+}
+const std::vector<std::pair<ent::Commodity, ent::Meta>>& Model::get_commodities(){
+    return inventory->get_commodities();
+}
+void Model::update_module(const ent::Module& comm, int delta){
+    inventory->update_module(comm, delta, 0);
+}
+const std::vector<std::pair<ent::Module, ent::Meta>>& Model::get_modules(){
+    return inventory->get_modules();
+}
+
+void Model::move_with_lane(const ent::Lane& lane){
+    current_time += lane.traverse_time;
+    auto dest_node_id =  navigation->move_with_lane(lane);
+    last_log = *(teller->play_random_event(current_time, dest_node_id));
+    // stock trim happens on get_current_stock
+}
+
+const ent::Node& Model::get_current_node(){
+    return navigation->get_current_node();
+}
+const std::vector<ent::Lane>& Model::get_current_lanes(){
+    return navigation->get_current_lanes();
+}
+
+void Model::trade_module(const ent::Module& mod, int delta){
+    // delta > 0 => buy from stock, sell otherwise
+    if(inventory->have_enough_of_mod(mod, delta)){
+        auto res = trade->stock_record_deal_mod(get_current_node(), mod, delta, current_balance);
+        LOG(INFO) << "Traded: got" + fmti(res) + "of " + fmti(mod.id);
+        update_module(mod, res);
+        current_balance -= res*trade->get_mod_price(get_current_node(), mod);
+    }
+}
+
+void Model::trade_commodity(const ent::Commodity& comm, int delta){
+    if(inventory->have_enough_of_comm(comm, delta)){
+        auto res = trade->stock_record_deal_comm(get_current_node(), comm, delta, current_balance);
+        LOG(INFO) << "Traded: got" + fmti(res) + "of " + fmti(comm.id);
+        update_commodity(comm, res);
+        current_balance -= res*trade->get_comm_price(get_current_node(), comm);
+    }
+}
+
+md::Inventory& Model::get_current_stock(){
+    return trade->get_stock_for(get_current_node());
+}
+
 // ----- Subinventory ----- //
 
 template<class T>
@@ -57,7 +108,9 @@ template<class T>
 void SubInventory<T>::update(const T& t, int delta, int price){
     mutex.lock();
     inventory[t].amount += delta;
-    inventory[t].price += price; // non-zero only on init?
+    if(price > 0){
+        inventory[t].price = price; //TODO it's ambigious that non-zeroness of price matters
+    }
     inventory_state++;
     mutex.unlock();
 }
@@ -134,6 +187,27 @@ void Inventory::save(std::string& save_name){
 
 // ----- Navigation ----- //
 
+void apply_mod_to_node(ent::Node* node, ent::Modifier& mod){
+    //TODO: note current time retating to start time
+    //TODO: magic_numbers
+    if(mod.type.name == "LEVELS"){
+        node->order_level += mod.order_level;
+        node->order_level = (node->order_level < 1 ? 1 : node->order_level);
+        node->order_level = (node->order_level > 5 ? 5 : node->order_level);
+
+        node->tech_level += mod.tech_level;
+        node->tech_level = (node->tech_level < 1 ? 1 : node->tech_level);
+        node->tech_level = (node->tech_level > 10 ? 10 : node->tech_level);
+        LOG(INFO) << "applied type " << mod.type.name << " on node " << node->name;
+
+    }
+    if(mod.type.name == "PREFS"){
+        node->pref = mod.pref;
+        LOG(INFO) << "applied type " << mod.type.name << " on node " << node->name;
+    }
+    LOG(INFO) << "applied";
+}
+
 ent::Node Navigation::refresh_node(){
     auto nodes = db::Connector::select_node();
     LOG(INFO) << "refreshing current node: ";
@@ -141,14 +215,20 @@ ent::Node Navigation::refresh_node(){
         LOG(ERROR) << "your ship was eaten by current_lane_id dragon\n";
         exit(-1);
     }
-    return (*(nodes.get()))[current_node_id - 1]; // in res from 0, in db ftom 1. may break, better use find?
+    // in res from 0, in db ftom 1. may break, better use find?
+    ent::Node node = (*(nodes.get()))[current_node_id - 1];
+    auto mods = db::Connector::select_mod_per_node(node.id);
+    for(auto& i : *mods){
+        apply_mod_to_node(&node, i);
+    }
+    return node; 
 }
 
-void Navigation::move_with_lane(const ent::Lane& lane){
+int Navigation::move_with_lane(const ent::Lane& lane){
     LOG(INFO) << "moving from node : " + fmti(current_node_id);
     current_node_id = (current_node_id == lane.end.id ? lane.start.id : lane.end.id);
     LOG(INFO) << "moved to node    : " + fmti(current_node_id);
-    //TODO drop extra stocks;
+    return current_node_id;
 }
 
 const ent::Node& Navigation::get_current_node(){
@@ -160,7 +240,7 @@ const ent::Node& Navigation::get_current_node(){
 }
 const std::vector<ent::Lane>& Navigation::get_current_lanes(){
     if(current_lanes_id != current_node_id){
-        cached_lanes = db::Connector::select_lane(current_node_id);
+        cached_lanes = db::Connector::select_single_lane(current_node_id);
         current_lanes_id = current_node_id;
     }
     return *(cached_lanes.get());
@@ -170,13 +250,38 @@ float order_mod(int order){
     return 4 - 3*order/5.0;
 }
 
+std::shared_ptr<std::vector<int>> Trade::get_weights(
+    std::shared_ptr<std::vector<ent::Commodity>> comms,
+    ent::CommodityType pref
+){
+    int pref_weight = Trade::PREF_WEIGHT;
+    int usual_weight = Trade::WEIGHT;
+    auto res = std::make_shared<std::vector<int>>();
+    for(auto& i : *comms){
+        if(i.type.id == pref.id){
+            res->push_back(pref_weight);
+        }else{
+            res->push_back(usual_weight);
+        }
+    }
+    return res;
+}
+
 std::shared_ptr<Inventory> Trade::generate_stock(const ent::Node& node){
     auto inv = std::make_shared<Inventory>();
     auto dbcomms = db::Connector::select_commodity();
-    //TODO algo for random
-    for(auto& i : *(dbcomms.get())){
-        inv.get()->update_commodity(i, 10, (int)(i.price*order_mod(node.order_level)));
+    auto weights = get_weights(dbcomms, node.pref);
+    int amount = Trade::LEVEL_AMOUNT*node.tech_level;
+
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::discrete_distribution<> dist(weights->begin(), weights->end());
+
+    for(int i = 0; i < amount; i++){
+        const ent::Commodity& rand_comm = (*dbcomms)[dist(mt)];
+        inv.get()->update_commodity(rand_comm, 1, (int)(rand_comm.price*order_mod(node.order_level)));
     }
+
     return inv;
 }
 Inventory& Trade::get_stock_for(const ent::Node& node){
@@ -187,6 +292,10 @@ Inventory& Trade::get_stock_for(const ent::Node& node){
         it = cached_stocks.begin();
         LOG(INFO) << "Stock for " + fmti(node.id) + " placed";
     } 
+    if(cached_stocks.size() > Trade::STOCK_MEM){
+        cached_stocks.pop_back();
+        LOG(INFO) << "Stock popped";
+    }
     return *(it->second.get());
 }
 
@@ -232,4 +341,59 @@ const int Trade::stock_record_deal_mod(const ent::Node& node, const ent::Module&
         res_delta = delta;
     }
     return res_delta;
+}
+
+// ----- Teller ----- //
+
+Storyteller::Storyteller(){
+    auto evt = db::Connector::select_encounter();
+    auto mods = db::Connector::select_mod();
+    for(auto& m : *(mods.get())){
+        auto key_ptr = std::find_if(
+            evt.get()->begin(), evt.get()->end(),
+            [&](const auto& p){return p.id == m.event_id;}
+            );
+        if(key_ptr != evt.get()->end()){
+            events[*key_ptr] = m.id;
+            LOG(INFO) << "teller noted event-id: " << key_ptr->id << " with mod-id " << m.id;
+        }
+    }
+    transform(events.begin(), events.end(), std::back_inserter(weights),
+         [](const auto& val){return val.first.weight;} 
+         );
+    LOG(INFO) << "tellers event weights:";
+    for(auto& i : weights){
+        LOG(INFO) << i;
+    }
+}
+
+int Storyteller::get_random_modifier(){
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::discrete_distribution<> dist(weights.begin(), weights.end());
+
+    int ind = dist(mt);
+
+    LOG(INFO) << "teller chose " << ind;
+    
+    // index = id, assuming continioius id in table
+    // return events[ind].id;
+    // TODO rewrite map to vector, now it works only because event.id = mod.id
+    return ind + 1;
+}
+
+std::shared_ptr<ent::VModifierLog> Storyteller::log_modifier(int time, int node_id, int mod_id){
+    LOG(INFO) << "teller got mod: " << mod_id << " on node: " << node_id;
+    ent::ModifierLog log{time, node_id, mod_id};
+    auto res_vmodlog = db::Connector::push_mod_log(log);
+    LOG(INFO) << res_vmodlog->out();
+    return res_vmodlog;
+}
+
+std::shared_ptr<ent::VModifierLog> Storyteller::play_random_event(int time, int node_id){
+    return log_modifier(time, node_id, get_random_modifier());
+}
+std::shared_ptr<ent::VModifierLog> Storyteller::play_event(int time, int node_id, ent::Event& e){
+    //TODO event may not reside in events
+    return log_modifier(time, node_id, events[e]);
 }

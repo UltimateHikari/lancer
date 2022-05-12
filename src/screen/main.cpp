@@ -155,12 +155,20 @@ void System::show(Game& game){
     },
     &tab_index);
 
-    auto footer = Container::Horizontal({
-        Renderer([&]{return filler();}),
-        Renderer([&]{return text("Current time: " + fmti(game.getModel().get_time()) + "day") | flex | hcenter;}),
-        Renderer([&]{return filler();}),
-        Renderer([&]{return text("Current balance: " + fmti(game.getModel().get_balance()) + "credits") | flex | hcenter;}),
-        Renderer([&]{return filler();}),
+    auto footer = 
+    Container::Vertical({
+        Container::Horizontal({
+            Renderer([&]{return filler();}),
+            Renderer([&]{return text("Current time: " + fmti(game.getModel().get_time()) + "day") | flex | hcenter;}),
+            Renderer([&]{return filler();}),
+            Renderer([&]{return text("Current balance: " + fmti(game.getModel().get_balance()) + "credits") | flex | hcenter;}),
+            Renderer([&]{return filler();}),
+        }),
+        Container::Horizontal({
+            Renderer([&]{return filler();}),
+            Renderer([&]{return text(game.getModel().last_log.out()) | flex | hcenter;}),
+            Renderer([&]{return filler();}),
+        })
     });
 
     auto main_container = Container::Vertical({
