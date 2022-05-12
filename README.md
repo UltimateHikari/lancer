@@ -18,3 +18,7 @@ Hit
 - *Mmo.md* for WIP notes, synchronised from wiki
 - *Vision.md* for refined vision
 - *Roadmap.md* for semester roadmap
+
+### WIP notes:
+It's mandatory to flush modificator_log with `./replace_db.sh`  
+It's advised to rm `myeasylog.log`

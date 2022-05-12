@@ -108,7 +108,9 @@ template<class T>
 void SubInventory<T>::update(const T& t, int delta, int price){
     mutex.lock();
     inventory[t].amount += delta;
-    inventory[t].price = price; // non-zero only on init?
+    if(price > 0){
+        inventory[t].price = price; //TODO it's ambigious that non-zeroness of price matters
+    }
     inventory_state++;
     mutex.unlock();
 }
