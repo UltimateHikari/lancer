@@ -249,9 +249,9 @@ public:
 
 class VModifierLog : public Printable{
 public:
-    int time;
-    std::string node_name;
-    std::string mod_name;
+    int time = 0;
+    std::string node_name = "nowhere";
+    std::string mod_name = "nothing";
     VModifierLog(){};
     VModifierLog(std::tuple<int,std::string,std::string>& raw_select):
         time(std::get<0>(raw_select)),

@@ -90,8 +90,8 @@ int main(int, char**) {
     defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
     el::Loggers::reconfigureLogger("default", defaultConf);
 
-    LOG(INFO) << "My first info log using default logger";
-    lancer_log_test();
+    LOG(INFO) << "Starting lancer game...";
+    //lancer_log_test();
     sc::Main* screen = new sc::Main();
 
     Game* game = new Game();
