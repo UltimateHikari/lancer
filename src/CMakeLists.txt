@@ -6,6 +6,7 @@ set(sources
     screen/inventory.cpp
     screen/navigation.cpp
     screen/trade.cpp
+    screen/ship.cpp
     model/model.cpp
     model/entities.cpp 
     model/oututil.cpp

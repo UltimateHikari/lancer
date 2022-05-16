@@ -5,6 +5,7 @@
 #include "ftxui/dom/elements.hpp"
 
 #include "model/model.hpp"
+#include "screen/ship.hpp"
 #include "screen/inventory.hpp"
 #include "screen/navigation.hpp"
 #include "screen/trade.hpp"
@@ -190,13 +191,14 @@ void System::show(Game& game){
 
     int tab_index = 0;
     std::vector<std::string> tab_entries = {
-        "Navigation", "Inventory", "Trade"
+        "Ship", "Navigation", "Inventory", "Trade"
     };
     auto tab_selection = Toggle(&tab_entries, &tab_index);
     //auto navigation = ;
     
     auto tab_content = Container::Tab(
     {
+        sc::Ship(game),
         sc::Navigation(game),
         sc::Inventory(game),
         sc::Trade(game)

@@ -20,14 +20,14 @@ public:
     ftxui::Element iteminfocolumn;
     ftxui::Element iteminfo;
     ftxui::Element panel;
+    
     int state = NONE;
     ent::Commodity current_comm;
 
-    InventoryBase(Game& game_){
+    InventoryBase(Game& game_): game(&game_){
         using namespace ftxui;
         list = Container::Vertical({});
         Add(list);
-        this->game = &game_;
     }
 
     ftxui::Element Render() override {

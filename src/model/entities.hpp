@@ -263,9 +263,11 @@ public:
 
 class ShipFrameSlots {
 public:
-    int weap_slots;
-    int armr_slots;
-    int supp_slots;
+    int weap_slots = 0;
+    int armr_slots = 0;
+    int supp_slots = 0;
+
+    ShipFrameSlots(){};
 
     ShipFrameSlots(std::tuple<int,int,int> raw_select):
         weap_slots(std::get<0>(raw_select)),
@@ -276,12 +278,14 @@ public:
 
 class ShipFrameParams{
 public:
-    int energy;
-    int inventory;
+    int energy = 0;
+    int inventory = 0;
 
-    int structure;
-    int speed;
-    int evasion;
+    int structure = 0;
+    int speed = 0;
+    int evasion = 0;
+
+    ShipFrameParams(){};
 
     ShipFrameParams(const std::tuple<int,int,int,int,int>& raw_select):
         energy(std::get<0>(raw_select)),
@@ -311,6 +315,8 @@ public:
 
     ShipFrameSlots slots;
     ShipFrameParams params;
+
+    ShipFrame(){};
 
     ShipFrame(std::tuple<
         int,
