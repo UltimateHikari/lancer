@@ -96,6 +96,14 @@ public:
     std::shared_ptr<ent::VModifierLog> play_event(int time, int node_id, ent::Event& e);
 };
 
+class Ship {
+private:
+    int a;
+    // ent::ShipFrame frame;
+    // std::vector<ent::ShipModule> equipped;
+    
+};
+
 };
 
 class Model{
@@ -106,6 +114,7 @@ private:
     std::unique_ptr<md::Navigation> navigation;
     std::unique_ptr<md::Trade> trade;
     std::unique_ptr<md::Storyteller> teller;
+    std::unique_ptr<md::Ship> ship;
     int current_time = 0;
     int current_balance = 500;
 public:

@@ -3,6 +3,11 @@
 
 #include "db/lancer.hpp"
 
+template<std::size_t... Is, class... Ts>
+auto extract_subtuple(const std::tuple<Ts...>& tuple) {
+    return std::make_tuple(std::get<Is>(tuple)...);
+}
+
 namespace ent{
 
 struct Meta{
@@ -28,6 +33,7 @@ inline bool operator== (const Comparable& lhs, const Comparable& rhs){ return rh
 // inline bool operator> (const Comparable& lhs, const Comparable& rhs){ return rhs < lhs; }
 // inline bool operator<=(const Comparable& lhs, const Comparable& rhs){ return !(lhs > rhs); }
 // inline bool operator>=(const Comparable& lhs, const Comparable& rhs){ return !(lhs < rhs); }
+
 
 class CommodityType : public Comparable{
 public:
@@ -254,6 +260,76 @@ public:
     {}
     std::string out();
 };
+
+class ShipFrameSlots {
+public:
+    int weap_slots;
+    int armr_slots;
+    int supp_slots;
+
+    ShipFrameSlots(std::tuple<int,int,int> raw_select):
+        weap_slots(std::get<0>(raw_select)),
+        armr_slots(std::get<1>(raw_select)),
+        supp_slots(std::get<2>(raw_select))
+    {}
+};
+
+class ShipFrameParams{
+public:
+    int energy;
+    int inventory;
+
+    int structure;
+    int speed;
+    int evasion;
+
+    ShipFrameParams(const std::tuple<int,int,int,int,int>& raw_select):
+        energy(std::get<0>(raw_select)),
+        inventory(std::get<1>(raw_select)),
+        structure(std::get<2>(raw_select)),
+        speed(std::get<3>(raw_select)),
+        evasion(std::get<4>(raw_select))
+    {}
+};
+
+
+class ShipFrameClass : public Comparable{
+public:
+    std::string name;
+    ShipFrameClass(){};
+    ShipFrameClass(int id_, std::string& name_):
+        Comparable(id_), 
+        name(std::move(name_))
+    {}
+};
+
+class ShipFrame : public Comparable{
+public:
+    std::string name;
+    ShipFrameClass fclass;
+    Corporation corp;
+
+    ShipFrameSlots slots;
+    ShipFrameParams params;
+
+    ShipFrame(std::tuple<
+        int,
+        std::string,
+        int, std::string,
+        int, std::string,
+        int,int,int,
+        int,int,int,int,int
+        >& raw_select):
+            Comparable{std::get<0>(raw_select)},
+            name(std::get<1>(raw_select)),
+            fclass{std::get<2>(raw_select), std::get<3>(raw_select)},
+            corp(std::get<4>(raw_select), std::get<5>(raw_select)),
+            slots{extract_subtuple<6,7,8>(raw_select)},
+            params{extract_subtuple<9,10,11,12,13>(raw_select)}
+        {}
+};
+
+
 
 }
 #endif

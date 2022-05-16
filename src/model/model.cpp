@@ -15,7 +15,8 @@ Model::Model():
     inventory(std::make_unique<Inventory>()),
     navigation(std::make_unique<Navigation>()),
     trade(std::make_unique<Trade>()),
-    teller(std::make_unique<Storyteller>())
+    teller(std::make_unique<Storyteller>()),
+    ship(std::make_unique<Ship>())
 {}
 
 
