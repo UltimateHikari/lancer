@@ -43,6 +43,7 @@ public:
     bool have_enough_of_mod(const ent::Module& t, int delta);
     void load(int save_id);
     void save(std::string& save_name);
+    int get_size();
 };
 
 class Navigation{
@@ -98,10 +99,16 @@ public:
 
 class Ship {
 private:
-    int a;
-    // ent::ShipFrame frame;
-    // std::vector<ent::ShipModule> equipped;
-    
+    bool max_armr_slots(int id, int cur_slots);
+    bool max_weap_slots(int id, int cur_slots);
+    bool max_supp_slots(int id, int cur_slots);
+public:
+    std::shared_ptr<ent::ShipFrame> frame = {};
+    std::vector<ent::Module> equipped;
+    Ship();
+    bool can_equip_another(ent::Module& mod);
+    void equip(ent::Module& mod);
+    void unequip(ent::Module& mod);
 };
 
 };
@@ -144,6 +151,12 @@ public:
     void trade_module(const ent::Module& mod, int delta);
     void trade_commodity(const ent::Commodity& comm, int delta);
     md::Inventory& get_current_stock();
+
+    std::vector<ent::Module>& get_equipped_modules();
+    void equip_module(ent::Module& mod);
+    void unequip_module(ent::Module& mod);
+    ent::ShipFrame& get_frame();
+    bool ship_inventory_full();
 
     void load_game(int save_id);
     void save_game(std::string save_name);

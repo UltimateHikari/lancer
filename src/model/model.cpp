@@ -97,6 +97,30 @@ md::Inventory& Model::get_current_stock(){
     return trade->get_stock_for(get_current_node());
 }
 
+std::vector<ent::Module>& Model::get_equipped_modules(){
+    return ship->equipped;
+}
+void Model::equip_module(ent::Module& mod){
+    //TODO test & document delta on have enough of 
+    if(ship->can_equip_another(mod) && inventory->have_enough_of_mod(mod, 1)){
+        ship->equip(mod);
+        //inventory->update_module(mod, -1, price);
+    }
+}
+void Model::unequip_module(ent::Module& mod){
+    if(!ship_inventory_full()){
+        ship->unequip(mod);
+        //inventory->update_module(mod, 1, price);
+    }
+}
+ent::ShipFrame& Model::get_frame(){
+    return *(ship->frame);
+}
+
+ bool Model::ship_inventory_full(){
+    return ship->frame->params.inventory <= inventory->get_size();
+ }
+
 // ----- Subinventory ----- //
 
 template<class T>
@@ -184,6 +208,11 @@ void Inventory::save(std::string& save_name){
     auto modules = get_modules();
     auto commodities = get_commodities();
     db::Connector::insert_save(save_name, modules, commodities);
+}
+
+int Inventory::get_size(){
+    //TODO update size
+    return 0;
 }
 
 // ----- Navigation ----- //
@@ -397,4 +426,52 @@ std::shared_ptr<ent::VModifierLog> Storyteller::play_random_event(int time, int 
 std::shared_ptr<ent::VModifierLog> Storyteller::play_event(int time, int node_id, ent::Event& e){
     //TODO event may not reside in events
     return log_modifier(time, node_id, events[e]);
+}
+
+// ----- Ship ----- //
+
+Ship::Ship(){
+    frame = db::Connector::select_single_frame(1);
+    auto mod = db::Connector::select_module();
+    //TODO temponary solution
+    equipped = *mod;
+}
+
+bool Ship::max_armr_slots(int id, int cur_slots){
+    return (id == 1 && frame->slots.armr_slots == cur_slots);
+}
+
+
+bool Ship::max_weap_slots(int id, int cur_slots){
+    return (id == 1 && frame->slots.weap_slots == cur_slots);
+}
+
+bool Ship::max_supp_slots(int id, int cur_slots){
+    return (id == 1 && frame->slots.supp_slots == cur_slots);
+}
+
+bool Ship::can_equip_another(ent::Module& mod){
+    int cur_slots;
+    for(auto& i : equipped){
+        if(i.type.id == mod.type.id){
+            cur_slots++;
+        }
+    }
+    // TODO highly prone to error, replace with enum
+    int id = mod.type.id;
+    if(max_armr_slots(id, cur_slots) || max_weap_slots(id, cur_slots) || max_supp_slots(id, cur_slots)){
+        return false;
+    }
+    return true;
+}
+
+void Ship::equip(ent::Module& mod){
+    equipped.push_back(mod);
+}
+void Ship::unequip(ent::Module& mod){
+    auto it = std::find_if(equipped.begin(), equipped.end(), 
+                        [&](const auto& p){return p.id == mod.id;});
+    if(!(it != equipped.end())){
+        equipped.erase(it);
+    }
 }
