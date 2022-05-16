@@ -28,7 +28,8 @@ TEST(SelectTest, FrameClass)    {
 
 TEST(SelectTest, Frame)    {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_frame(), 1);
+    auto frm = db::Connector::select_single_frame(1);
+    EXPECT_EQ(frm->id, 1);
 }
 
 TEST(SelectTest, ModuleType)    {

@@ -118,7 +118,7 @@ private:
     int current_time = 0;
     int current_balance = 500;
 public:
-    ent::VModifierLog last_log;
+    ent::VModifierLog last_log = {};
     int get_time(){
         return current_time;
     };

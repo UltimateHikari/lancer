@@ -19,12 +19,12 @@ namespace db{
             static std::shared_ptr<std::vector<ent::Module>> select_module();
 
             static int select_frame_class();
-            static int select_frame();
+            static std::shared_ptr<ent::ShipFrame> select_single_frame(const int id);
             static int select_element();
 
             static std::shared_ptr<std::vector<ent::Node>> select_node();
             static std::shared_ptr<std::vector<ent::Lane>> select_lane();
-            static std::shared_ptr<std::vector<ent::Lane>> select_single_lane(const int id);
+            static std::shared_ptr<std::vector<ent::Lane>> select_single_node_lanes(const int id);
 
             static std::shared_ptr<std::vector<ent::Event>> select_encounter();
             static std::shared_ptr<std::vector<ent::LightModifier>> select_mod();

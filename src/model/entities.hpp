@@ -71,7 +71,7 @@ public:
         type{std::get<1>(raw_select), std::get<2>(raw_select)},
         name{std::move(std::get<3>(raw_select))}
         {}
-    std::string out();
+    std::string out() override;
 };
 
 class Module : public Comparable, Printable{
@@ -90,7 +90,7 @@ public:
         type{std::get<1>(raw_select), std::get<2>(raw_select)},
         name{std::move(std::get<3>(raw_select))}
         {}
-    std::string out();
+    std::string out() override;
 };
 
 class SavedGame : public Comparable, Printable{
@@ -102,7 +102,7 @@ public:
         name{std::get<1>(raw_select)},
         date{std::move(std::get<2>(raw_select))}
         {}
-    std::string out();
+    std::string out() override;
 };
 
 class Corporation : public Comparable, public Printable{
@@ -113,7 +113,7 @@ public:
         Comparable(id_), 
         name(std::move(name_))
     {}
-    std::string out();
+    std::string out() override;
 };
 
 class LightNode{
@@ -153,7 +153,7 @@ public:
         order_level{std::get<6>(raw_select)},
         tech_level{std::get<7>(raw_select)}
         {}
-    std::string out();
+    std::string out() override;
 };
 
 class Lane : public Printable{
@@ -176,7 +176,7 @@ public:
         traverse_time{std::get<5>(raw_select)},
         stability{std::get<6>(raw_select)}
         {}
-    std::string out();
+    std::string out() override;
     std::string getContextedText(const ent::Node& node) const;
 };
 
@@ -192,7 +192,7 @@ public:
         name{std::get<1>(raw_select)},
         weight{std::get<2>(raw_select)}
         {}
-    std::string out();
+    std::string out() override;
     
 };
 
@@ -258,7 +258,7 @@ public:
         node_name(std::get<1>(raw_select)),
         mod_name(std::get<2>(raw_select))
     {}
-    std::string out();
+    std::string out() override;
 };
 
 class ShipFrameSlots {
@@ -303,7 +303,7 @@ public:
     {}
 };
 
-class ShipFrame : public Comparable{
+class ShipFrame : public Comparable, public Printable{
 public:
     std::string name;
     ShipFrameClass fclass;
@@ -327,6 +327,7 @@ public:
             slots{extract_subtuple<6,7,8>(raw_select)},
             params{extract_subtuple<9,10,11,12,13>(raw_select)}
         {}
+    std::string out() override;
 };
 
 

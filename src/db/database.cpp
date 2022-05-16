@@ -52,6 +52,11 @@ std::shared_ptr<std::vector<T>> parse_to_shared_vector(std::vector<M>& rows){
     return result_ptr;
 }
 
+template<typename T, typename M>
+std::shared_ptr<T> parse_to_shared_single(std::vector<M>& rows){
+    return std::make_shared<T>(rows.front());
+}
+
 const std::string Connector::db_name = "lancer.db";
 
 void Connector::sync(){
@@ -84,10 +89,22 @@ int Connector::select_frame_class(){
     return rows.size();
 }
 
-int Connector::select_frame(){
-    auto rows = db::internal::storage.select(columns(&Frame::id, &Frame::name));
+std::shared_ptr<ent::ShipFrame> Connector::select_single_frame(const int id){
+    auto rows = db::internal::storage.select(
+        columns(
+            &Frame::id, &Frame::name, 
+            &FrameClass::id, &FrameClass::name,
+            &Corporation::id, &Corporation::name,
+            &Frame::weap_slots, &Frame::armr_slots, &Frame::supp_slots,
+            &Frame::energy, &Frame::inventory, &Frame::structure, &Frame::speed, &Frame::evasion
+            ),
+        join<FrameClass>(on(c(&Frame::class_id) == &FrameClass::id)),
+        join<Corporation>(on(c(&Frame::corp_id) == &Corporation::id)),
+        where(is_equal(&Frame::id, id))
+        );
 
-    return rows.size();
+    empty_output_check(rows, "select_single_frame");
+    return parse_to_shared_single<ent::ShipFrame>(rows);
 }
 
 int Connector::select_module_type(){
@@ -163,7 +180,7 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(){
     return parse_to_shared_vector<ent::Lane>(rows);
 }
 
-std::shared_ptr<std::vector<ent::Lane>> Connector::select_single_lane(const int id){
+std::shared_ptr<std::vector<ent::Lane>> Connector::select_single_node_lanes(const int id){
     using stt = alias_a<Node>;
     using end = alias_b<Node>;
     auto rows = db::internal::storage.select(
@@ -177,7 +194,7 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_single_lane(const int 
         left_join<end>(on(alias_column<end>(&Node::id) == c(&Lane::end))),
         where(is_equal(&Lane::start, id) || is_equal(&Lane::end, id))
         );
-    empty_output_check(rows, "select_single_lane");
+    empty_output_check(rows, "select_single_node_lanes");
     return parse_to_shared_vector<ent::Lane>(rows);
 }
 
