@@ -74,6 +74,8 @@ public:
         return Container::Horizontal({
             Button("Details", []{}),
             Renderer([&]{return filler();}),
+            Button("Equip", [&]{game->getModel().equip_module(module.first);}),
+            Renderer([&]{return filler();}),
             Renderer([&]{
                 return text(module.first.name);
             }),

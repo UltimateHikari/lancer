@@ -86,7 +86,9 @@ public:
     ftxui::Component RenderModule(ent::Module& module){
         using namespace ftxui;
         return Container::Horizontal({ //TODO : fix bug here, add rquip/uneqips
-            Button("Details", [&]{current_mod = module; state = MOD; LOG(INFO) << "segf:" << module.out();}),
+            Button("Details", [&]{current_mod = module; state = MOD;}),
+            Renderer([&]{return filler();}),
+            Button("Unequip", [&]{game->getModel().unequip_module(module);}),
             Renderer([&]{return filler();}),
             Renderer([&]{
                 return text(module.name);
