@@ -61,15 +61,17 @@ public:
     std::string name;
     int price = 100;
     Commodity(){};
-    Commodity(std::tuple<int, int, std::string, std::string>& raw_select):
-        Comparable(std::get<0>(raw_select)),
-        type{std::get<1>(raw_select), std::get<2>(raw_select)},
-        name{std::move(std::get<3>(raw_select))}
-        {}
     Commodity(std::tuple<int, int, std::string, std::string, int>& raw_select):
         Comparable(std::get<0>(raw_select)),
         type{std::get<1>(raw_select), std::get<2>(raw_select)},
-        name{std::move(std::get<3>(raw_select))}
+        name{std::move(std::get<3>(raw_select))},
+        price{std::get<4>(raw_select)}
+        {}
+    Commodity(std::tuple<int, int, std::string, std::string, int, int>& raw_select):
+        Comparable(std::get<0>(raw_select)),
+        type{std::get<1>(raw_select), std::get<2>(raw_select)},
+        name{std::move(std::get<3>(raw_select))},
+        price{std::get<4>(raw_select)}
         {}
     std::string out() override;
 };
@@ -78,17 +80,19 @@ class Module : public Comparable, Printable{
 public:
     ModuleType type;
     std::string name;
-    int price = 1000;
+    int price;
     Module(){};
-    Module(std::tuple<int, int, std::string, std::string>& raw_select):
-        Comparable(std::get<0>(raw_select)),
-        type{std::get<1>(raw_select), std::get<2>(raw_select)},
-        name{std::move(std::get<3>(raw_select))}
-        {}
     Module(std::tuple<int, int, std::string, std::string, int>& raw_select):
         Comparable(std::get<0>(raw_select)),
         type{std::get<1>(raw_select), std::get<2>(raw_select)},
-        name{std::move(std::get<3>(raw_select))}
+        name{std::move(std::get<3>(raw_select))},
+        price{std::get<4>(raw_select)}
+        {}
+    Module(std::tuple<int, int, std::string, std::string, int, int>& raw_select):
+        Comparable(std::get<0>(raw_select)),
+        type{std::get<1>(raw_select), std::get<2>(raw_select)},
+        name{std::move(std::get<3>(raw_select))},
+        price{std::get<4>(raw_select)}
         {}
     std::string out() override;
 };

@@ -38,6 +38,7 @@ class Commodity {
         int id;
         int type_id;
         int corp_id;
+        int initial_cost;
         std::string name;
 
         static auto get_table(){
@@ -47,6 +48,7 @@ class Commodity {
                 make_column("id", &Commodity::id, primary_key()),
                 make_column("type_id", &Commodity::type_id),
                 make_column("manufacturer_id", &Commodity::corp_id),
+                make_column("initial_cost", &Commodity::initial_cost),
                 make_column("name", &Commodity::name)
             );
         }

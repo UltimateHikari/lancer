@@ -70,7 +70,7 @@ int Connector::select_corporation(){
 
 std::shared_ptr<std::vector<ent::Commodity>> Connector::select_commodity(){
     auto rows = db::internal::storage.select(
-        columns(&Commodity::id, &CommodityType::id, &CommodityType::name, &Commodity::name),
+        columns(&Commodity::id, &CommodityType::id, &CommodityType::name, &Commodity::name, &Commodity::initial_cost),
         join<CommodityType>(on(c(&Commodity::type_id) == &CommodityType::id)));
 
     empty_output_check(rows, "select_commodity");
@@ -127,7 +127,7 @@ int Connector::test_select_module(){
 
 std::shared_ptr<std::vector<ent::Module>> Connector::select_module(){
     auto rows = db::internal::storage.select(
-        columns(&Module::id, &Module::type_id, &ModuleType::name, &Module::name),
+        columns(&Module::id, &Module::type_id, &ModuleType::name, &Module::name, &Module::initial_cost),
         join<ModuleType>(on(c(&Module::type_id) == &ModuleType::id)));
 
     empty_output_check(rows, "select_module");
@@ -273,7 +273,7 @@ std::shared_ptr<std::vector<ent::SavedGame>> Connector::select_saved_game(){
 
 std::shared_ptr<std::vector<std::pair<ent::Module,int>>> Connector::select_saved_module(const int id){
     auto rows = db::internal::storage.select(
-        columns(&SavedModule::mod_id, &ModuleType::id, &ModuleType::name, &Module::name, &SavedModule::amount),
+        columns(&SavedModule::mod_id, &ModuleType::id, &ModuleType::name, &Module::name, &Module::initial_cost, &SavedModule::amount),
         join<Module>(on(c(&SavedModule::mod_id) == &Module::id)),
         join<ModuleType>(on(c(&Module::type_id) == &ModuleType::id)),
         where(c(&SavedModule::save_id) == id));
@@ -287,7 +287,7 @@ std::shared_ptr<std::vector<std::pair<ent::Module,int>>> Connector::select_saved
 
 std::shared_ptr<std::vector<std::pair<ent::Commodity,int>>> Connector::select_saved_commodity(const int id){
     auto rows = db::internal::storage.select(
-        columns(&SavedCommodity::comm_id, &CommodityType::id, &CommodityType::name, &Commodity::name, &SavedCommodity::amount),
+        columns(&SavedCommodity::comm_id, &CommodityType::id, &CommodityType::name, &Commodity::name, &Commodity::initial_cost, &SavedCommodity::amount),
         join<Commodity>(on(c(&SavedCommodity::comm_id) == &Commodity::id)),
         join<CommodityType>(on(c(&Commodity::type_id) == &CommodityType::id)),
         where(c(&SavedCommodity::save_id) == id));

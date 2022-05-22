@@ -10,26 +10,26 @@ INSERT INTO commodity_type(name) VALUES ("industrial");
 INSERT INTO commodity_type(name) VALUES ("commodity");
 INSERT INTO commodity_type(name) VALUES ("ore");
 
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (4, 3, "Alien Cats");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (1, 1, "Chemicals");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (4, 3, "Collectibles");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (2, 1, "Drugs");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (3, 2, "Energy Contours");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (4, 1, "Files");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (2, 4, "Ghost Organs");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (4, 1, "Luxury");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (1, 3, "Medicine");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (3, 1, "Nanotech");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (5, 2, "Noble Gas");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (2, 4, "Organs");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (3, 1, "Plastics");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (4, 4, "Rare Food");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (4, 4, "Rare Plants");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (1, 3, "Soap");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (1, 1, "Towels");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (3, 2, "Transformators");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (1, 2, "Water");
-INSERT INTO commodity(type_id, manufacturer_id, name) VALUES (2, 1, "Weapons");
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (4, 3, "Alien Cats", 2000);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (1, 1, "Chemicals", 150);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (4, 3, "Collectibles", 50);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (2, 1, "Drugs", 80);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (3, 2, "Energy Contours", 120);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (4, 1, "Files", 10);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (2, 4, "Ghost Organs", 18000);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (4, 1, "Luxury", 1000);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (1, 3, "Medicine", 20);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (3, 1, "Nanotech", 800);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (5, 2, "Noble Gas", 200);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (2, 4, "Organs", 10000);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (3, 1, "Plastics", 250);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (4, 4, "Rare Food", 1500);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (4, 4, "Rare Plants", 2000);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (1, 3, "Soap", 15);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (1, 1, "Towels", 10);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (3, 2, "Transformators", 500);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (1, 2, "Water", 5);
+INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (2, 1, "Weapons", 1000);
 
 INSERT INTO frame_class(name) VALUES ("interceptor");
 INSERT INTO frame_class(name) VALUES ("fighter");
@@ -72,7 +72,7 @@ INSERT INTO module(
 VALUES(
     1,1,
     "Pulse laser",
-    1,20,100,
+    1,20,1000,
     40,85,5,
     0,
     0,0,0,
@@ -110,7 +110,7 @@ INSERT INTO module(
 VALUES(
     3,1,
     "External cargo bay",
-    3,0,100,
+    3,0,5000,
     0,0,0,
     0,
     -10,0,0,
