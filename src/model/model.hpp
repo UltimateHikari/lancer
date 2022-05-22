@@ -28,6 +28,7 @@ public:
     void update(const T& t, int delta, int price);
     std::vector<std::pair<T, ent::Meta>>& get();
     bool have_enough_of(const T& t, int delta);
+    int get_size();
 };
 
 class Inventory{
@@ -108,7 +109,7 @@ public:
     Ship();
     bool can_equip_another(ent::Module& mod);
     void equip(ent::Module& mod);
-    void unequip(ent::Module& mod);
+    ent::Module unequip(ent::Module& mod);
 };
 
 };

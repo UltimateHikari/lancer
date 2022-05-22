@@ -101,25 +101,24 @@ std::vector<ent::Module>& Model::get_equipped_modules(){
     return ship->equipped;
 }
 void Model::equip_module(ent::Module& mod){
-    //TODO test & document delta on have enough of 
     if(ship->can_equip_another(mod) && inventory->have_enough_of_mod(mod, 1)){
         ship->equip(mod);
-        //inventory->update_module(mod, -1, price);
+        inventory->update_module(mod, -1, mod.price);
     }
 }
 void Model::unequip_module(ent::Module& mod){
     if(!ship_inventory_full()){
-        ship->unequip(mod);
-        //inventory->update_module(mod, 1, price);
+        auto uneq_mod = ship->unequip(mod);
+        inventory->update_module(uneq_mod, 1, mod.price);
     }
 }
 ent::ShipFrame& Model::get_frame(){
     return *(ship->frame);
 }
 
- bool Model::ship_inventory_full(){
+bool Model::ship_inventory_full(){
     return ship->frame->params.inventory <= inventory->get_size();
- }
+}
 
 // ----- Subinventory ----- //
 
@@ -171,6 +170,14 @@ bool SubInventory<T>::have_enough_of(const T& t, int delta){
     return false;
 }
 
+template<class T>
+int SubInventory<T>::get_size(){
+    return std::accumulate(
+        inventory.begin(), inventory.end(), 0,
+        [](const std::size_t previous, const auto& element)
+        { return previous + element.second.amount; }
+        );
+}
 
 // ----- Inventory ----- //
 
@@ -211,8 +218,7 @@ void Inventory::save(std::string& save_name){
 }
 
 int Inventory::get_size(){
-    //TODO update size
-    return 0;
+    return modules.get_size() + commodities.get_size();
 }
 
 // ----- Navigation ----- //
@@ -468,10 +474,12 @@ bool Ship::can_equip_another(ent::Module& mod){
 void Ship::equip(ent::Module& mod){
     equipped.push_back(mod);
 }
-void Ship::unequip(ent::Module& mod){
+ent::Module Ship::unequip(ent::Module& mod){
+    ent::Module res = mod; //copy before erasing
     auto it = std::find_if(equipped.begin(), equipped.end(), 
                         [&](const auto& p){return p.id == mod.id;});
-    if(!(it != equipped.end())){
+    if(it != equipped.end()){
         equipped.erase(it);
     }
+    return res;
 }
