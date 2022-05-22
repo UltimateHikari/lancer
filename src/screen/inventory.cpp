@@ -2,7 +2,9 @@
 
 #include <vector>
 #include <memory>
+
 #include "model/entities.hpp"
+#include "model/oututil.hpp"
 #include "model/model.hpp"
 
 #include <ftxui/component/event.hpp> 

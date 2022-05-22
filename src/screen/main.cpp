@@ -5,6 +5,8 @@
 #include "ftxui/dom/elements.hpp"
 
 #include "model/model.hpp"
+#include "model/oututil.hpp"
+
 #include "screen/ship.hpp"
 #include "screen/inventory.hpp"
 #include "screen/navigation.hpp"

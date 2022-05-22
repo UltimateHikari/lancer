@@ -4,6 +4,7 @@
 #include <memory>
 #include "model/entities.hpp"
 #include "model/model.hpp"
+#include "model/oututil.hpp"
 
 #include <ftxui/component/event.hpp> 
 
