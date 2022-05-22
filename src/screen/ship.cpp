@@ -23,7 +23,7 @@ public:
 
     int state = NONE;
     ent::ShipFrame current_frame = {};
-    ent::Module current_mod = {};
+    ent::Module current_mod;
 
     ShipBase(Game& game_): game(&game_){
         using namespace ftxui;
@@ -55,7 +55,7 @@ public:
         mod_list->DetachAllChildren();
         auto& model = game->getModel();
         current_frame = model.get_frame();
-        auto modules = model.get_equipped_modules();
+        auto& modules = model.get_equipped_modules();
 
         mod_list->Add(RenderFrame(current_frame));
         for(auto& i: modules){
@@ -86,7 +86,7 @@ public:
     ftxui::Component RenderModule(ent::Module& module){
         using namespace ftxui;
         return Container::Horizontal({ //TODO : fix bug here, add rquip/uneqips
-            Button("Details", [&]{current_mod = module; LOG(INFO) << "segf:" << current_mod.out();}),
+            Button("Details", [&]{current_mod = module; state = MOD; LOG(INFO) << "segf:" << module.out();}),
             Renderer([&]{return filler();}),
             Renderer([&]{
                 return text(module.name);
