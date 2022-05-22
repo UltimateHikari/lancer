@@ -87,7 +87,7 @@ TEST(SelectTest, EncounterTest)    {
 TEST(SelectTest, Encounter)    {
     db::Connector::sync();
     auto res = db::Connector::select_encounter();
-    EXPECT_EQ((*(res.get())).size(), 7);
+    EXPECT_EQ(res->size(), 7);
 }
 
 TEST(SelectTest, ModificatorType)    {
@@ -98,7 +98,7 @@ TEST(SelectTest, ModificatorType)    {
 TEST(SelectTest, Modificator)    {
     db::Connector::sync();
     auto res = db::Connector::select_mod();
-    EXPECT_EQ((*(res.get())).size(), 7);
+    EXPECT_EQ(res->size(), 7);
 }
 
 TEST(SelectTest, ModificatorLog)    {
@@ -123,12 +123,12 @@ TEST(SelectTest, SavedModule) {
     auto games = db::Connector::select_saved_game();
     int id = (*games.get())[0].id;
     auto modules = db::Connector::select_saved_module(id);
-    EXPECT_EQ((*modules.get()).size(), 2);
+    EXPECT_EQ(modules->size(), 2);
 }
 
 TEST(SelectTest, SavedCommodity) {
     auto games = db::Connector::select_saved_game();
     int id = (*games.get())[0].id;
     auto commodities = db::Connector::select_saved_commodity(id);
-    EXPECT_EQ((*commodities.get()).size(), 3);
+    EXPECT_EQ(commodities->size(), 3);
 }

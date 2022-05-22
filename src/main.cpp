@@ -92,6 +92,7 @@ int main(int argc, char** argv) {
     el::Configurations defaultConf;
     defaultConf.setToDefault();
     defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
+    defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime{%H:%m:%s,%g} %level %func %msg");
     el::Loggers::reconfigureLogger("default", defaultConf);
 
     LOG(INFO) << "Starting lancer game...";

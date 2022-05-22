@@ -85,8 +85,8 @@ public:
 
     ftxui::Component RenderModule(ent::Module& module){
         using namespace ftxui;
-        return Container::Horizontal({
-            Button("Details", [&]{current_mod = module; state = MOD;}),
+        return Container::Horizontal({ //TODO : fix bug here, add rquip/uneqips
+            Button("Details", [&]{current_mod = module; LOG(INFO) << "segf:" << current_mod.out();}),
             Renderer([&]{return filler();}),
             Renderer([&]{
                 return text(module.name);
@@ -113,7 +113,7 @@ public:
     ftxui::Element RenderModDetails(const ent::Module& mod){
         using namespace ftxui;
         return vbox({
-            text(mod.name + " (" + std::to_string(mod.id) + ")")//, //TODO - for debug purpose
+            text(mod.name + " (" + std::to_string(mod.id) + ")"),//, //TODO - for debug purpose
             separator(),
             text(mod.type.name),
             text(fmti(mod.price)),
