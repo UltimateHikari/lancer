@@ -201,9 +201,10 @@ void Load::show(Game& game){
 void System::show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
+    int depth = 0;
     int tab_index = 0;
     std::vector<std::string> tab_entries = {
-        "Ship", "Navigation", "Inventory", "Trade"
+        "Ship", "Navigation", "Inventory", "Trade", "Test"
     };
     auto tab_selection = Toggle(&tab_entries, &tab_index);
     
@@ -212,7 +213,8 @@ void System::show(Game& game){
         sc::Ship(game),
         sc::Navigation(game),
         sc::Inventory(game),
-        sc::Trade(game)
+        sc::Trade(game),
+        ftxui::Button("ovelray", [&]{depth = 1;})
     },
     &tab_index);
 
@@ -232,8 +234,48 @@ void System::show(Game& game){
             footer->Render() 
         });
     });
+
+    // At depth=1, The "modal" window.
+    std::vector<std::string> rating_labels = {
+        "1/5 stars", "2/5 stars", "3/5 stars", "4/5 stars", "5/5 stars",
+    };
+    auto depth_1_container = Container::Horizontal({
+        Button(&rating_labels[0], [&] {depth = 0;}),
+        Button(&rating_labels[1], [&] {depth = 0;}),
+        Button(&rating_labels[2], [&] {depth = 0;}),
+        Button(&rating_labels[3], [&] {depth = 0;}),
+        Button(&rating_labels[4], [&] {depth = 0;}),
+    });
+
+    auto depth_1_renderer = Renderer(depth_1_container, [&] {
+        return vbox({
+                text("Do you like FTXUI?"),
+                separator(),
+                hbox(depth_1_container->Render()),
+            }) |
+            border;
+    });
+
+    auto layered_container = Container::Tab(
+        {
+            main_renderer,
+            depth_1_renderer,
+        },
+        &depth);
+
+    auto layered_renderer = Renderer(layered_container, [&] {
+        ftxui::Element document = main_renderer->Render();
+
+        if (depth == 1) {
+        document = dbox({
+            document,
+            depth_1_renderer->Render() | clear_under | center,
+        });
+        }
+        return document;
+    });
  
-    auto final_container = CatchEvent(main_renderer, [&](Event event) {
+    auto final_container = CatchEvent(layered_renderer, [&](Event event) {
     
     if (event == Event::Character('q') || event == Event::Escape) {
         //TODO ask to save?
