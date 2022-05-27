@@ -1,16 +1,19 @@
-#include "main.hpp"
+#include "view.hpp"
 
 #include "ftxui/component/component.hpp"
 #include "ftxui/component/event.hpp"
 #include "ftxui/dom/elements.hpp"
+#include "ftxui/component/screen_interactive.hpp"
 
 #include "model/model.hpp"
 #include "model/oututil.hpp"
 
-#include "screen/ship.hpp"
-#include "screen/inventory.hpp"
-#include "screen/navigation.hpp"
-#include "screen/trade.hpp"
+#include "screen/system/ship.hpp"
+#include "screen/system/inventory.hpp"
+#include "screen/system/navigation.hpp"
+#include "screen/system/trade.hpp"
+
+#include "view/state.hpp"
 
 #include <cmath>
 #include <chrono>
@@ -62,7 +65,11 @@ class Graph {
   int shift = 0;
 };
 
-void Main::show(Game& game){
+void Main_show(Game& game);
+void Load_show(Game& game);
+void System_show(Game& game);
+
+void Main_show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
     auto option = ButtonOption();
@@ -73,9 +80,9 @@ void Main::show(Game& game){
 
     ftxui::Component renderer;
 
-    auto start_button = Button("New game", [&]{game.start(); refresh_ui_continue=STOP; System::show(game);}, &option);
+    auto start_button = Button("New game", [&]{game.start(); refresh_ui_continue=STOP; System_show(game);}, &option);
     auto save_button = Button("Save game", []{}, &option);
-    auto load_button = Button("Load game", [&]{Load::show(game);}, &option);
+    auto load_button = Button("Load game", [&]{Load_show(game);}, &option);
     auto lead_button = Button("Leaderboards", []{}, &option);
     auto setting_button = Button("Settings", []{}, &option);
     auto exit_button = Button("Exit", screen.ExitLoopClosure(), &option);
@@ -149,7 +156,7 @@ Component RenderSave(ent::SavedGame& game, std::function<void()> on_click){
     });
 }
 
-void Load::show(Game& game){
+void Load_show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
     auto option = ButtonOption();
@@ -164,7 +171,7 @@ void Load::show(Game& game){
             screen.ExitLoopClosure();
              game.getModel().load_game(i.id);
               game.start();
-               System::show(game);
+               System_show(game);
                }));
     }
 
@@ -198,7 +205,7 @@ void Load::show(Game& game){
     screen.Loop(final_container);
 }
 
-void System::show(Game& game){
+void System_show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
     int depth = 0;

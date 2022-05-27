@@ -2,11 +2,7 @@ add_executable(lancer)
 add_library(lancer_lib)
 
 set(sources 
-    screen/main.cpp
-    screen/inventory.cpp
-    screen/navigation.cpp
-    screen/trade.cpp
-    screen/ship.cpp
+    db/database.cpp
     model/model.cpp
     model/entities.cpp 
     model/oututil.cpp
@@ -15,7 +11,16 @@ set(sources
     model/trade.cpp
     model/teller.cpp
     model/ship.cpp
-    db/database.cpp
+    screen/system/inventory.cpp
+    screen/system/navigation.cpp
+    screen/system/trade.cpp
+    screen/system/ship.cpp
+    screen/load.cpp
+    screen/menu.cpp
+    screen/pause.cpp
+    screen/system.cpp
+    view/view.cpp
+    main.cpp
 )
 
 set(libraries
