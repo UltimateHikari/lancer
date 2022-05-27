@@ -6,6 +6,7 @@
 #include "db/database.hpp"
 #include <vector>
 #include <memory>
+#include <functional>
 
 // Controller
 
@@ -13,6 +14,7 @@ class Game{
     private:
         std::unique_ptr<Model> model;
     public:
+        std::function<void()> onEnd = []{exit(-1);};
         void start(){
             model->set_game_active(true);
         }
@@ -22,10 +24,6 @@ class Game{
         Model& getModel(){
             return *(model.get());
         }
-
-        void end(){
-            exit(-1);
-        };
 
         std::shared_ptr<std::vector<ent::SavedGame>> get_saved_games(){
             return db::Connector::select_saved_game();

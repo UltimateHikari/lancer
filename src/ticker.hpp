@@ -7,6 +7,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "easyloggingpp/easylogging++.h"
+
 class Ticker{
 private:
     std::thread ticker;

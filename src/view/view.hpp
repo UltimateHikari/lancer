@@ -3,13 +3,14 @@
 
 #include "game.hpp"
 #include "ticker.hpp"
+#include <functional>
 
 class View{
 private:
     Ticker ticker;
 public:
-    View();
-    void show(Game& game){};
+    std::function<void()> onExit;
+    void show(Game& game);
 };
 
 #endif

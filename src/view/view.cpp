@@ -14,6 +14,7 @@
 #include "screen/system/trade.hpp"
 
 #include "view/state.hpp"
+#include "view/screenfactory.hpp"
 
 #include <cmath>
 #include <chrono>
@@ -25,6 +26,41 @@ using namespace ftxui;
 //  FTXUI/examples/dom/graph.cpp 
 
 enum refresh{CONTINUE,PAUSE,STOP};
+
+bool isExitEvent(Event event){
+    return event == Event::Character('q') || event == Event::Escape;
+}
+
+void View::show(Game& game){
+    auto screen = ScreenInteractive::Fullscreen();
+
+    onExit = [&]{ticker.stop(); screen.ExitLoopClosure()(); };
+    game.onEnd = onExit;
+    
+    ticker = Ticker([&]{screen.PostEvent(Event::Custom);});
+    // TODO pass him inside;
+    state::StateManager state;
+
+    auto container = ftxui::Container::Horizontal({});
+    container->Add(sc::Menu(game, state));
+
+    auto event_container = CatchEvent(container, 
+        [&](Event event) {
+            if(event == Event::Custom){
+                container->DetachAllChildren();
+                container->Add(ScreenFactory::getScreenForState(game, state));
+                return true;
+            }
+            if (state.getCurrent() == state::Menu && isExitEvent(event)) {
+                screen.ExitLoopClosure()();
+                return true;
+            }
+            return false;
+        }
+    );
+
+    screen.Loop(event_container);
+}
 
 namespace sc{
 
@@ -47,107 +83,12 @@ ftxui::Component Footer(Game& game){
 
 }
 
-class Graph {
- public:
-  std::vector<int> operator()(int width, int height) const {
-    std::vector<int> output(width);
-    for (int i = 0; i < width; ++i) {
-      float v = 0;
-      v += 0.1f * std::sin((i + shift) * 0.1f);        // NOLINT
-      v += 0.2f * std::sin((i + shift + 10) * 0.15f);  // NOLINT
-      v += 0.1f * std::sin((i + shift) * 0.03f);       // NOLINT
-      v *= height;                                // NOLINT
-      v += 0.5f * height;                         // NOLINT
-      output[i] = static_cast<int>(v);
-    }
-    return output;
-  }
-  int shift = 0;
-};
 
-void Main_show(Game& game);
+
+void Main_show(Game& game){};
 void Load_show(Game& game);
 void System_show(Game& game);
 
-void Main_show(Game& game){
-    auto screen = ScreenInteractive::Fullscreen();
-
-    auto option = ButtonOption();
-    option.border = false;
-
-    auto refresh_ui_continue = CONTINUE;
-
-
-    ftxui::Component renderer;
-
-    auto start_button = Button("New game", [&]{game.start(); refresh_ui_continue=STOP; System_show(game);}, &option);
-    auto save_button = Button("Save game", []{}, &option);
-    auto load_button = Button("Load game", [&]{Load_show(game);}, &option);
-    auto lead_button = Button("Leaderboards", []{}, &option);
-    auto setting_button = Button("Settings", []{}, &option);
-    auto exit_button = Button("Exit", screen.ExitLoopClosure(), &option);
-
-    renderer =  Renderer(
-        Container::Vertical({
-            start_button,
-            save_button,
-            load_button,
-            lead_button,
-            setting_button,
-            exit_button
-        }),  
-        [&]{return vbox({
-            text(L" lancer "),
-            separator(),
-            start_button->Render(),
-            save_button->Render(),
-            load_button->Render(),
-            lead_button->Render(),
-            setting_button->Render(),
-            exit_button->Render(),
-        }) |
-            border;
-    });
-    
-    Graph logo_graph;
-
-    const int min_width = 40;
-
-    auto logo = Renderer([&] {
-        return graph(std::ref(logo_graph)) 
-        | center | color(Color::BlueLight) | xflex_grow | yflex_grow | bgcolor(Color::White);} );
-
-    std::thread refresh_ui([&] {
-        while (refresh_ui_continue != STOP) {
-            using namespace std::chrono_literals;
-            std::this_thread::sleep_for(0.05s);
-            if(refresh_ui_continue == CONTINUE){
-                logo_graph.shift++;
-                screen.PostEvent(Event::Custom);
-            }
-        }
-    });
-
-    int left_size = 20;
-
-    auto container = renderer;
-    container = Container::Horizontal({container, logo});
-
-
-
-    auto final_container = CatchEvent(container, [&](Event event) {
-        if (event == Event::Character('q') || event == Event::Escape) {
-            screen.ExitLoopClosure()();
-            return true;
-        }
-        
-        return false;
-    });
-
-    screen.Loop(final_container);
-    refresh_ui_continue=STOP;
-    refresh_ui.join();
-}
 
 Component RenderSave(ent::SavedGame& game, std::function<void()> on_click){
     return Container::Horizontal({
