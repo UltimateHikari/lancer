@@ -23,6 +23,27 @@ using namespace ftxui;
 
 enum refresh{CONTINUE,PAUSE,STOP};
 
+namespace sc{
+
+ftxui::Component Footer(Game& game){
+    return Container::Vertical({
+        Container::Horizontal({
+            Renderer([]{return filler();}),
+            Renderer([&]{return text("Current time: " + fmti(game.getModel().get_time()) + "day") | flex | hcenter;}),
+            Renderer([]{return filler();}),
+            Renderer([&]{return text("Current balance: " + fmti(game.getModel().get_balance()) + "credits") | flex | hcenter;}),
+            Renderer([]{return filler();}),
+        }),
+        Container::Horizontal({
+            Renderer([]{return filler();}),
+            Renderer([&]{return text(game.getModel().last_log.out()) | flex | hcenter;}),
+            Renderer([]{return filler();}),
+        })
+    });
+}
+
+}
+
 class Graph {
  public:
   std::vector<int> operator()(int width, int height) const {
@@ -164,28 +185,17 @@ void Load::show(Game& game){
     auto container = renderer;
     container = ResizableSplitLeft(container, logo, &left_size);
 
-    auto final_container = CatchEvent(container, [&](Event event) {
-    
-    if (event == Event::Character('q') || event == Event::Escape) {
-        screen.ExitLoopClosure()();
-        return true;
-    }
-    return false;
-    });
+    auto final_container = CatchEvent(container, 
+        [&](Event event) {
+            if (event == Event::Character('q') || event == Event::Escape) {
+                screen.ExitLoopClosure()();
+                return true;
+            }
+            return false;
+        }
+    );
 
     screen.Loop(final_container);
-}
-
-Component spinner_tab_renderer(){
-    return Renderer([&] {
-    Elements entries;
-    int shift = 0;
-    for (int i = 0; i < 22; ++i) {
-        entries.push_back(spinner(i, shift / 2) | bold |
-                    size(WIDTH, GREATER_THAN, 2) | border);
-    }
-    return hflow(std::move(entries)) | border;
-    });
 }
 
 void System::show(Game& game){
@@ -196,7 +206,6 @@ void System::show(Game& game){
         "Ship", "Navigation", "Inventory", "Trade"
     };
     auto tab_selection = Toggle(&tab_entries, &tab_index);
-    //auto navigation = ;
     
     auto tab_content = Container::Tab(
     {
@@ -207,21 +216,7 @@ void System::show(Game& game){
     },
     &tab_index);
 
-    auto footer = 
-    Container::Vertical({
-        Container::Horizontal({
-            Renderer([&]{return filler();}),
-            Renderer([&]{return text("Current time: " + fmti(game.getModel().get_time()) + "day") | flex | hcenter;}),
-            Renderer([&]{return filler();}),
-            Renderer([&]{return text("Current balance: " + fmti(game.getModel().get_balance()) + "credits") | flex | hcenter;}),
-            Renderer([&]{return filler();}),
-        }),
-        Container::Horizontal({
-            Renderer([&]{return filler();}),
-            Renderer([&]{return text(game.getModel().last_log.out()) | flex | hcenter;}),
-            Renderer([&]{return filler();}),
-        })
-    });
+    auto footer = sc::Footer(game);
 
     auto main_container = Container::Vertical({
         tab_selection,
@@ -230,12 +225,12 @@ void System::show(Game& game){
     });
 
     auto main_renderer = Renderer(main_container, [&] {
-    return vbox({
-        text("lancer") | bold | hcenter,
-        tab_selection->Render() | hcenter,
-        tab_content->Render() | flex,
-        footer->Render() 
-    });
+        return vbox({
+            text("lancer") | bold | hcenter,
+            tab_selection->Render() | hcenter,
+            tab_content->Render() | flex,
+            footer->Render() 
+        });
     });
  
     auto final_container = CatchEvent(main_renderer, [&](Event event) {
