@@ -52,6 +52,7 @@ public:
         default:
             return false;
         }
+        return false;
     }
     state::State getCurrent() {
         return state;
