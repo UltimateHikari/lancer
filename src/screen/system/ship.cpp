@@ -6,6 +6,8 @@
 #include "model/model.hpp"
 #include "model/oututil.hpp"
 
+#include "screen/graph.hpp"
+
 #include <ftxui/component/event.hpp> 
 
 namespace sc {
@@ -19,8 +21,7 @@ public:
     ftxui::Element iteminfocolumn;
     ftxui::Element iteminfo;
     ftxui::Element panel;
-    ftxui::Element logo = ftxui::text("logo") 
-        | ftxui::border | color(ftxui::Color::BlueLight);
+    Graph logo_graph;
 
     int state = NONE;
     ent::ShipFrame current_frame = {};
@@ -33,6 +34,7 @@ public:
     }
 
     ftxui::Element Render() override {
+        using namespace ftxui;
         RenderList();
         switch(state){
             case MOD:
@@ -48,7 +50,9 @@ public:
                 iteminfo = ftxui::text("");
                 break;
         }
-        return ftxui::hflow({panel, logo, ftxui::hbox({iteminfocolumn, iteminfo})}) | ftxui::border;
+        auto logo = graph(std::ref(logo_graph)) 
+            | center | color(Color::Wheat1) | xflex_grow ;
+        return hbox({panel | xflex_grow, logo, ftxui::hbox({iteminfocolumn, iteminfo}) | size(WIDTH, GREATER_THAN, 40)}) | border;
     }
 
     void RenderList(){
@@ -62,7 +66,7 @@ public:
         for(auto& i: modules){
             mod_list->Add(RenderModule(i));
         }
-        panel = mod_list->Render() | ftxui::borderDouble;
+        panel = mod_list->Render() | ftxui::border;
     }
 
     ftxui::Component RenderFrame(ent::ShipFrame& frame){
@@ -133,7 +137,7 @@ public:
             text("Average price:"),
             text("Description:"),
         }) |
-        yflex;
+        xflex_grow;
     }
 
     ftxui::Element RenderFrameDetails(const ent::ShipFrame& frm){
@@ -144,7 +148,7 @@ public:
         text(frm.fclass.name),
         text(fmti(0)),
         }) | //TODO add stats
-        yflex;
+        xflex_grow;
     }
 };
 

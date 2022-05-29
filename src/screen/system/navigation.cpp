@@ -75,7 +75,7 @@ public:
     using namespace ftxui;
     nodeinfocolumn = RenderNodeColumn();
     nodeinfo = RenderNodeInfo(mod.get_current_node());
-    nodepanel = hbox({hflow({nodeinfocolumn, nodeinfo}), router->Render()}) | border | yflex;
+    nodepanel = hbox({hflow({nodeinfocolumn, nodeinfo}), router->Render()}) | border;
   }  
 
   ftxui::Component RenderLaneLine(const ent::Lane& lane, std::function<void()> on_click){

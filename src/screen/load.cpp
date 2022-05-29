@@ -38,15 +38,15 @@ public:
     ftxui::Element Render() override {
         using namespace ftxui;
         RenderList();
-        return hflow({
+        return hbox({
             vbox({
                 text(L" load game "),
                 separator(),
                 buttons->Render()
-            }) | border,
+            }) | border | size(WIDTH,GREATER_THAN, 40),
             graph(std::ref(logo_graph)) 
             | center | color(Color::BlueLight) | xflex_grow | yflex_grow | bgcolor(Color::White)
-        });
+        }) | xflex_grow | yflex_grow;
     }
 
     ftxui::Component RenderSave(ent::SavedGame& save){

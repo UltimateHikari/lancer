@@ -33,6 +33,7 @@ public:
     }
 
     ftxui::Element Render() override {
+        using namespace ftxui;
         RenderList();
         switch(state){
             case COMM:
@@ -41,11 +42,11 @@ public:
                 break;
             //case MOD: //TODO
             default:
-                iteminfocolumn = ftxui::text("");
-                iteminfo = ftxui::text("");
+                iteminfocolumn = text("");
+                iteminfo = text("");
                 break;
         }
-        return ftxui::hflow({panel, ftxui::hbox({iteminfocolumn, iteminfo})}) | ftxui::border;
+        return hbox({panel | xflex_grow, hbox({iteminfocolumn, iteminfo}) | size(WIDTH, GREATER_THAN, 40)} ) | border;
     }
 
     void RenderList(){
@@ -68,7 +69,7 @@ public:
         if(list->ChildCount() == 0){
             list->Add(ftxui::Renderer([]{return ftxui::text("Inventory empty");}));
         }
-        panel = list->Render() | ftxui::borderDouble;
+        panel = list->Render() | ftxui::border;
     }
 
     ftxui::Component RenderModule(std::pair<ent::Module, ent::Meta>& module){
@@ -123,7 +124,7 @@ public:
         text(comm.type.name),
         text(fmti(comm.price)),
         }) |
-        yflex;
+        xflex_grow;
     }
 };
 

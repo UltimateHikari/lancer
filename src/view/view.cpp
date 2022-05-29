@@ -29,6 +29,7 @@ bool isExitEvent(Event event){
     return event == Event::Character('q') || event == Event::Escape;
 }
 
+
 void View::show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
@@ -39,6 +40,7 @@ void View::show(Game& game){
     // TODO pass him inside;
     state::StateManager state;
     state.stateChangeEvent = [&]{screen.PostEvent(Event::Custom);};
+    // auto container = ftxui::Renderer([&]{return flexbox({})})
 
     auto container = ftxui::Container::Horizontal({});
     container->Add(sc::Menu(game, state));

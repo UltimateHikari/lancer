@@ -71,7 +71,7 @@ public:
                 tab_selection->Render() | hcenter,
                 tab_content->Render() | flex,
                 footer->Render() 
-            });
+            }) | xflex_grow;
         });
 
         depth_1_container = Container::Horizontal({

@@ -7,20 +7,23 @@ class TradeBase : public ftxui::ComponentBase{
 public:
     Game* game;
     ftxui::Component list;
-    ftxui::Component info;
+    ftxui::Element iteminfocolumn;
+    ftxui::Element iteminfo;
     ftxui::Element panel;
 
     TradeBase(Game& game_){
         using namespace ftxui;
         list = Container::Vertical({});
-        info = Renderer([] {return text("trade item info") | center;});;
+        iteminfocolumn = text("");
+        iteminfo = text("");
         Add(list);
         this->game = &game_;
     }
 
     ftxui::Element Render() override {
+        using namespace ftxui;
         RenderList();
-        return ftxui::hflow({panel, info->Render()}) | ftxui::border;
+        return hbox({panel | xflex_grow, hbox({iteminfocolumn, iteminfo}) | size(WIDTH, GREATER_THAN, 40)} ) | border;
     }
 
     void RenderList(){
@@ -41,7 +44,7 @@ public:
         if(list->ChildCount() == 0){
             list->Add(ftxui::Renderer([]{return ftxui::text("Inventory empty");}));
         }
-        panel = list->Render() | ftxui::borderDouble;
+        panel = list->Render() | ftxui::border;
     }
 
     ftxui::Component RenderCommodity(std::pair<ent::Commodity, ent::Meta>& commodity){
