@@ -4,9 +4,10 @@
 #include <ftxui/component/component.hpp>
 #include "ftxui/component/component_base.hpp"
 #include "game.hpp"
+#include <functional>
 
 namespace sc{
-ftxui::Component Navigation(Game& game);
+ftxui::Component Navigation(Game& game, std::function<void(md::BattleResult)> onEncounter);
 }
 
 #endif

@@ -14,6 +14,7 @@
 #include "system/navigation.hpp"
 #include "system/ship.hpp"
 #include "system/trade.hpp"
+#include <functional>
 
 namespace sc{
 
@@ -22,13 +23,10 @@ public:
     Game& game;
     state::StateManager& state;
     int depth = 0;
+    md::BattleResult last_result;
     int tab_index = 0;
     std::vector<std::string> tab_entries = {
         "Ship", "Navigation", "Inventory", "Trade", "Test"
-    };
-     // At depth=1, The "modal" window.
-    std::vector<std::string> rating_labels = {
-        "1/5 stars", "2/5 stars", "3/5 stars", "4/5 stars", "5/5 stars",
     };
     ftxui::Component tab_selection = ftxui::Toggle(&tab_entries, &tab_index);
     ftxui::Component tab_content;
@@ -40,6 +38,9 @@ public:
     ftxui::Component layered_container;
     ftxui::Component layered_renderer;
 
+    std::function<void(md::BattleResult)> onEncounter = 
+        [&](md::BattleResult r){if(r.has_occured){depth = 1;} last_result = r;};
+
     Graph logo_graph;
 
     SystemBase(Game& game_, state::StateManager& state_):
@@ -49,7 +50,7 @@ public:
         tab_content = ftxui::Container::Tab(
         {
             sc::Ship(game),
-            sc::Navigation(game),
+            sc::Navigation(game, onEncounter),
             sc::Inventory(game),
             sc::Trade(game),
             ftxui::Button("ovelray", [&]{depth = 1;})
@@ -74,16 +75,12 @@ public:
         });
 
         depth_1_container = Container::Horizontal({
-            Button(&rating_labels[0], [&] {depth = 0;}),
-            Button(&rating_labels[1], [&] {depth = 0;}),
-            Button(&rating_labels[2], [&] {depth = 0;}),
-            Button(&rating_labels[3], [&] {depth = 0;}),
-            Button(&rating_labels[4], [&] {depth = 0;}),
+            Button("ok", [&] {depth = 0;}),
         });
 
         depth_1_renderer = Renderer(depth_1_container, [&] {
             return vbox({
-                    text("Do you like FTXUI?"),
+                    text(last_result.log),
                     separator(),
                     hbox(depth_1_container->Render()),
                 }) |
@@ -104,7 +101,7 @@ public:
             document = dbox({
                 document,
                 depth_1_renderer->Render() | clear_under | center,
-            });
+            }) | xflex_grow | yflex_grow;
             }
             return document;
         });
@@ -125,6 +122,8 @@ public:
             Renderer([]{return filler();}),
             Renderer([&]{return text("Current balance: " + fmti(game.getModel().get_balance()) + "credits") | flex | hcenter;}),
             Renderer([]{return filler();}),
+            Renderer([&]{return text("Battles won: " + fmti(game.getModel().get_battles_won()) + "battles") | flex | hcenter;}),
+            Renderer([]{return filler();})
         }),
         Container::Horizontal({
             Renderer([]{return filler();}),

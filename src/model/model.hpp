@@ -11,6 +11,7 @@
 #include "model/trade.hpp"
 #include "model/teller.hpp"
 #include "model/ship.hpp"
+#include "model/battles.hpp"
 
 #include "easyloggingpp/easylogging++.h"
 
@@ -25,6 +26,11 @@ private:
     std::unique_ptr<md::Ship> ship;
     int current_time = 0;
     int current_balance = 500;
+    int battles_won = 0;
+    static const int MINE_CREDITS = 10;
+    static const int MINE_DAYS = 10;
+    static const int MINE_LEFT = 5;
+    int mines_left = MINE_LEFT;
 public:
     ent::VModifierLog last_log = {};
     int get_time(){
@@ -33,6 +39,10 @@ public:
 
     int get_balance(){
         return current_balance;
+    };
+
+    int get_battles_won(){
+        return battles_won;
     };
 
     Model();
@@ -45,9 +55,10 @@ public:
     void update_module(const ent::Module& comm, int delta);
     const std::vector<std::pair<ent::Module, ent::Meta>>& get_modules();
 
-    void move_with_lane(const ent::Lane& lane);
+    md::BattleResult move_with_lane(const ent::Lane& lane);
     const ent::Node& get_current_node();
     const std::vector<ent::Lane>& get_current_lanes();
+    void do_mine();
 
     void trade_module(const ent::Module& mod, int delta);
     void trade_commodity(const ent::Commodity& comm, int delta);

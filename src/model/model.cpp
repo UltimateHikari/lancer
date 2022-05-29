@@ -47,10 +47,24 @@ const std::vector<std::pair<ent::Module, ent::Meta>>& Model::get_modules(){
     return inventory->get_modules();
 }
 
-void Model::move_with_lane(const ent::Lane& lane){
+md::BattleResult Model::move_with_lane(const ent::Lane& lane){
     current_time += lane.traverse_time;
+
+    auto battle_result = md::BattleStage::getRandomizedBattleEncounter(*(ship->frame), ship->equipped);
+    LOG(INFO) << "battle: " << battle_result.has_occured << battle_result.log;
+    if(battle_result.has_occured && battle_result.was_won){
+        battles_won++;
+    }
+
+    if(battle_result.has_occured && !battle_result.was_won){
+        return battle_result;
+    }
+
     auto dest_node_id =  navigation->move_with_lane(lane);
     last_log = *(teller->play_random_event(current_time, dest_node_id));
+    mines_left = MINE_LEFT;
+    
+    return battle_result;
     // stock trim happens on get_current_stock
 }
 
@@ -59,6 +73,14 @@ const ent::Node& Model::get_current_node(){
 }
 const std::vector<ent::Lane>& Model::get_current_lanes(){
     return navigation->get_current_lanes();
+}
+
+void Model::do_mine(){
+    if(mines_left > 0){
+        current_time += MINE_DAYS;
+        current_balance += MINE_CREDITS;
+        mines_left--;
+    }
 }
 
 void Model::trade_module(const ent::Module& mod, int delta){

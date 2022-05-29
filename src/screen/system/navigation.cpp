@@ -16,15 +16,6 @@
 
 namespace sc{
 
-// ftxui::Component RenderPanel(Model& mod){
-//   using namespace ftxui;
-//   auto nodeinfo = RenderNodeInfoPanel(mod);
-//       auto logo = Renderer([] {return text("logo") | center;});
-//   //auto lanepanel = RenderLanePanel(mod);
-//   int left_size = 40;
-//   return Container::Horizontal({std::move(logo), Renderer([] { return separator(); }),/*lanepanel*/std::move(nodeinfo)});
-// }
-
 class NavigationBase : public ftxui::ComponentBase{
 public:
   Game* game;
@@ -32,11 +23,13 @@ public:
   ftxui::Element nodeinfocolumn;
   ftxui::Element nodeinfo;
   ftxui::Element nodepanel;
+  std::function<void(md::BattleResult)> onEncounter;
 
-  NavigationBase(Game& game_){
+  NavigationBase(Game& game_ , std::function<void(md::BattleResult)> onEncounter_){
     router = ftxui::Container::Vertical({});
     Add(router);
     this->game = &game_;
+    this->onEncounter = onEncounter_;
   }
 
   ftxui::Element Render() override{
@@ -81,7 +74,7 @@ public:
   ftxui::Component RenderLaneLine(const ent::Lane& lane, std::function<void()> on_click){
     using namespace ftxui;
     return Container::Horizontal({
-        Button("Depart", [&]{game->getModel().move_with_lane(lane);}),
+        Button("Depart", [&]{onEncounter(game->getModel().move_with_lane(lane));}),
         Renderer([&]{return filler();}),
         
         Renderer([&]{
@@ -97,12 +90,20 @@ public:
     for(const ent::Lane& i : entities){
       router->Add(RenderLaneLine(i, []{}));
     }
+    router->Add(RenderMineButton());
+  }
+
+  ftxui::Component RenderMineButton(){
+    using namespace ftxui;
+    return Container::Horizontal({
+        Button("Mine for gold", [&]{game->getModel().do_mine();}),
+      });
   }
 
 };
 
-ftxui::Component Navigation(Game& game) {
-  return ftxui::Make<NavigationBase>(game);
+ftxui::Component Navigation(Game& game, std::function<void(md::BattleResult)> onEncounter) {
+  return ftxui::Make<NavigationBase>(game, onEncounter);
 
 }
 
