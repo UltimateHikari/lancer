@@ -26,12 +26,13 @@ private:
         }
     }
 public:
-    Ticker(){};
-    Ticker(std::function<void()> alertFunc_):
-        ticker{},
-        alertFunc{alertFunc_}
+    Ticker():
+        ticker{}
     {
         ticker = std::thread{&Ticker::ticker_func, this};
+    }
+    void setFunc(std::function<void()> f){
+        alertFunc = f;
     }
     std::shared_ptr<size_t> registerCounter(){
         counters.push_back(std::make_shared<size_t>(0));

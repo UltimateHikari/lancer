@@ -33,11 +33,11 @@ bool isExitEvent(Event event){
 void View::show(Game& game){
     auto screen = ScreenInteractive::Fullscreen();
 
-    onExit = [&]{ticker.stop(); screen.ExitLoopClosure()(); };
+    //game.setTicker([&]{screen.PostEvent(Event::Custom);});
+
+    onExit = [&]{game.getTicker().stop(); screen.ExitLoopClosure()(); };
     game.onEnd = onExit;
-    
-    ticker = Ticker([&]{screen.PostEvent(Event::Custom);});
-    // TODO pass him inside;
+
     state::StateManager state;
     state.stateChangeEvent = [&]{screen.PostEvent(Event::Custom);};
     // auto container = ftxui::Renderer([&]{return flexbox({})})

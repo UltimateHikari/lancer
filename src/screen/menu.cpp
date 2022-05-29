@@ -26,6 +26,7 @@ public:
     MenuBase(Game& game_, state::StateManager& state_):
         game(game_), state(state_)
     {
+        //logo_graph.shift = game.getTicker().registerCounter();
         option.border = false;
         buttons = ftxui::Container::Vertical({
             startButton(),
