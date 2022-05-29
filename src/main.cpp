@@ -28,7 +28,6 @@ void lancer_log_test(){
 
     db::Connector::select_commodity_type();
     db::Connector::select_frame_class();
-    db::Connector::select_frame();
     db::Connector::select_module_type();
     db::Connector::select_element();
     db::Connector::test_select_module();
@@ -38,6 +37,11 @@ void lancer_log_test(){
     for(auto& i : *mod){
         LOG(INFO) << i.out();
     }
+
+    auto frm = db::Connector::select_single_frame(1);
+    LOG(INFO) << "Frame:";
+    LOG(INFO) << frm->out();
+
 
     auto gam = db::Connector::select_saved_game();
     LOG(INFO) << "Saved games:";
@@ -63,7 +67,7 @@ void lancer_log_test(){
     //     LOG(INFO) << i.out();
     // }
 
-    auto lns = db::Connector::select_single_lane(1);
+    auto lns = db::Connector::select_single_node_lanes(1);
     LOG(INFO) << "Lanes-selected:";
     for(auto& i : *lns){
         LOG(INFO) << i.out();
@@ -84,14 +88,17 @@ void lancer_log_test(){
     LOG(INFO) << "Success:";
 }
 
-int main(int, char**) {
+int main(int argc, char** argv) {
     el::Configurations defaultConf;
     defaultConf.setToDefault();
     defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
+    defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime{%H:%m:%s,%g} %level %func %msg");
     el::Loggers::reconfigureLogger("default", defaultConf);
 
-    LOG(INFO) << "My first info log using default logger";
-    lancer_log_test();
+    LOG(INFO) << "Starting lancer game...";
+    if(argc > 1){
+        lancer_log_test();
+    }
     sc::Main* screen = new sc::Main();
 
     Game* game = new Game();

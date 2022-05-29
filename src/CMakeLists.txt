@@ -6,9 +6,15 @@ set(sources
     screen/inventory.cpp
     screen/navigation.cpp
     screen/trade.cpp
+    screen/ship.cpp
     model/model.cpp
     model/entities.cpp 
     model/oututil.cpp
+    model/inventory.cpp
+    model/navigation.cpp
+    model/trade.cpp
+    model/teller.cpp
+    model/ship.cpp
     db/database.cpp
 )
 

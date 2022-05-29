@@ -2,7 +2,9 @@
 
 #include <vector>
 #include <memory>
+
 #include "model/entities.hpp"
+#include "model/oututil.hpp"
 #include "model/model.hpp"
 
 #include <ftxui/component/event.hpp> 
@@ -20,14 +22,14 @@ public:
     ftxui::Element iteminfocolumn;
     ftxui::Element iteminfo;
     ftxui::Element panel;
+    
     int state = NONE;
     ent::Commodity current_comm;
 
-    InventoryBase(Game& game_){
+    InventoryBase(Game& game_): game(&game_){
         using namespace ftxui;
         list = Container::Vertical({});
         Add(list);
-        this->game = &game_;
     }
 
     ftxui::Element Render() override {
@@ -73,6 +75,8 @@ public:
         using namespace ftxui;
         return Container::Horizontal({
             Button("Details", []{}),
+            Renderer([&]{return filler();}),
+            Button("Equip", [&]{game->getModel().equip_module(module.first);}),
             Renderer([&]{return filler();}),
             Renderer([&]{
                 return text(module.first.name);

@@ -52,6 +52,11 @@ std::shared_ptr<std::vector<T>> parse_to_shared_vector(std::vector<M>& rows){
     return result_ptr;
 }
 
+template<typename T, typename M>
+std::shared_ptr<T> parse_to_shared_single(std::vector<M>& rows){
+    return std::make_shared<T>(rows.front());
+}
+
 const std::string Connector::db_name = "lancer.db";
 
 void Connector::sync(){
@@ -65,7 +70,7 @@ int Connector::select_corporation(){
 
 std::shared_ptr<std::vector<ent::Commodity>> Connector::select_commodity(){
     auto rows = db::internal::storage.select(
-        columns(&Commodity::id, &CommodityType::id, &CommodityType::name, &Commodity::name),
+        columns(&Commodity::id, &CommodityType::id, &CommodityType::name, &Commodity::name, &Commodity::initial_cost),
         join<CommodityType>(on(c(&Commodity::type_id) == &CommodityType::id)));
 
     empty_output_check(rows, "select_commodity");
@@ -84,10 +89,22 @@ int Connector::select_frame_class(){
     return rows.size();
 }
 
-int Connector::select_frame(){
-    auto rows = db::internal::storage.select(columns(&Frame::id, &Frame::name));
+std::shared_ptr<ent::ShipFrame> Connector::select_single_frame(const int id){
+    auto rows = db::internal::storage.select(
+        columns(
+            &Frame::id, &Frame::name, 
+            &FrameClass::id, &FrameClass::name,
+            &Corporation::id, &Corporation::name,
+            &Frame::weap_slots, &Frame::armr_slots, &Frame::supp_slots,
+            &Frame::energy, &Frame::inventory, &Frame::structure, &Frame::speed, &Frame::evasion
+            ),
+        join<FrameClass>(on(c(&Frame::class_id) == &FrameClass::id)),
+        join<Corporation>(on(c(&Frame::corp_id) == &Corporation::id)),
+        where(is_equal(&Frame::id, id))
+        );
 
-    return rows.size();
+    empty_output_check(rows, "select_single_frame");
+    return parse_to_shared_single<ent::ShipFrame>(rows);
 }
 
 int Connector::select_module_type(){
@@ -110,7 +127,7 @@ int Connector::test_select_module(){
 
 std::shared_ptr<std::vector<ent::Module>> Connector::select_module(){
     auto rows = db::internal::storage.select(
-        columns(&Module::id, &Module::type_id, &ModuleType::name, &Module::name),
+        columns(&Module::id, &Module::type_id, &ModuleType::name, &Module::name, &Module::initial_cost),
         join<ModuleType>(on(c(&Module::type_id) == &ModuleType::id)));
 
     empty_output_check(rows, "select_module");
@@ -163,7 +180,7 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_lane(){
     return parse_to_shared_vector<ent::Lane>(rows);
 }
 
-std::shared_ptr<std::vector<ent::Lane>> Connector::select_single_lane(const int id){
+std::shared_ptr<std::vector<ent::Lane>> Connector::select_single_node_lanes(const int id){
     using stt = alias_a<Node>;
     using end = alias_b<Node>;
     auto rows = db::internal::storage.select(
@@ -177,7 +194,7 @@ std::shared_ptr<std::vector<ent::Lane>> Connector::select_single_lane(const int 
         left_join<end>(on(alias_column<end>(&Node::id) == c(&Lane::end))),
         where(is_equal(&Lane::start, id) || is_equal(&Lane::end, id))
         );
-    empty_output_check(rows, "select_single_lane");
+    empty_output_check(rows, "select_single_node_lanes");
     return parse_to_shared_vector<ent::Lane>(rows);
 }
 
@@ -256,7 +273,7 @@ std::shared_ptr<std::vector<ent::SavedGame>> Connector::select_saved_game(){
 
 std::shared_ptr<std::vector<std::pair<ent::Module,int>>> Connector::select_saved_module(const int id){
     auto rows = db::internal::storage.select(
-        columns(&SavedModule::mod_id, &ModuleType::id, &ModuleType::name, &Module::name, &SavedModule::amount),
+        columns(&SavedModule::mod_id, &ModuleType::id, &ModuleType::name, &Module::name, &Module::initial_cost, &SavedModule::amount),
         join<Module>(on(c(&SavedModule::mod_id) == &Module::id)),
         join<ModuleType>(on(c(&Module::type_id) == &ModuleType::id)),
         where(c(&SavedModule::save_id) == id));
@@ -270,7 +287,7 @@ std::shared_ptr<std::vector<std::pair<ent::Module,int>>> Connector::select_saved
 
 std::shared_ptr<std::vector<std::pair<ent::Commodity,int>>> Connector::select_saved_commodity(const int id){
     auto rows = db::internal::storage.select(
-        columns(&SavedCommodity::comm_id, &CommodityType::id, &CommodityType::name, &Commodity::name, &SavedCommodity::amount),
+        columns(&SavedCommodity::comm_id, &CommodityType::id, &CommodityType::name, &Commodity::name, &Commodity::initial_cost, &SavedCommodity::amount),
         join<Commodity>(on(c(&SavedCommodity::comm_id) == &Commodity::id)),
         join<CommodityType>(on(c(&Commodity::type_id) == &CommodityType::id)),
         where(c(&SavedCommodity::save_id) == id));

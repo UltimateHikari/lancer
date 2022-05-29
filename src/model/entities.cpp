@@ -43,4 +43,8 @@ std::string VModifierLog::out(){
     return "At day " + fmti(time) + fmt(mod_name) + "happened in " + fmt(node_name);
 }
 
+std::string ShipFrame::out(){
+    return fmti(id) + fmt(name);
+}
+
 }

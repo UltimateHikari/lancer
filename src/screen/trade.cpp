@@ -1,4 +1,6 @@
 #include "screen/trade.hpp"
+#include "model/oututil.hpp"
+
 
 namespace sc {
 class TradeBase : public ftxui::ComponentBase{
@@ -47,7 +49,7 @@ public:
         return Container::Horizontal({
             Button("Buy", [&]{game->getModel().trade_commodity(commodity.first, 1);}, ButtonOption()),
             Button("Sell", [&]{game->getModel().trade_commodity(commodity.first, -1);}, ButtonOption()),
-            Button("Details", []{}, ButtonOption()),
+            Button("Details", []{}, ButtonOption()), //TODO add details
             Renderer([&]{return filler();}),
             Renderer([&]{
                 return text(commodity.first.name);
