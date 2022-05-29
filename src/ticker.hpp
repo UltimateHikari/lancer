@@ -29,7 +29,7 @@ public:
     Ticker():
         ticker{}
     {
-        ticker = std::thread{&Ticker::ticker_func, this};
+        //ticker = std::thread{&Ticker::ticker_func, this};
     }
     void setFunc(std::function<void()> f){
         alertFunc = f;

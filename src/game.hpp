@@ -15,6 +15,7 @@ class Game{
     private:
         std::unique_ptr<Model> model;
         Ticker ticker;
+        std::shared_ptr<std::vector<ent::SavedGame>> games;
     public:
         std::function<void()> onEnd = []{exit(-1);};
         void start(){
@@ -35,8 +36,10 @@ class Game{
             return ticker;
         }
 
-        std::shared_ptr<std::vector<ent::SavedGame>> get_saved_games(){
-            return db::Connector::select_saved_game();
+        std::shared_ptr<std::vector<ent::SavedGame>>& get_saved_games(){
+            games.reset();
+            games = db::Connector::select_saved_game();
+            return games;
         }
 };
 

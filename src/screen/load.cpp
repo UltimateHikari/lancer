@@ -30,7 +30,7 @@ public:
     void RenderList(){
       buttons->DetachAllChildren();
       auto saved_games = game.get_saved_games();
-      for(auto& i: (*saved_games.get())){
+      for(auto& i: *saved_games){
           buttons->Add(RenderSave(i));
       }
     }
@@ -52,8 +52,9 @@ public:
     ftxui::Component RenderSave(ent::SavedGame& save){
       using namespace ftxui;
       return Container::Horizontal({
-          Button(save.name, [&]{game.getModel().load_game(save.id); state.onStateChange(state::System);}),
-          Renderer([&]{return text(save.date);})
+          Button("Load", [&]{game.getModel().load_game(save.id); state.onStateChange(state::System);}),
+          Renderer([&]{return text(save.name);}),
+          Renderer([&]{return text(save.date) | frame;})
       });
     }
     
