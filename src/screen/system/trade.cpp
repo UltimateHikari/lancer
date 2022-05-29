@@ -5,11 +5,13 @@
 namespace sc {
 class TradeBase : public ftxui::ComponentBase{
 public:
+    static const int DETAIL_WIDTH = 40;
     Game* game;
     ftxui::Component list;
     ftxui::Element iteminfocolumn;
     ftxui::Element iteminfo;
     ftxui::Element panel;
+    ftxui::Element detailpanel;
 
     TradeBase(Game& game_){
         using namespace ftxui;
@@ -23,7 +25,8 @@ public:
     ftxui::Element Render() override {
         using namespace ftxui;
         RenderList();
-        return hbox({panel | xflex_grow, hbox({iteminfocolumn, iteminfo}) | size(WIDTH, GREATER_THAN, 40)} ) | border;
+        RenderDetails();
+        return hbox({panel | xflex_grow, detailpanel} ) | border;
     }
 
     void RenderList(){
@@ -45,6 +48,11 @@ public:
             list->Add(ftxui::Renderer([]{return ftxui::text("Inventory empty");}));
         }
         panel = list->Render() | ftxui::border;
+    }
+    
+    void RenderDetails(){
+        using namespace ftxui;
+        detailpanel = hbox({iteminfocolumn, iteminfo}) | size(WIDTH, GREATER_THAN, DETAIL_WIDTH) | border;
     }
 
     ftxui::Component RenderCommodity(std::pair<ent::Commodity, ent::Meta>& commodity){

@@ -16,11 +16,13 @@ enum states{NONE, FRM, MOD};
 
 class ShipBase : public ftxui::ComponentBase{
 public: 
+    static const int DETAIL_WIDTH = 40;
     Game * game;
     ftxui::Component mod_list;
     ftxui::Element iteminfocolumn;
     ftxui::Element iteminfo;
     ftxui::Element panel;
+    ftxui::Element detailpanel;
     Graph logo_graph;
 
     int state = NONE;
@@ -52,7 +54,8 @@ public:
         }
         auto logo = graph(std::ref(logo_graph)) 
             | center | color(Color::Wheat1) | xflex_grow ;
-        return hbox({panel | xflex_grow, logo, ftxui::hbox({iteminfocolumn, iteminfo}) | size(WIDTH, GREATER_THAN, 40)}) | border;
+        RenderDetails();
+        return hbox({panel | xflex_grow, logo, detailpanel}) | border;
     }
 
     void RenderList(){
@@ -67,6 +70,11 @@ public:
             mod_list->Add(RenderModule(i));
         }
         panel = mod_list->Render() | ftxui::border;
+    }
+
+    void RenderDetails(){
+        using namespace ftxui;
+        detailpanel = hbox({iteminfocolumn, iteminfo}) | size(WIDTH, GREATER_THAN, DETAIL_WIDTH) | border;
     }
 
     ftxui::Component RenderFrame(ent::ShipFrame& frame){
@@ -125,7 +133,7 @@ public:
             text(mod.type.name),
             text(fmti(mod.price)),
         }) | //TODO add stats
-        yflex;
+        xflex_grow;
     }
 
     ftxui::Element RenderFrameDetailsColumn(){

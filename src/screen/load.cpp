@@ -14,6 +14,7 @@ namespace sc{
 //TODO onevent handler for q
 class LoadBase: public ftxui::ComponentBase{
 public:
+    static const int DETAIL_WIDTH = 40;
     Game& game;
     state::StateManager& state;
     ftxui::ButtonOption option = ftxui::ButtonOption();
@@ -43,7 +44,7 @@ public:
                 text(L" load game "),
                 separator(),
                 buttons->Render()
-            }) | border | size(WIDTH,GREATER_THAN, 40),
+            }) | border | size(WIDTH, GREATER_THAN, DETAIL_WIDTH),
             graph(std::ref(logo_graph)) 
             | center | color(Color::BlueLight) | xflex_grow | yflex_grow | bgcolor(Color::White)
         }) | xflex_grow | yflex_grow;

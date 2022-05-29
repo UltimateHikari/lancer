@@ -17,11 +17,13 @@ enum states{NONE, COMM, MOD};
 
 class InventoryBase : public ftxui::ComponentBase{
 public:
+    static const int DETAIL_WIDTH = 40;
     Game* game;
     ftxui::Component list;
     ftxui::Element iteminfocolumn;
     ftxui::Element iteminfo;
     ftxui::Element panel;
+    ftxui::Element detailpanel;
     
     int state = NONE;
     ent::Commodity current_comm;
@@ -46,7 +48,8 @@ public:
                 iteminfo = text("");
                 break;
         }
-        return hbox({panel | xflex_grow, hbox({iteminfocolumn, iteminfo}) | size(WIDTH, GREATER_THAN, 40)} ) | border;
+        RenderDetails();
+        return hbox({panel, detailpanel } ) | border;
     }
 
     void RenderList(){
@@ -69,7 +72,12 @@ public:
         if(list->ChildCount() == 0){
             list->Add(ftxui::Renderer([]{return ftxui::text("Inventory empty");}));
         }
-        panel = list->Render() | ftxui::border;
+        panel = list->Render() | ftxui::border | ftxui::xflex_grow;
+    }
+
+    void RenderDetails(){
+        using namespace ftxui;
+        detailpanel = hbox({iteminfocolumn, iteminfo}) | size(WIDTH, GREATER_THAN, DETAIL_WIDTH) | border;
     }
 
     ftxui::Component RenderModule(std::pair<ent::Module, ent::Meta>& module){
