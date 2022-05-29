@@ -9,8 +9,9 @@ using namespace md;
 Ship::Ship(){
     frame = db::Connector::select_single_frame(1);
     auto mod = db::Connector::select_module();
-    //TODO temponary solution
-    equipped = *mod;
+    equipped.push_back((*mod)[0]);
+    equipped.push_back((*mod)[1]);
+    equipped.push_back((*mod)[2]);
 }
 
 bool Ship::max_armr_slots(int id, int cur_slots){
@@ -33,7 +34,6 @@ bool Ship::can_equip_another(ent::Module& mod){
             cur_slots++;
         }
     }
-    // TODO highly prone to error, replace with enum
     int id = mod.type.id;
     if(max_armr_slots(id, cur_slots) || max_weap_slots(id, cur_slots) || max_supp_slots(id, cur_slots)){
         return false;

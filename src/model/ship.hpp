@@ -2,6 +2,7 @@
 #define LANCER_MODEL_SHIP_HPP
 
 #include "model/entities.hpp"
+#include "model/battles.hpp"
 
 namespace md{
 

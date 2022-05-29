@@ -47,7 +47,6 @@ CREATE TABLE commodity(
     name text NOT NULL
 );
 
---TODO: speed/energy/slots modifiers for creation
 CREATE TABLE frame_class(
     id integer PRIMARY KEY NOT NULL,
     name text NOT NULL
@@ -149,8 +148,7 @@ CREATE TABLE modificator_log(
     PRIMARY KEY(start_time, node_id,mod_id)
 ); 
 
---todo credit balance, world date
---all events logged in different table
+
 CREATE TABLE saved_game(
     id integer PRIMARY KEY NOT NULL,
     name text NOT NULL,

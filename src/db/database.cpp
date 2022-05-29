@@ -37,7 +37,6 @@ using std::get;
 template <class T>
 void empty_output_check(std::vector<T>& v, std::string func){
     if(v.size() == 0){
-        //TODO: exceptions?
         LOG(ERROR) << "empty db error in " + func + ", stopping...\n";
         exit(-1);
     }

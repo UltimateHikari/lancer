@@ -6,6 +6,8 @@
 #include "model/model.hpp"
 #include "model/oututil.hpp"
 
+#include "screen/graph.hpp"
+
 #include <ftxui/component/event.hpp> 
 
 namespace sc {
@@ -14,13 +16,14 @@ enum states{NONE, FRM, MOD};
 
 class ShipBase : public ftxui::ComponentBase{
 public: 
+    static const int DETAIL_WIDTH = 40;
     Game * game;
     ftxui::Component mod_list;
     ftxui::Element iteminfocolumn;
     ftxui::Element iteminfo;
     ftxui::Element panel;
-    ftxui::Element logo = ftxui::text("logo") 
-        | ftxui::border | color(ftxui::Color::BlueLight);
+    ftxui::Element detailpanel;
+    Graph logo_graph;
 
     int state = NONE;
     ent::ShipFrame current_frame = {};
@@ -33,6 +36,7 @@ public:
     }
 
     ftxui::Element Render() override {
+        using namespace ftxui;
         RenderList();
         switch(state){
             case MOD:
@@ -48,7 +52,10 @@ public:
                 iteminfo = ftxui::text("");
                 break;
         }
-        return ftxui::hflow({panel, logo, ftxui::hbox({iteminfocolumn, iteminfo})}) | ftxui::border;
+        auto logo = graph(std::ref(logo_graph)) 
+            | center | color(Color::Wheat1) | xflex_grow ;
+        RenderDetails();
+        return hbox({panel | xflex_grow, logo, detailpanel}) | border;
     }
 
     void RenderList(){
@@ -62,7 +69,12 @@ public:
         for(auto& i: modules){
             mod_list->Add(RenderModule(i));
         }
-        panel = mod_list->Render() | ftxui::borderDouble;
+        panel = mod_list->Render() | ftxui::border;
+    }
+
+    void RenderDetails(){
+        using namespace ftxui;
+        detailpanel = hbox({iteminfocolumn, iteminfo}) | size(WIDTH, GREATER_THAN, DETAIL_WIDTH) | border;
     }
 
     ftxui::Component RenderFrame(ent::ShipFrame& frame){
@@ -86,7 +98,7 @@ public:
 
     ftxui::Component RenderModule(ent::Module& module){
         using namespace ftxui;
-        return Container::Horizontal({ //TODO : fix bug here, add rquip/uneqips
+        return Container::Horizontal({
             Button("Details", [&]{current_mod = module; state = MOD;}),
             Renderer([&]{return filler();}),
             Button("Unequip", [&]{game->getModel().unequip_module(module);}),
@@ -116,12 +128,12 @@ public:
     ftxui::Element RenderModDetails(const ent::Module& mod){
         using namespace ftxui;
         return vbox({
-            text(mod.name + " (" + std::to_string(mod.id) + ")"),//, //TODO - for debug purpose
+            text(mod.name + " (" + std::to_string(mod.id) + ")"),
             separator(),
             text(mod.type.name),
             text(fmti(mod.price)),
-        }) | //TODO add stats
-        yflex;
+        }) |
+        xflex_grow;
     }
 
     ftxui::Element RenderFrameDetailsColumn(){
@@ -133,18 +145,18 @@ public:
             text("Average price:"),
             text("Description:"),
         }) |
-        yflex;
+        xflex_grow;
     }
 
     ftxui::Element RenderFrameDetails(const ent::ShipFrame& frm){
         using namespace ftxui;
         return vbox({
-        text(frm.name + " (" + std::to_string(frm.id) + ")"), //TODO - for debug purpose
+        text(frm.name + " (" + std::to_string(frm.id) + ")"),
         separator(),
         text(frm.fclass.name),
         text(fmti(0)),
-        }) | //TODO add stats
-        yflex;
+        }) | 
+        xflex_grow;
     }
 };
 

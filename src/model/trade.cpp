@@ -78,7 +78,6 @@ const int Trade::stock_record_deal_comm(const ent::Node& node, const ent::Commod
     int stock_delta = (-1)*delta;
     int res_delta = 0;
 
-    //TODO extapolate for situation with > 1 buys:
     if(balance < get_comm_price(node, comm) && delta > 0){
         return 0;
     }
@@ -94,7 +93,6 @@ const int Trade::stock_record_deal_mod(const ent::Node& node, const ent::Module&
     int res_delta = 0;
 
     
-    //TODO extapolate for situation with > 1 buys:
     if(balance < get_mod_price(node, mod) && delta > 0){
         return 0;
     }

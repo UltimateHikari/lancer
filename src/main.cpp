@@ -4,7 +4,7 @@
 #include "db/lancer.hpp"
 #include "db/database.hpp"
 
-#include "screen/main.hpp"
+#include "view/view.hpp"
 
 #include "path.hpp"
 #include "game.hpp"
@@ -99,13 +99,9 @@ int main(int argc, char** argv) {
     if(argc > 1){
         lancer_log_test();
     }
-    sc::Main* screen = new sc::Main();
-
-    Game* game = new Game();
-
-    auto commodities = game->getModel().get_current_stock().get_commodities();
-    LOG(INFO) << "Got " << commodities.size() << " commodities";
-
-    screen->show(*game);
+    
+    Game game;
+    View view;
+    view.show(game);
     return 0;
 }

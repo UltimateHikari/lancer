@@ -6,13 +6,18 @@
 #include "db/database.hpp"
 #include <vector>
 #include <memory>
+#include <functional>
+#include "ticker.hpp"
 
 // Controller
 
 class Game{
     private:
         std::unique_ptr<Model> model;
+        Ticker ticker;
+        std::shared_ptr<std::vector<ent::SavedGame>> games;
     public:
+        std::function<void()> onEnd = []{exit(-1);};
         void start(){
             model->set_game_active(true);
         }
@@ -23,12 +28,18 @@ class Game{
             return *(model.get());
         }
 
-        void end(){
-            exit(-1);
-        };
+        void setTicker(std::function<void()> f){
+            ticker.setFunc(f);
+        }
 
-        std::shared_ptr<std::vector<ent::SavedGame>> get_saved_games(){
-            return db::Connector::select_saved_game();
+        Ticker& getTicker(){
+            return ticker;
+        }
+
+        std::shared_ptr<std::vector<ent::SavedGame>>& get_saved_games(){
+            games.reset();
+            games = db::Connector::select_saved_game();
+            return games;
         }
 };
 
