@@ -82,10 +82,12 @@ int Connector::select_commodity_type(){
     return rows.size();
 }
 
-int Connector::select_frame_class(){
-    auto rows = db::internal::storage.select(columns(&FrameClass::id, &FrameClass::name));
+std::shared_ptr<std::vector<ent::ShipFrameClass>> Connector::select_frame_class(){
+    auto rows = db::internal::storage.select(
+        columns(&FrameClass::id, &FrameClass::name, &FrameClass::slots));
 
-    return rows.size();
+    empty_output_check(rows, "select_ship_class");
+    return parse_to_shared_vector<ent::ShipFrameClass>(rows);
 }
 
 std::shared_ptr<ent::ShipFrame> Connector::select_single_frame(const int id){

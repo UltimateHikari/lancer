@@ -49,7 +49,8 @@ CREATE TABLE commodity(
 
 CREATE TABLE frame_class(
     id integer PRIMARY KEY NOT NULL,
-    name text NOT NULL
+    name text NOT NULL,
+    slots integer NOT NULL
 );
 
 CREATE TABLE frame(
