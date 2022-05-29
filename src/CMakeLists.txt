@@ -19,6 +19,10 @@ set(sources
     screen/menu.cpp
     screen/pause.cpp
     screen/system.cpp
+    screen/save.cpp
+    screen/victory.cpp
+    screen/credits.cpp
+    screen/settings.cpp
     view/view.cpp
     main.cpp
 )

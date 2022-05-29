@@ -9,11 +9,11 @@
 #include "screen/menu.hpp"
 #include "screen/system.hpp"
 #include "screen/load.hpp"
-// #include "screen/save.hpp"
+#include "screen/save.hpp"
 #include "screen/pause.hpp"
-// #include "screen/victory.hpp"
-// #include "screen/credits.hpp"
-// #include "screen/settings.hpp"
+#include "screen/victory.hpp"
+#include "screen/credits.hpp"
+#include "screen/settings.hpp"
 
 
 class ScreenFactory{
@@ -28,16 +28,16 @@ public:
             return sc::System(game, state);
         case state::Load:
             return sc::Load(game, state);
-        // case state::Save:
-        //     return sc::Save();
+        case state::Save:
+            return sc::Save(game,state);
         case state::Pause:
             return sc::Pause(game, state);
-        // case state::Victory:
-        //     return sc::Victory();
-        // case state::Credits:
-        //     return sc::Credits();
-        // case state::Victory:
-        //     return sc::Victory();
+        case state::Victory:
+            return sc::Victory(game,state);
+        case state::Credits:
+            return sc::Credits(game,state);
+        case state::Settings:
+            return sc::Settings(game,state);
         default:
             return sc::Menu(game, state);
         }

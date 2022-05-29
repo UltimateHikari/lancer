@@ -42,8 +42,15 @@ public:
                 return true;
             }
             break;
-        case Load: case Save:
+        case Load: case Credits: case Settings:
             if(isFromMenues(state)){
+                state = newState;
+                stateChangeEvent();
+                return true;
+            }
+            break;
+        case Save:
+            if(state == Pause){
                 state = newState;
                 stateChangeEvent();
                 return true;
@@ -57,11 +64,29 @@ public:
             }
             break;
         case Back:
-            if(state == Pause || state == Save){
+            switch (state)
+            {
+            case Pause: case Save:
                 state = System;
-            }else{
+                stateChangeEvent();
+                break;
+            case System:
+                state = Pause;
+                stateChangeEvent();
+                break;
+            default:
                 state = Menu;
+                stateChangeEvent();
+                break;
             }
+            return true;
+        case Victory:
+            if(state = System){
+                state = newState;
+                stateChangeEvent();
+                return true;
+            }
+            break;
         default:
             return false;
         }
