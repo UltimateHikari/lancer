@@ -41,6 +41,8 @@ namespace db{
                 const std::vector<std::pair<ent::Commodity, ent::Meta>>& commodities
             );
 
+            static void remote_upload_frame(ent::ShipFrame f);
+
             static int test_select_encounter();
             static int test_select_mod_type();
             static int test_select_mod();

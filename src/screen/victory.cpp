@@ -139,14 +139,13 @@ public:
     ftxui::Component RenderSubmit(){
       using namespace ftxui;
       return Button("submit", [&]{
-        ent::ShipFrame frame{
-          name,
-          (*class_list)[selected],
-          ent::ShipFrameSlots{w_slots,a_slots,s_slots},
-          ent::ShipFrameParams{energy, inventory, structure, speed, evasion}
-        };
         if(getCurrentMaxSlots() == w_slots + a_slots + s_slots){
-          //external connector :: push_frame()
+          db::Connector::remote_upload_frame({
+            name,
+            (*class_list)[selected],
+            ent::ShipFrameSlots{w_slots,a_slots,s_slots},
+            ent::ShipFrameParams{energy, inventory, structure, speed, evasion}
+          });
         }
       });
     }
