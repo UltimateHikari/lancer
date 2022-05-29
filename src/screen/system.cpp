@@ -50,7 +50,7 @@ public:
         tab_content = ftxui::Container::Tab(
         {
             sc::Ship(game),
-            sc::Navigation(game, onEncounter),
+            sc::Navigation(game, onEncounter, state),
             sc::Inventory(game),
             sc::Trade(game),
             ftxui::Button("ovelray", [&]{depth = 1;})

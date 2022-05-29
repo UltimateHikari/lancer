@@ -19,13 +19,16 @@ namespace sc{
 class NavigationBase : public ftxui::ComponentBase{
 public:
   Game* game;
+  state::StateManager& state;
   ftxui::Component router;
   ftxui::Element nodeinfocolumn;
   ftxui::Element nodeinfo;
   ftxui::Element nodepanel;
   std::function<void(md::BattleResult)> onEncounter;
 
-  NavigationBase(Game& game_ , std::function<void(md::BattleResult)> onEncounter_){
+  NavigationBase(Game& game_ , std::function<void(md::BattleResult)> onEncounter_, state::StateManager& state_):
+    state(state_)  
+  {
     router = ftxui::Container::Vertical({});
     Add(router);
     this->game = &game_;
@@ -74,7 +77,14 @@ public:
   ftxui::Component RenderLaneLine(const ent::Lane& lane, std::function<void()> on_click){
     using namespace ftxui;
     return Container::Horizontal({
-        Button("Depart", [&]{onEncounter(game->getModel().move_with_lane(lane));}),
+        Button(
+          "Depart", 
+          [&]{
+            onEncounter(game->getModel().move_with_lane(lane));
+            if(game->getModel().is_victory_achieved()){
+              state.onStateChange(state::Victory);
+            }
+          }),
         Renderer([&]{return filler();}),
         
         Renderer([&]{
@@ -102,8 +112,8 @@ public:
 
 };
 
-ftxui::Component Navigation(Game& game, std::function<void(md::BattleResult)> onEncounter) {
-  return ftxui::Make<NavigationBase>(game, onEncounter);
+ftxui::Component Navigation(Game& game, std::function<void(md::BattleResult)> onEncounter, state::StateManager& state) {
+  return ftxui::Make<NavigationBase>(game, onEncounter, state);
 
 }
 
