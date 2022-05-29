@@ -11,7 +11,6 @@
 #include "ftxui/dom/elements.hpp"
 namespace sc{
 
-//TODO onevent handler for q
 class LoadBase: public ftxui::ComponentBase{
 public:
     static const int DETAIL_WIDTH = 40;

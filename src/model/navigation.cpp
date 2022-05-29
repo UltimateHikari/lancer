@@ -11,17 +11,20 @@ using namespace md;
 
 // ----- Navigation ----- //
 
+const int MIN_ORDER_LEVEL = 1;
+const int MAX_ORDER_LEVEL = 5;
+const int MIN_TECH_LEVEL = 1;
+const int MAX_TECH_LEVEL = 10;
+
 void apply_mod_to_node(ent::Node* node, ent::Modifier& mod){
-    //TODO: note current time retating to start time
-    //TODO: magic_numbers
     if(mod.type.name == "LEVELS"){
         node->order_level += mod.order_level;
-        node->order_level = (node->order_level < 1 ? 1 : node->order_level);
-        node->order_level = (node->order_level > 5 ? 5 : node->order_level);
+        node->order_level = (node->order_level < MIN_ORDER_LEVEL ? MIN_ORDER_LEVEL : node->order_level);
+        node->order_level = (node->order_level > MAX_ORDER_LEVEL ? MAX_ORDER_LEVEL : node->order_level);
 
         node->tech_level += mod.tech_level;
-        node->tech_level = (node->tech_level < 1 ? 1 : node->tech_level);
-        node->tech_level = (node->tech_level > 10 ? 10 : node->tech_level);
+        node->tech_level = (node->tech_level < MIN_TECH_LEVEL ? MIN_TECH_LEVEL : node->tech_level);
+        node->tech_level = (node->tech_level > MAX_TECH_LEVEL ? MAX_TECH_LEVEL : node->tech_level);
         LOG(INFO) << "applied type " << mod.type.name << " on node " << node->name;
 
     }

@@ -6,7 +6,7 @@
 
 namespace md{
 
-class Storyteller { //TODO - init with modifs in db, write tests for modifs
+class Storyteller { 
 private:
     std::vector<int> weights;
     std::map<ent::Event, int> events;

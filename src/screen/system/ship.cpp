@@ -98,7 +98,7 @@ public:
 
     ftxui::Component RenderModule(ent::Module& module){
         using namespace ftxui;
-        return Container::Horizontal({ //TODO : fix bug here, add rquip/uneqips
+        return Container::Horizontal({
             Button("Details", [&]{current_mod = module; state = MOD;}),
             Renderer([&]{return filler();}),
             Button("Unequip", [&]{game->getModel().unequip_module(module);}),
@@ -128,11 +128,11 @@ public:
     ftxui::Element RenderModDetails(const ent::Module& mod){
         using namespace ftxui;
         return vbox({
-            text(mod.name + " (" + std::to_string(mod.id) + ")"),//, //TODO - for debug purpose
+            text(mod.name + " (" + std::to_string(mod.id) + ")"),
             separator(),
             text(mod.type.name),
             text(fmti(mod.price)),
-        }) | //TODO add stats
+        }) |
         xflex_grow;
     }
 
@@ -151,11 +151,11 @@ public:
     ftxui::Element RenderFrameDetails(const ent::ShipFrame& frm){
         using namespace ftxui;
         return vbox({
-        text(frm.name + " (" + std::to_string(frm.id) + ")"), //TODO - for debug purpose
+        text(frm.name + " (" + std::to_string(frm.id) + ")"),
         separator(),
         text(frm.fclass.name),
         text(fmti(0)),
-        }) | //TODO add stats
+        }) | 
         xflex_grow;
     }
 };

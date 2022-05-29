@@ -166,7 +166,7 @@ public:
     LightNode start;
     LightNode end;
     int traverse_time;
-    bool stability; //TODO make extension for actual stability
+    bool stability;
 
     Lane(std::tuple<
         int,

@@ -742,7 +742,6 @@ VALUES(
 );
 
 -- bad conditions change pref, pref = high price
--- TODO change corp affinity
 INSERT INTO encounter(name, weight)
     VALUES("Pirate attack", 10);
 INSERT INTO encounter(name, weight)

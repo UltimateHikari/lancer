@@ -42,7 +42,10 @@ public:
                 iteminfocolumn = RenderCommDetailsColumn();
                 iteminfo = RenderCommDetails(current_comm);
                 break;
-            //case MOD: //TODO
+            case MOD:
+                iteminfocolumn = text("");
+                iteminfo = text("");
+                break;
             default:
                 iteminfocolumn = text("");
                 iteminfo = text("");
@@ -127,7 +130,7 @@ public:
     ftxui::Element RenderCommDetails(const ent::Commodity& comm){
         using namespace ftxui;
         return vbox({
-        text(comm.name + " (" + std::to_string(comm.id) + ")"), //TODO - for debug purpose
+        text(comm.name + " (" + std::to_string(comm.id) + ")"),
         separator(),
         text(comm.type.name),
         text(fmti(comm.price)),

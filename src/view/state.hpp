@@ -26,7 +26,6 @@ private:
 public:
     std::function<void()> stateChangeEvent = []{LOG(INFO) << "stateChangeEvent not set";};
     bool onStateChange(state::State newState){
-        //TODO all pages that left
         switch (newState)
         {
         case Menu:

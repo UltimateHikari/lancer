@@ -55,7 +55,8 @@ void SubInventory<T>::update(const T& t, int delta, int price){
     mutex.lock();
     inventory[t].amount += delta;
     if(price > 0){
-        inventory[t].price = price; //TODO it's ambigious that non-zeroness of price matters
+        //NOTE: it's ambigious that non-zeroness of price matters
+        inventory[t].price = price; 
     }
     inventory_state++;
     mutex.unlock();

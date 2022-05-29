@@ -41,9 +41,6 @@ int Storyteller::get_random_modifier(){
 
     LOG(INFO) << "teller chose " << ind;
     
-    // index = id, assuming continioius id in table
-    // return events[ind].id;
-    // TODO rewrite map to vector, now it works only because event.id = mod.id
     return ind + 1;
 }
 
@@ -59,6 +56,5 @@ std::shared_ptr<ent::VModifierLog> Storyteller::play_random_event(int time, int 
     return log_modifier(time, node_id, get_random_modifier());
 }
 std::shared_ptr<ent::VModifierLog> Storyteller::play_event(int time, int node_id, ent::Event& e){
-    //TODO event may not reside in events
     return log_modifier(time, node_id, events[e]);
 }

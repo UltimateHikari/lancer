@@ -61,7 +61,7 @@ public:
   ftxui::Element RenderNodeInfo(const ent::Node& node){
     using namespace ftxui;
     return vbox({
-      text(node.name + " (" + std::to_string(node.id) + ")"), //TODO - for debug purpose
+      text(node.name + " (" + std::to_string(node.id) + ")"),
       separator(),
       text(node.corp.name),
       text(node.pref.name),

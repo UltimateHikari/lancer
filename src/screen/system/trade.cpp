@@ -36,18 +36,13 @@ public:
         // for(auto& i: modules){
         //     list->Add(RenderModule(i));
         // }
-        int a = 0; //TODO remove with true random
         for(auto& i: commodities){
             list->Add(RenderCommodity(i));
-            a++;
-            if(a==10){
-                break;
-            }
         }
         if(list->ChildCount() == 0){
             list->Add(ftxui::Renderer([]{return ftxui::text("Inventory empty");}));
         }
-        panel = list->Render() | ftxui::border;
+        panel = list->Render() | ftxui::border | ftxui::frame | ftxui::vscroll_indicator;
     }
     
     void RenderDetails(){
@@ -60,7 +55,7 @@ public:
         return Container::Horizontal({
             Button("Buy", [&]{game->getModel().trade_commodity(commodity.first, 1);}, ButtonOption()),
             Button("Sell", [&]{game->getModel().trade_commodity(commodity.first, -1);}, ButtonOption()),
-            Button("Details", []{}, ButtonOption()), //TODO add details
+            Button("Details", []{}, ButtonOption()),
             Renderer([&]{return filler();}),
             Renderer([&]{
                 return text(commodity.first.name);

@@ -17,7 +17,6 @@
 
 namespace sc{
 
-//TODO onevent handler for q
 class SystemBase: public ftxui::ComponentBase{
 public:
     Game& game;
