@@ -16,9 +16,7 @@
 #include "view/state.hpp"
 #include "view/screenfactory.hpp"
 
-#include <cmath>
-#include <chrono>
-#include <thread>
+#include "easyloggingpp/easylogging++.h"
 
 using namespace sc;
 using namespace ftxui;
@@ -40,19 +38,27 @@ void View::show(Game& game){
     ticker = Ticker([&]{screen.PostEvent(Event::Custom);});
     // TODO pass him inside;
     state::StateManager state;
+    state.stateChangeEvent = [&]{screen.PostEvent(Event::Custom);};
 
     auto container = ftxui::Container::Horizontal({});
-    container->Add(sc::System(game, state));
+    container->Add(sc::Menu(game, state));
 
     auto event_container = CatchEvent(container, 
         [&](Event event) {
             if(event == Event::Custom){
+                ///LOG(INFO) << "custom seen";
                 container->DetachAllChildren();
                 container->Add(ScreenFactory::getScreenForState(game, state));
                 return true;
             }
-            if (state.getCurrent() == state::Menu && isExitEvent(event)) {
-                screen.ExitLoopClosure()();
+            if (isExitEvent(event)) {
+                if(state.getCurrent() == state::Menu){
+                    screen.ExitLoopClosure()();
+                    return true;
+                }
+                state.onStateChange(state::Back);
+                container->DetachAllChildren();
+                container->Add(ScreenFactory::getScreenForState(game, state));
                 return true;
             }
             return false;

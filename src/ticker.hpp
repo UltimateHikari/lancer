@@ -12,7 +12,7 @@
 class Ticker{
 private:
     std::thread ticker;
-    std::function<void()> alertFunc;
+    std::function<void()> alertFunc = []{LOG(INFO) << "alertFunc not set";};
     bool isRunning = true;
     std::vector<std::shared_ptr<size_t>> counters;
     void ticker_func(){
