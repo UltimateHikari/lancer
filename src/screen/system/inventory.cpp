@@ -9,14 +9,13 @@
 
 #include <ftxui/component/event.hpp> 
 
-
+#include "easyloggingpp/easylogging++.h"
 
 namespace sc{
 
-enum states{NONE, COMM, MOD};
-
 class InventoryBase : public ftxui::ComponentBase{
 public:
+    enum states{NONE, COMM, MOD};
     static const int DETAIL_WIDTH = 40;
     Game* game;
     ftxui::Component list;
@@ -27,6 +26,7 @@ public:
     
     int state = NONE;
     ent::Commodity current_comm;
+    ent::Module current_mod;
 
     InventoryBase(Game& game_): game(&game_){
         using namespace ftxui;
@@ -43,8 +43,8 @@ public:
                 iteminfo = RenderCommDetails(current_comm);
                 break;
             case MOD:
-                iteminfocolumn = text("");
-                iteminfo = text("");
+                iteminfocolumn = RenderModDetailsColumn();
+                iteminfo = RenderModDetails(current_mod);
                 break;
             default:
                 iteminfocolumn = text("");
@@ -85,8 +85,9 @@ public:
 
     ftxui::Component RenderModule(std::pair<ent::Module, ent::Meta>& module){
         using namespace ftxui;
+        ent::Module m = module.first;
         return Container::Horizontal({
-            Button("Details", []{}),
+            Button("Details", [m, this]{current_mod = m; state = MOD;}),
             Renderer([&]{return filler();}),
             Button("Equip", [&]{game->getModel().equip_module(module.first);}),
             Renderer([&]{return filler();}),
@@ -102,8 +103,9 @@ public:
 
     ftxui::Component RenderCommodity(std::pair<ent::Commodity, ent::Meta>& commodity){
         using namespace ftxui;
+        ent::Commodity c = commodity.first;
         return Container::Horizontal({
-            Button("Details", [&]{current_comm = commodity.first; state = COMM;}),
+            Button("Details", [c, this]{current_comm = c; state = COMM;}),
             Renderer([&]{return filler();}),
             Renderer([&]{
                 return text(commodity.first.name);
@@ -127,13 +129,36 @@ public:
         yflex;
     }
 
-    ftxui::Element RenderCommDetails(const ent::Commodity& comm){
+    ftxui::Element RenderCommDetails(ent::Commodity& comm){
         using namespace ftxui;
         return vbox({
-        text(comm.name + " (" + std::to_string(comm.id) + ")"),
+        text(fmt(comm.name) + fmtbi(comm.id)),
         separator(),
         text(comm.type.name),
         text(fmti(comm.price)),
+        }) |
+        xflex_grow;
+    }
+
+    ftxui::Element RenderModDetailsColumn(){
+        using namespace ftxui;
+        return vbox({
+            text("Module:"),
+            separator(),
+            text("Module type:"),
+            text("Average price:"),
+            text("Description:"),
+        }) |
+        yflex;
+    }
+
+    ftxui::Element RenderModDetails(ent::Module& mod){
+        using namespace ftxui;
+        return vbox({
+        text(fmt(mod.name) + fmtbi(mod.id)),
+        separator(),
+        text(mod.type.name),
+        text(fmti(mod.price)),
         }) |
         xflex_grow;
     }
@@ -141,7 +166,6 @@ public:
 
 ftxui::Component Inventory(Game& game) {
   return ftxui::Make<InventoryBase>(game);
-  //return ftxui::Renderer([&]{return RenderLines(game);});
 }
 
 }

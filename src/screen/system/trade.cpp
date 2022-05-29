@@ -5,6 +5,7 @@
 namespace sc {
 class TradeBase : public ftxui::ComponentBase{
 public:
+    enum states{NONE, COMM, MOD};
     static const int DETAIL_WIDTH = 40;
     Game* game;
     ftxui::Component list;
@@ -12,6 +13,10 @@ public:
     ftxui::Element iteminfo;
     ftxui::Element panel;
     ftxui::Element detailpanel;
+
+    int state = NONE;
+    ent::Commodity current_comm;
+    ent::Module current_mod;
 
     TradeBase(Game& game_){
         using namespace ftxui;
@@ -25,6 +30,20 @@ public:
     ftxui::Element Render() override {
         using namespace ftxui;
         RenderList();
+        switch(state){
+            case COMM:
+                iteminfocolumn = RenderCommDetailsColumn();
+                iteminfo = RenderCommDetails(current_comm);
+                break;
+            case MOD:
+                iteminfocolumn = RenderModDetailsColumn();
+                iteminfo = RenderModDetails(current_mod);
+                break;
+            default:
+                iteminfocolumn = text("");
+                iteminfo = text("");
+                break;
+        }
         RenderDetails();
         return hbox({panel | xflex_grow, detailpanel} ) | border;
     }
@@ -52,10 +71,11 @@ public:
 
     ftxui::Component RenderCommodity(std::pair<ent::Commodity, ent::Meta>& commodity){
         using namespace ftxui;
+        ent::Commodity c = commodity.first;
         return Container::Horizontal({
             Button("Buy", [&]{game->getModel().trade_commodity(commodity.first, 1);}, ButtonOption()),
             Button("Sell", [&]{game->getModel().trade_commodity(commodity.first, -1);}, ButtonOption()),
-            Button("Details", []{}, ButtonOption()),
+            Button("Details", [c, this]{current_comm = c; state = COMM;}, ButtonOption()),
             Renderer([&]{return filler();}),
             Renderer([&]{
                 return text(commodity.first.name);
@@ -69,6 +89,52 @@ public:
                 return text(fmti(commodity.second.price) + "cred");
             })
         });
+    }
+
+    ftxui::Element RenderCommDetailsColumn(){
+        using namespace ftxui;
+        return vbox({
+            text("Commodity:"),
+            separator(),
+            text("Commodity type:"),
+            text("Average price:"),
+            text("Description:"),
+        }) |
+        yflex;
+    }
+
+    ftxui::Element RenderCommDetails(ent::Commodity& comm){
+        using namespace ftxui;
+        return vbox({
+        text(fmt(comm.name) + fmtbi(comm.id)),
+        separator(),
+        text(comm.type.name),
+        text(fmti(comm.price)),
+        }) |
+        xflex_grow;
+    }
+
+    ftxui::Element RenderModDetailsColumn(){
+        using namespace ftxui;
+        return vbox({
+            text("Module:"),
+            separator(),
+            text("Module type:"),
+            text("Average price:"),
+            text("Description:"),
+        }) |
+        yflex;
+    }
+
+    ftxui::Element RenderModDetails(ent::Module& mod){
+        using namespace ftxui;
+        return vbox({
+        text(fmt(mod.name) + fmtbi(mod.id)),
+        separator(),
+        text(mod.type.name),
+        text(fmti(mod.price)),
+        }) |
+        xflex_grow;
     }
 };
 

@@ -39,7 +39,7 @@ class CommodityType : public Comparable{
 public:
     std::string name;
     CommodityType(){};
-    CommodityType(int id_, std::string& name_):
+    CommodityType(const int id_, const std::string& name_):
         Comparable(id_), 
         name(std::move(name_))
     {}
@@ -61,6 +61,12 @@ public:
     std::string name;
     int price = 100;
     Commodity(){};
+    Commodity(const Commodity& c):
+        Comparable(c.id),
+        type{c.type.id, c.type.name},
+        name{c.name},
+        price{c.price}
+        {}
     Commodity(std::tuple<int, int, std::string, std::string, int>& raw_select):
         Comparable(std::get<0>(raw_select)),
         type{std::get<1>(raw_select), std::get<2>(raw_select)},
