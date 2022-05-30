@@ -18,7 +18,7 @@ namespace db{
             static int select_module_type();
             static std::shared_ptr<std::vector<ent::Module>> select_module();
 
-            static int select_frame_class();
+            static std::shared_ptr<std::vector<ent::ShipFrameClass>> select_frame_class();
             static std::shared_ptr<ent::ShipFrame> select_single_frame(const int id);
             static int select_element();
 
@@ -40,6 +40,8 @@ namespace db{
                 const std::vector<std::pair<ent::Module, ent::Meta>>& modules,
                 const std::vector<std::pair<ent::Commodity, ent::Meta>>& commodities
             );
+
+            static void remote_upload_frame(ent::ShipFrame f);
 
             static int test_select_encounter();
             static int test_select_mod_type();

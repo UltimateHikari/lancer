@@ -31,12 +31,12 @@ INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (3, 2
 INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (1, 2, "Water", 5);
 INSERT INTO commodity(type_id, manufacturer_id, name, initial_cost) VALUES (2, 1, "Weapons", 1000);
 
-INSERT INTO frame_class(name) VALUES ("interceptor");
-INSERT INTO frame_class(name) VALUES ("fighter");
-INSERT INTO frame_class(name) VALUES ("trader");
-INSERT INTO frame_class(name) VALUES ("aviso");
-INSERT INTO frame_class(name) VALUES ("corvette");
-INSERT INTO frame_class(name) VALUES ("destroyer");
+INSERT INTO frame_class(name,slots) VALUES ("interceptor", 10);
+INSERT INTO frame_class(name,slots) VALUES ("fighter", 8);
+INSERT INTO frame_class(name,slots) VALUES ("trader", 30);
+INSERT INTO frame_class(name,slots) VALUES ("aviso", 5);
+INSERT INTO frame_class(name,slots) VALUES ("corvette",15);
+INSERT INTO frame_class(name,slots) VALUES ("destroyer", 20);
 
 INSERT INTO frame(
     class_id, manufacturer_id, 

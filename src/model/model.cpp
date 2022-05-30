@@ -23,6 +23,15 @@ int Model::get_sense(){
 bool Model::is_game_active(){
     return game_active_flag;
 }
+
+bool Model::is_victory_achieved(){
+    return current_balance >= VICTORY_CREDITS || battles_won >= VICTORY_BATTLES;
+}
+
+void Model::cheat_victory(){
+    battles_won = VICTORY_BATTLES;
+}
+
 void Model::set_game_active(bool activity){
     game_active_flag = activity;
 }

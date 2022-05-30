@@ -63,6 +63,11 @@ void View::show(Game& game){
                 container->Add(ScreenFactory::getScreenForState(game, state));
                 return true;
             }
+            if(event == ftxui::Event::Character('o')){
+                game.getModel().cheat_victory();
+                screen.PostEvent(Event::Custom);
+                return true;
+            }
             return false;
         }
     );

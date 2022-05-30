@@ -26,6 +26,12 @@ namespace db{
             SavedCommodity::get_table(),
             SavedModule::get_table()
             );
+
+        auto remote_storage = sqlite_orm::make_storage("remote.db",
+            Corporation::get_table(),
+            FrameClass::get_table(),
+            Frame::get_table()
+            );
     }
 }
 
@@ -82,10 +88,12 @@ int Connector::select_commodity_type(){
     return rows.size();
 }
 
-int Connector::select_frame_class(){
-    auto rows = db::internal::storage.select(columns(&FrameClass::id, &FrameClass::name));
+std::shared_ptr<std::vector<ent::ShipFrameClass>> Connector::select_frame_class(){
+    auto rows = db::internal::storage.select(
+        columns(&FrameClass::id, &FrameClass::name, &FrameClass::slots));
 
-    return rows.size();
+    empty_output_check(rows, "select_ship_class");
+    return parse_to_shared_vector<ent::ShipFrameClass>(rows);
 }
 
 std::shared_ptr<ent::ShipFrame> Connector::select_single_frame(const int id){
@@ -326,4 +334,18 @@ void Connector::insert_save(
             values(std::make_tuple(save_id[0], i.first.id, i.second.amount))
         );
     }
+}
+
+void Connector::remote_upload_frame(ent::ShipFrame f){
+    db::internal::remote_storage.insert(
+        into<Frame>(),
+        columns(&Frame::class_id, &Frame::corp_id, &Frame::name,
+        &Frame::weap_slots, &Frame::armr_slots, &Frame::supp_slots,
+        &Frame::energy, &Frame::inventory, &Frame::structure, &Frame::speed, &Frame::evasion),
+        values(std::make_tuple(
+            1,1,f.name,
+            f.slots.armr_slots, f.slots.weap_slots, f.slots.supp_slots,
+            f.params.energy, f.params.inventory, f.params.structure, f.params.speed, f.params.evasion
+            ))
+    );
 }

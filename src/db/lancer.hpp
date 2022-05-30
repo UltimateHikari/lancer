@@ -58,13 +58,15 @@ class FrameClass {
     public:
         int id;
         std::string name;
+        int slots;
 
     static auto get_table(){
         using namespace sqlite_orm;
         return make_table(
             "frame_class",
             make_column("id", &FrameClass::id, primary_key()),
-            make_column("name", &FrameClass::name)
+            make_column("name", &FrameClass::name),
+            make_column("slots", &FrameClass::slots)
         );
     }
 };

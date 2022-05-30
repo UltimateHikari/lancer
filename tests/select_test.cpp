@@ -23,7 +23,8 @@ TEST(SelectTest, Commodity_type)  {
 
 TEST(SelectTest, FrameClass)    {
     db::Connector::sync();
-    EXPECT_EQ(db::Connector::select_frame_class(), 6);
+    auto cls = db::Connector::select_frame_class();
+    EXPECT_EQ(cls->size(), 6);
 }
 
 TEST(SelectTest, Frame)    {

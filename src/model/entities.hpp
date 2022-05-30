@@ -279,6 +279,12 @@ public:
 
     ShipFrameSlots(){};
 
+    ShipFrameSlots(int w_slots, int a_slots, int s_slots):
+        weap_slots(w_slots),
+        armr_slots(a_slots),
+        supp_slots(s_slots)
+    {}
+
     ShipFrameSlots(std::tuple<int,int,int> raw_select):
         weap_slots(std::get<0>(raw_select)),
         armr_slots(std::get<1>(raw_select)),
@@ -297,6 +303,14 @@ public:
 
     ShipFrameParams(){};
 
+    ShipFrameParams(int energy_, int inventory_, int structure_, int speed_, int evasion_):
+        energy(energy_),
+        inventory(inventory_),
+        structure(structure_),
+        speed(speed_),
+        evasion(evasion_)
+    {}
+
     ShipFrameParams(const std::tuple<int,int,int,int,int>& raw_select):
         energy(std::get<0>(raw_select)),
         inventory(std::get<1>(raw_select)),
@@ -310,10 +324,19 @@ public:
 class ShipFrameClass : public Comparable{
 public:
     std::string name;
+    int max_slots = 0;
     ShipFrameClass(){};
     ShipFrameClass(int id_, std::string& name_):
         Comparable(id_), 
         name(std::move(name_))
+    {}
+    ShipFrameClass(std::tuple<
+        int,
+        std::string,
+        int>& raw_select):
+        Comparable(std::get<0>(raw_select)), 
+        name(std::get<1>(raw_select)),
+        max_slots(std::get<2>(raw_select))
     {}
 };
 
@@ -343,6 +366,17 @@ public:
             slots{extract_subtuple<6,7,8>(raw_select)},
             params{extract_subtuple<9,10,11,12,13>(raw_select)}
         {}
+    ShipFrame(
+        std::string name_,
+        ShipFrameClass class_,
+        ShipFrameSlots slots_,
+        ShipFrameParams params_
+    ):
+        name(name_),
+        fclass(class_),
+        slots(slots_),
+        params(params_)
+    {};
     std::string out() override;
 };
 

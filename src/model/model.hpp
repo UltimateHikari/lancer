@@ -30,6 +30,8 @@ private:
     static const int MINE_CREDITS = 10;
     static const int MINE_DAYS = 10;
     static const int MINE_LEFT = 5;
+    static const int VICTORY_CREDITS = 100000;
+    static const int VICTORY_BATTLES = 20;
     int mines_left = MINE_LEFT;
 public:
     ent::VModifierLog last_log = {};
@@ -48,6 +50,8 @@ public:
     Model();
     int get_sense();
     bool is_game_active();
+    bool is_victory_achieved();
+    void cheat_victory();
     void set_game_active(bool activity);
 
     void update_commodity(const ent::Commodity& comm, int delta);
