@@ -4,9 +4,11 @@
 #include <ftxui/component/component.hpp>
 #include "ftxui/component/component_base.hpp"
 #include "game.hpp"
+#include "view/state.hpp"
+
 
 namespace sc{
-ftxui::Component Inventory(Game& game);
+ftxui::Component Inventory(Game& game, state::StateManager& state);
 }
 
 #endif

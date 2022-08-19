@@ -18,6 +18,7 @@ class ShipBase : public ftxui::ComponentBase{
 public: 
     static const int DETAIL_WIDTH = 40;
     Game * game;
+    state::StateManager& state;
     ftxui::Component mod_list;
     ftxui::Element iteminfocolumn;
     ftxui::Element iteminfo;
@@ -25,11 +26,13 @@ public:
     ftxui::Element detailpanel;
     Graph logo_graph;
 
-    int state = NONE;
+    int details_render_state = NONE;
     ent::ShipFrame current_frame = {};
     ent::Module current_mod;
 
-    ShipBase(Game& game_): game(&game_){
+    ShipBase(Game& game_, state::StateManager& state_): 
+        game(&game_), state(state_)
+    {
         using namespace ftxui;
         mod_list = Container::Vertical({});
         Add(mod_list);
@@ -38,7 +41,7 @@ public:
     ftxui::Element Render() override {
         using namespace ftxui;
         RenderList();
-        switch(state){
+        switch(details_render_state){
             case MOD:
                 iteminfocolumn = RenderModDetailsColumn();
                 iteminfo = RenderModDetails(current_mod);
@@ -59,15 +62,17 @@ public:
     }
 
     void RenderList(){
+        if(state.isDeprecated()){
+            mod_list->DetachAllChildren();
+            auto& model = game->getModel();
+            current_frame = model.get_frame();
+            auto& modules = model.get_equipped_modules();
 
-        mod_list->DetachAllChildren();
-        auto& model = game->getModel();
-        current_frame = model.get_frame();
-        auto& modules = model.get_equipped_modules();
-
-        mod_list->Add(RenderFrame(current_frame));
-        for(auto& i: modules){
-            mod_list->Add(RenderModule(i));
+            mod_list->Add(RenderFrame(current_frame));
+            for(auto& i: modules){
+                mod_list->Add(RenderModule(i));
+            }
+            state.commit();
         }
         panel = mod_list->Render() | ftxui::border;
     }
@@ -80,7 +85,7 @@ public:
     ftxui::Component RenderFrame(ent::ShipFrame& frame){
         using namespace ftxui;
         return Container::Horizontal({
-            Button("Details", [&]{ state = FRM;}),
+            Button("Details", [&]{ details_render_state = FRM;}),
             Renderer([&]{return filler();}),
             Renderer([&]{
                 return text(frame.fclass.name);
@@ -99,9 +104,9 @@ public:
     ftxui::Component RenderModule(ent::Module& module){
         using namespace ftxui;
         return Container::Horizontal({
-            Button("Details", [&]{current_mod = module; state = MOD;}),
+            Button("Details", [&]{current_mod = module; details_render_state = MOD;}),
             Renderer([&]{return filler();}),
-            Button("Unequip", [&]{game->getModel().unequip_module(module);}),
+            Button("Unequip", [&]{game->getModel().unequip_module(module); state.deprecate();}),
             Renderer([&]{return filler();}),
             Renderer([&]{
                 return text(module.name);
@@ -160,8 +165,8 @@ public:
     }
 };
 
-ftxui::Component Ship(Game& game) {
-  return ftxui::Make<ShipBase>(game);
+ftxui::Component Ship(Game& game, state::StateManager& state) {
+  return ftxui::Make<ShipBase>(game, state);
 }
 
 }

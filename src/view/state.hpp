@@ -20,12 +20,13 @@ enum State {
 class StateManager{
 private:
     State state = state::Menu;
+    bool is_deprecated = true;
     inline bool isFromMenues(state::State state){
         return (state == Menu || state == Pause);
     }
 public:
     std::function<void()> stateChangeEvent = []{LOG(INFO) << "stateChangeEvent not set";};
-    bool onStateChange(state::State newState){
+    bool onStateChange(state::State newState){        
         switch (newState)
         {
         case Menu:
@@ -94,6 +95,15 @@ public:
     }
     state::State getCurrent() {
         return state;
+    }
+    void deprecate(){
+        is_deprecated = true;
+    }
+    void commit(){
+        is_deprecated = false;
+    }
+    bool isDeprecated(){
+        return is_deprecated;
     }
 };
 

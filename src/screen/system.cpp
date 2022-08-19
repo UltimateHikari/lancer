@@ -25,10 +25,12 @@ public:
     int depth = 0;
     md::BattleResult last_result;
     int tab_index = 0;
+    int old_tab_index = 0;
     std::vector<std::string> tab_entries = {
         "Ship", "Navigation", "Inventory", "Trade", "Test"
     };
-    ftxui::Component tab_selection = ftxui::Toggle(&tab_entries, &tab_index);
+    ftxui::Component tab_toggle = ftxui::Toggle(&tab_entries, &tab_index);
+    ftxui::Component tab_selection;
     ftxui::Component tab_content;
     ftxui::Component footer;
     ftxui::Component main_container;
@@ -47,12 +49,26 @@ public:
         game(game_), state(state_)
     {
         using namespace ftxui;
+
+        tab_selection = CatchEvent(
+            tab_toggle,
+            [&](Event event){
+                if(tab_index != old_tab_index){
+                    // probably eating 1 random mousevent
+                    state.deprecate();
+                    old_tab_index = tab_index;
+                    return true;
+                }
+                return false; // let toggle to its stuff;
+            }
+        );
+
         tab_content = ftxui::Container::Tab(
         {
-            sc::Ship(game),
+            sc::Ship(game, state),
             sc::Navigation(game, onEncounter, state),
-            sc::Inventory(game),
-            sc::Trade(game),
+            sc::Inventory(game, state),
+            sc::Trade(game, state),
             ftxui::Button("ovelray", [&]{depth = 1;})
         },
         &tab_index);

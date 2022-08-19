@@ -8,29 +8,27 @@ public:
     enum states{NONE, COMM, MOD};
     static const int DETAIL_WIDTH = 40;
     Game* game;
-    ftxui::Component list;
-    ftxui::Element iteminfocolumn;
-    ftxui::Element iteminfo;
+    state::StateManager& state;
+    ftxui::Component list = ftxui::Container::Vertical({});
+    ftxui::Element iteminfocolumn = ftxui::text("");;
+    ftxui::Element iteminfo = ftxui::text("");;
     ftxui::Element panel;
     ftxui::Element detailpanel;
 
-    int state = NONE;
+    int details_render_state = NONE;
     ent::Commodity current_comm;
     ent::Module current_mod;
 
-    TradeBase(Game& game_){
-        using namespace ftxui;
-        list = Container::Vertical({});
-        iteminfocolumn = text("");
-        iteminfo = text("");
+    TradeBase(Game& game_, state::StateManager& state_):
+        game(&game_), state(state_)
+    {
         Add(list);
-        this->game = &game_;
     }
 
     ftxui::Element Render() override {
         using namespace ftxui;
         RenderList();
-        switch(state){
+        switch(details_render_state){
             case COMM:
                 iteminfocolumn = RenderCommDetailsColumn();
                 iteminfo = RenderCommDetails(current_comm);
@@ -49,17 +47,20 @@ public:
     }
 
     void RenderList(){
-        list->DetachAllChildren();
-        std::vector<std::pair<ent::Commodity, ent::Meta>>& commodities = game->getModel().get_current_stock().get_commodities();
-        //auto modules = game->getModel().get_current_stock().get_modules();
-        // for(auto& i: modules){
-        //     list->Add(RenderModule(i));
-        // }
-        for(auto& i: commodities){
-            list->Add(RenderCommodity(i));
-        }
-        if(list->ChildCount() == 0){
-            list->Add(ftxui::Renderer([]{return ftxui::text("Inventory empty");}));
+        if(state.isDeprecated()){
+            list->DetachAllChildren();
+            std::vector<std::pair<ent::Commodity, ent::Meta>>& commodities = game->getModel().get_current_stock().get_commodities();
+            //auto modules = game->getModel().get_current_stock().get_modules();
+            // for(auto& i: modules){
+            //     list->Add(RenderModule(i));
+            // }
+            for(auto& i: commodities){
+                list->Add(RenderCommodity(i));
+            }
+            if(list->ChildCount() == 0){
+                list->Add(ftxui::Renderer([]{return ftxui::text("Inventory empty");}));
+            }
+            state.commit();
         }
         panel = list->Render() | ftxui::border | ftxui::frame | ftxui::vscroll_indicator;
     }
@@ -73,9 +74,9 @@ public:
         using namespace ftxui;
         ent::Commodity c = commodity.first;
         return Container::Horizontal({
-            Button("Buy", [&]{game->getModel().trade_commodity(commodity.first, 1);}, ButtonOption()),
-            Button("Sell", [&]{game->getModel().trade_commodity(commodity.first, -1);}, ButtonOption()),
-            Button("Details", [c, this]{current_comm = c; state = COMM;}, ButtonOption()),
+            Button("Buy", [&]{game->getModel().trade_commodity(commodity.first, 1); state.deprecate();}, ButtonOption()),
+            Button("Sell", [&]{game->getModel().trade_commodity(commodity.first, -1); state.deprecate();}, ButtonOption()),
+            Button("Details", [c, this]{current_comm = c; details_render_state = COMM;}, ButtonOption()),
             Renderer([&]{return filler();}),
             Renderer([&]{
                 return text(commodity.first.name);
@@ -138,8 +139,8 @@ public:
     }
 };
 
-ftxui::Component Trade(Game& game) {
-  return ftxui::Make<TradeBase>(game);
+ftxui::Component Trade(Game& game, state::StateManager& state) {
+  return ftxui::Make<TradeBase>(game, state);
 }
 
 }
