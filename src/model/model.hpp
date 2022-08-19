@@ -58,6 +58,8 @@ public:
     const std::vector<std::pair<ent::Commodity, ent::Meta>>& get_commodities();
     void update_module(const ent::Module& comm, int delta);
     const std::vector<std::pair<ent::Module, ent::Meta>>& get_modules();
+    int get_amount_of_commodity(const ent::Commodity& comm);
+    int get_amount_of_module(const ent::Module& mod);
 
     md::BattleResult move_with_lane(const ent::Lane& lane);
     const ent::Node& get_current_node();

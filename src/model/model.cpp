@@ -56,6 +56,13 @@ const std::vector<std::pair<ent::Module, ent::Meta>>& Model::get_modules(){
     return inventory->get_modules();
 }
 
+int Model::get_amount_of_commodity(const ent::Commodity& comm){
+    return inventory->get_amount_of_commodity(comm);
+}
+int Model::get_amount_of_module(const ent::Module& mod){
+    return inventory->get_amount_of_module(mod);
+}
+
 md::BattleResult Model::move_with_lane(const ent::Lane& lane){
     current_time += lane.traverse_time;
 

@@ -87,6 +87,10 @@ public:
             }),
             Renderer([&]{return filler();}),
             Renderer([&]{
+                return text(fmti(game->getModel().get_amount_of_commodity(commodity.first)));
+            }),
+            Renderer([&]{return filler();}),
+            Renderer([&]{
                 return text(fmti(commodity.second.price) + "cred");
             })
         });

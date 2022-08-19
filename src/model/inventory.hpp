@@ -24,6 +24,7 @@ public:
     std::vector<std::pair<T, ent::Meta>>& get();
     bool have_enough_of(const T& t, int delta);
     int get_size();
+    int get_amount_of(const T& t);
 };
 
 class Inventory{
@@ -40,6 +41,8 @@ public:
     void load(int save_id);
     void save(std::string& save_name);
     int get_size();
+    int get_amount_of_commodity(const ent::Commodity& comm);
+    int get_amount_of_module(const ent::Module& mod);
 };
 
 // ----- Subinventory impl ----- //
@@ -100,6 +103,11 @@ int SubInventory<T>::get_size(){
         [](const std::size_t previous, const auto& element)
         { return previous + element.second.amount; }
         );
+}
+
+template<class T>
+int SubInventory<T>::get_amount_of(const T& t){
+    return inventory[t].amount;
 }
 
 }

@@ -48,3 +48,10 @@ void Inventory::save(std::string& save_name){
 int Inventory::get_size(){
     return modules.get_size() + commodities.get_size();
 }
+
+int Inventory::get_amount_of_commodity(const ent::Commodity& comm){
+    return commodities.get_amount_of(comm);
+}
+int Inventory::get_amount_of_module(const ent::Module& mod){
+    return modules.get_amount_of(mod);
+}
